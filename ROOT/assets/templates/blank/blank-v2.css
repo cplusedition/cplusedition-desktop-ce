@@ -1,0 +1,5 @@
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

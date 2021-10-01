@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "my-tsc",
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "tsc --build .",
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+    ]
+}

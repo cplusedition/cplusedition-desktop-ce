@@ -1,0 +1,46 @@
+.xx-title {
+  font-family: FontAwesome;
+  font-weight: normal;
+  text-shadow: 1px 1px 1px #000;
+}
+.xx-style01 .xx-title {
+  text-shadow: 1px 1px 1px #fff;
+}
+.xx-style01 .xx-section {
+  width: 100%;
+}
+.xx-style01 .xx-content {
+  display: block;
+}
+.xx-welcome {
+  text-align: center;
+  font-family: Coda-Heavy;
+  font-weight: bold;
+  font-size: 2rem;
+  line-height: 1.2;
+  text-shadow: 1px 1px 3px #fff;
+  background-image: unset;
+  color: #6aa84f;
+  margin: 1ex auto;
+}
+.xx-style08 .xx-welcome {
+  color: #a00;
+}
+.xx-style09 .xx-welcome {
+  text-shadow: 2px 2px 1px #fff;
+  color: forestgreen;
+}
+.xx-style10 .xx-welcome {
+  color: #360;
+}
+.xx-style11 .xx-welcome, .xx-style12 .xx-welcome {
+  text-shadow: 0.4em 0.4ex 2px rgba(0, 0, 0, 0.2);
+  color: rgba(0, 136, 0, 0.75);
+  font-size: 2.5rem;
+}
+.xx-style06 .xx-welcome {
+  display: none;
+}
+.xx-style06 .xx-vertical-toolbar {
+  display: none;
+}

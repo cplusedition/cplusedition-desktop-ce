@@ -1,0 +1,689 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="mainContextmenu.html" />
+        <link rel="next" type="text/html" href="canvas.html" />
+    <meta name="metainfo" content="{&quot;M&quot;:21320}" /></head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title">
+                Dialogs
+            </div>
+            <div class="xx-content">
+                <div class="x-head3 xx-head-plum">
+                    <a name="Dialogs"></a>Introduction
+                </div>
+                <div class="x-para">
+                    Many actions prompt for user input with dialog. Here are some of the important ones. 
+                    <ul class="x-none xx-tips">
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">You can drag the dialog around by grabbing the right border handle or the title area. Some
+                            dialogs may move freely, some only move vertically.
+                        </div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content"><div class="x-para">Many dialogs prompt for element attributes. To reduce the number of keystrokes required, each attribute should be entered as a space separated key value pair on a single line, instead of the standard HTML <span class="x-plum">name="value"</span> format. If the attribute value contains line breaks, use the escaped form: <span class="x-plum">&amp;#xa;</span>&nbsp;instead. For example:</div><div class="x-box-gray">class x-para<br />style width:512px;text-align:center<br />tooltips line 1&amp;#xa;line 2</div>The same input format is also used for style properties and CSS rules. For example:<div class="x-box-gray">.box {<br />&nbsp;width 100%<br />&nbsp;border 1px solid #888<br />}</div></span></li>
+                    </ul>
+                </div>
+
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="AudioPlayer"></a> Audio Player</div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/crops/audioPlayer01.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/crops/audioPlayer01.jpg" /></a><span class="xx-flex-hcaption">The Audio Player is the UI to control audio playback.
+                        
+                        
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Close the player but let audio playback continue in background.</div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Stop audio playback and close the player.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"><div><span class="x-symbol" style="font-family: FontAwesome;"></span></div> </div>
+                            <div class="x-list-content">Pause/Play the audio.
+                            </div>
+                            </li>
+                            
+                        </ul></span>
+                    </div>
+                </div><div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="Calculator"></a> Calculator
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/calculator01.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/calculator01.jpg" /></a><span class="xx-flex-hcaption">The Calculator prompt user for a number and allow for
+                        simple calculations.<ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet-text">C&nbsp;&nbsp;&nbsp;</div>
+                            <div class="x-list-content">
+                                Clear.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">~&nbsp;&nbsp;&nbsp;</div>
+                            <div class="x-list-content">
+                                Toggle sign of the last operand.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">&lt;=&nbsp;&nbsp;</div>
+                            <div class="x-list-content">
+                                Backspace, delete last character.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">
+                                e &nbsp;&nbsp;
+                            </div>
+                            <div class="x-list-content">
+                                Exponent, eg. 1e6 for 1000000.
+                            </div>
+                            </li>
+                        </ul>
+                        The bottom row buttons evaluate the expression and return result in the specified format:
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet-text">=&nbsp;&nbsp;&nbsp;</div>
+                            <div class="x-list-content">
+                                Calculate the result but don't quit.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">#&nbsp;&nbsp;&nbsp;</div>
+                            <div class="x-list-content">
+                                Close dialog and return result as integer.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">$&nbsp;&nbsp;&nbsp;</div><div class="x-list-content">Close dialog and return result with 2 fractional digits.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet-text">
+                                OK&nbsp;&nbsp;
+                            </div>
+                            <div class="x-list-content">
+                                Close dialog and return result as is.
+                            </div>
+                            </li>
+                        </ul><ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">Note that the calculation result is rounded to no more than 6 decimal digits for readability.</div>
+                            </li>
+                        </ul>
+                        <ul class="x-none xx-tips">
+                            <li class="x-none x-flex"></li>
+                        </ul>
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="ColorPicker"></a> Color Picker
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/colorPickerPallette.jpg?view"><img class="xx-figure x-imageholder" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/colorPickerPallette.jpg" /></a><a style="flex:0 0 auto;align-self:flex-start;" href="../../img/main/contextmenu/crops/colorPickerNames.jpg?view"><img class="xx-figure x-imageholder" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/colorPickerNames.jpg" /></a><a style="flex:0 0 auto;align-self:flex-start;" href="../../img/main/contextmenu/crops/colorPickerCSSNames.jpg?view"><img class="xx-figure x-imageholder x-portrait" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/colorPickerCSSNames.jpg" /></a><a style="flex:0 0 auto;align-self:flex-start;" href="../../img/main/contextmenu/crops/colorPickerPicker.jpg?view"><img class="xx-figure x-imageholder" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/colorPickerPicker.jpg" /></a><span class="xx-flex-hcaption">The Color Picker dialog prompt user for a color. The Palette tab (<span class="x-symbol" style="font-family: FontAwesome;"></span>) contains a
+                        selection of the popular colors. The Names tab&nbsp;list colors by X11 color names (<span class="x-symbol" style="font-family: FontAwesome;"></span>) and CSS color names (<span class="x-symbol" style="font-family: FontAwesome;"></span>) . Simply click on the tab label to toggle between the two modes. The Picker tab
+                        (<span class="x-symbol" style="font-family: FontAwesome;"></span>) let you pick color from a
+                        HSV gradient field.<div class="x-para">Typically, the dialog returns result in a format, hex, dec or name, &nbsp;as it appears in the input field. The&nbsp;<span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp;action change the value to decimal form. The <span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp;action change the value to hexadecimal form.  </div><div class="x-para">You may enter or select a CSS color name (with the * marker) in the ColorList tab. Note that X11 color that is not a CSS color would stay in numeric form.</div><div class="x-para">You may perform a prefix search for a color name in the ColorList tab by entering a word into the color input field and then press ENTER. The first color with name that starts with the given word would be shown and selected.</div><div class="x-para">Note that hex and name forms are only valid for opaque color. If the color is not opaque, the result is always in decimal, ie. rgba(), form.</div><ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                There is a shortcut for the opacity slider. Click on the opacity label cycle the
+                                opacity among 0, 0.25, 0.5, 0.75 and 1.0.
+                            </div>
+                            </li>
+                        </ul>
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="DatePicker"></a> Date Picker
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/datePickerDate.jpg?view" style="
+                    flex: 0 0 auto;
+                    "><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/datePickerDate.jpg" /></a><a href="../../img/main/contextmenu/crops/datePickerTime.jpg?view" style="
+                    flex: 0 0 auto;
+                    "><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/datePickerTime.jpg" /></a><a href="../../img/main/contextmenu/crops/datePickerFormat.jpg?view" style="
+                    flex: 0 0 auto;
+                    "><img class="xx-figure" style="margin:0px 10px 10px 0; " src="../../img/main/contextmenu/crops/datePickerFormat.jpg" /></a><span class="xx-flex-hcaption">The Date Picker dialog prompt user for a date, a time or both. You can
+                        select how the date/time string is formatted in the format tab (<span class="x-symbol" style="font-family: FontAwesome;"></span>). There is also an option to include the full
+                        date/time string as a tooltips attribute.<div class="xx-head3-plum">Toolbar</div><ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Cancel.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                OK.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Goto the target date, the initial date when opening the dialog.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Goto to today.</div>
+                            </li>
+                            
+                        </ul></span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum"><a name="EditStyle"></a>Edit Style</div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/actionEditStyleAdvanced01.jpg?view"><img class="xx-figure-l x-imageholder x-landscape" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/actionEditStyleAdvanced01.jpg" /></a><span class="xx-flex-hcaption">The Edit Style dialog prompt user to enter style properties as raw text. <div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar-b" style="margin-left:-35%; " src="../../img/main/contextmenu/crops/actionEditStyleAdvancedToolbar01.jpg" /></div></div>
+                        </div>
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Cancel.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                OK.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Shows the context menu.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Property name filter box. For example, you can type <span class="x-pre">bdbt</span> to show style property name <span class="x-pre">border-bottom</span> in the drop down list. Click on an item in the <div class="x-annotation"><span class="x-a-target">drop down</span><div class="x-smokescreen"><div class="x-a-content" style="border: none; background-color: rgb(255, 255, 255);"><a href="../../img/sidepanel/document/crops/editRulesetDropdown.jpg?view"><img class="xx-figure-b x-imageholder x-portrait" style="float:left;" src="../../img/sidepanel/document/crops/editRulesetDropdown.jpg" /></a></div></div></div> list enters the property name into the text area.</div>
+                            </li>
+                            
+                        </ul><div class="xx-head3-plum">Context menu</div><div class="" style="margin:1ex 0 1ex 0; "><img class="xx-figure-toolbar3" src="../../img/sidepanel/document/crops/editRulesetContextmenu.jpg" /><br /></div><ul class="x-none x-compact"><li></li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Copy selection to local clipboard.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Cut selection to local clipboard.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Paste from &nbsp;local clipboard.</div>
+                            </li>
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Insert a color.</div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Insert a font.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">Insert an image URL.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Create a gradient as background-image.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Create glass effect, with layers of gradient and images..</div>
+                            </li></ul>
+                        </span>
+                    </div>
+                </div><div class="x-para">
+                    <div class="x-head3 xx-head-plum"><a name="EditStyle"></a>CSS Editor<a name="CSSEditor"></a></div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/sidepanel/explore/CSSEditor.jpg?view"><img class="xx-figure-b x-imageholder x-portrait" style="margin:0px 10px 10px 0;" src="../../img/sidepanel/explore/CSSEditor.jpg" /></a><a href="../../img/sidepanel/explore/CSSEditorPropertyAssists.jpg?view"><img class="xx-figure-b x-imageholder x-portrait" style="margin:0px 10px 10px 0;" src="../../img/sidepanel/explore/CSSEditorPropertyAssists.jpg" /></a><span class="xx-flex-hcaption"><div style="padding: 1ex 0; "><div class="x-para">Use the Files panel Open Document (<span class="x-symbol" style="font-family: FontAwesome;"></span>) action to create, browse or edit a CSS file using the CSS file editor. It comes with features like syntax highlighting, content assists, text search, undo/redo, ... etc.</div><div class="x-para"><span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp;&nbsp;The content assists use shorthand match, that check for presence of characters in same order as the search string but may have other characters in between, to filter hints. For example, assists for&nbsp;<span class="x-pre">fiz</span> may include&nbsp;<span class="x-pre">font-size</span> and <span class="x-pre">transform-origin-z</span>. That save you from typing <span class="x-pre">“-“</span> in most cases.</div><div class="x-para"><span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp;&nbsp;To work with mobile keyboards, the editor use the <span class="x-bold">Space</span> key to activate the content assist. Press the Space key twice to enter a space.</div><div class="x-para"><span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp;&nbsp;The line:column indicator is also an input. Enter location in line or line:column format to jump to the specified location. 1:1 is the first column in the first line.</div></div><div class="xx-head3-plum">Browsing</div><div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar-b x-imageholder x-landscape" style="margin-left:-35%;" src="../../img/sidepanel/explore/CSSEditorToolbar.jpg" /></div></div>
+                        </div>
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Switch to Search toolbar.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Close editor.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Switch to edit mode.</div></li><li class="x-list">
+                            </li>
+                            
+                        </ul><div class="xx-head3-plum" style="margin-top: 2ex; ">Editing</div><div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar-b x-imageholder x-landscape" style="margin-left:-35%;" src="../../img/sidepanel/explore/CSSEditorSearchToolbar.jpg" /></div></div>
+                        </div><ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Switch to Browse or Edit toolbar.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Search backward.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Search forward for next match.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Text search input. Text search use ignore case substring match.</div>
+                            </li>
+                            
+                        </ul><div class="xx-head3-plum" style="margin-top: 2ex; ">Search</div><div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar-b x-imageholder x-landscape" style="margin-left:-35%;" src="../../img/sidepanel/explore/CSSEditorEditToolbar.jpg" /></div></div>
+                        </div><ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Switch to Search toolbar.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Save changes and switch to browsing mode.
+                            </div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Discard changes and switch to browsing mode.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Added a ruleset template.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Show context menu.</div>
+                            </li>
+                            
+                        </ul><div class="xx-head3-plum" style="margin-top: 2ex; ">Context menu</div><div class="" style="margin:1ex 0 1ex 0; "><img class="xx-figure-toolbar2 x-imageholder x-landscape" src="../../img/sidepanel/explore/CSSEditorContextmenu.jpg" /></div><ul class="x-none x-compact"><li class="x-list">
+                            <div class="x-bullet" style="font-family:FontAwesome;"></div>
+                            <div class="x-list-content">Undo.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Redo.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Insert a color through a Color picker.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Insert a font through a Font picker.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Insert a file path through a File picker.<div class="x-para"><span class="x-symbol" style="font-family: FontAwesome;"></span>&nbsp; Note that result of this action is a file path that is not percent encoded. In case a percent encoded URL path is required, a fully percent encoded path is available at the system clipboard for your convenience.<br /></div></div>
+                            </li>
+                            
+                            
+                            </ul>
+                        </span>
+                    </div>
+                </div><div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="FilePicker"></a> File Picker
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/filePicker.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/filePicker.jpg" /></a><span class="xx-flex-hcaption">The File Picker dialog prompt user for a file path. 
+                        <div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar" style="border:1px solid #888;margin-left:-45%;" src="../../img/main/contextmenu/crops/filePickerToolbar.jpg" /></div></div>
+                        </div>
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Cancel.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                OK.
+                            </div>
+                            </li>
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">Shows the images of the current directory in an Image Picker.
+                            </div>
+                            </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show context menu.</span></li>
+                            
+                            
+                        </ul><div class="xx-head3-plum">Context menu</div><div class="x-para">
+                            <div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar3" src="../../img/main/contextmenu/crops/filePickerContextmenu.jpg" /></div>
+                        </div><div class="x-para">The file operation actions are same as those in the Files Panel. See the <a href="filesPanel.html#Delete">Files Panel</a>&nbsp;for details.&nbsp;<div style="margin-top: 1ex; "><ul class="x-none x-compact">
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Goto to directory that contains the current document in the editing area.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Goto the target directory, ie. the initial directory when opening the dialog.
+                            </div>
+                            </li>
+                            
+                        </ul></div></div>
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="ImageDimension"></a> Image Dimension
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/dialogs/crops/outputImageDimension.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/dialogs/crops/outputImageDimension.jpg" /></a><span class="xx-flex-hcaption">The Image Dimension dialog prompt user for output width, height,
+                        rotation, ... etc. for the image actions. The output dimension should use the input orientation, ie. before any rotation.&nbsp;If either width/height is missed out, it would be derived from the other dimension and the aspect ratio of the image.<ul class="x-none">
+                            <li class="x-none">
+ 
+                            <span class="x-head3"><div class="x-annotation"><span class="x-a-target">Effect</span><div class="x-smokescreen"><div class="x-a-content" style="border: none; background-color: rgb(255, 255, 255);"><a href="../../img/dialogs/crops/outputImageEffects01.jpg?view"><img src="../../img/dialogs/crops/outputImageEffects01.jpg" class="x-imageholder xx-figure x-portrait" style="float: left;" /></a></div></div></div></span> &nbsp;None, Black and white, Grayscale (<div class="x-annotation"><span class="x-a-target">4, 8, 16 levels</span><div class="x-smokescreen">
+                                    <div class="x-a-content" style="border: 1px solid rgb(136, 136, 136); box-shadow: none; padding: 10px; background-color: rgb(153, 204, 255);">
+                                        The first level is always black and the last level is always white.
+                                    </div></div></div>) or 256 levels</li>
+                            <li class="x-none"><span class="x-head3">Adjust (%)</span>&nbsp; Adjust parameter for effects with value in range 0.0 to 100.0. For Black and white effect, it specify the percentage of black
+                            pixels in the output image. Default is 20.0, for 
+                            <div class="x-annotation"><span class="x-a-target">black on white documents</span><div class="x-smokescreen">
+                                    <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(153, 204, 255);">
+                                        For black and white photos, you probably want to use a value around 50.
+                                    </div>
+                                </div></div>. &nbsp;For
+                            Gray (4, 8, 16 levels) effects, it specify the 
+                            
+                                percentage of dark pixels in all but the last level. The last level contains the remaining pixels and is always white. For 256 levels grayscale effect, it specify the percentage of dark pixels to keep, eg. 95.0 specify that the last 5% of light pixels are clipped to white.</li>
+                            <li class="x-none">
+
+                            <span class="x-head3">Quality</span> 0..100. Specify the quality of output for the lossy
+                            image formats, eg. JPEG.</li>
+                        </ul><ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">Note that when turning on grayscale effects, the app. automatically change the output file type to png, which result in lossless and smaller file in most cases.</div>
+                            </li>
+                        </ul>
+                        
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum"><a name="ImagePickerLocal"></a>Image Picker (Local)</div>
+                    <div class="x-flex" style="align-content:flex-start;flex-wrap:wrap;">
+                        <a style="flex:0 0 auto;align-self:flex-start;" href="../../img/sidepanel/explore/imagePicker01.jpg?view"><img class="xx-figure-b" style="margin:0px 10px 10px 0;" src="../../img/sidepanel/explore/imagePicker01.jpg" /></a><span class="xx-flex-hcaption">The Local Image Picker dialog prompt user for an image in local storage. Click on a thumbnail to show the full size image in an image viewer. Use the OK (<span class="x-symbol" style="font-family: FontAwesome;"></span>) action in the image viewer to select the image.<div class="x-para">
+                            <div class="x-pictureframe" style="display:flex; "><div style="display:inline-block; overflow:auto; box-sizing:content-box; "><img class="xx-figure-toolbar-b" style="margin-left:-45%;" src="../../img/sidepanel/explore/imagePickerToolbar01.jpg" /></div></div>
+                        </div>
+                        <ul class="x-none x-compact">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Show search bar.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Cancel.
+                            </div>
+                            </li>
+                            
+                            
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Next page.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Previous page.
+                            </div>
+                            </li>
+                        </ul>
+                        <ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                You can also fling left on the left edge to go to the next page and fling right to go to the previous
+                                page.
+                            </div>
+                            </li>
+                        </ul>
+                        </span>
+                    </div>
+                </div><div class="x-para">
+                    <div class="x-head3 xx-head-plum"><a name="SystemGallery"></a>Image Picker (System Gallery)</div>
+                    <div class="x-flex" style="align-content:flex-start;flex-wrap:wrap;">
+                        <a style="flex:0 0 auto;align-self:flex-start;" href="../../img/sidepanel/explore/importImage01.jpg?view"><img class="xx-figure-b" style="margin:0px 10px 10px 0;" src="../../img/sidepanel/explore/importImage01.jpg" /></a><span class="xx-flex-hcaption">The System Gallery Image Picker dialog prompt user for an image from the system gallery.<ul class="x-none xx-tips"><li class="x-list">
+                            </li>
+                        </ul>
+                        </span>
+                    </div>
+                </div><div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="ImagePickerImageViewer"></a> Image Picker Image Viewer</div>
+                    <div class="x-flex" style="align-content:flex-start;flex-wrap:wrap;">
+                        <a style="flex:0 0 auto;align-self:flex-start;" href="../../img/sidepanel/explore/imagePickerImageViewer01.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/sidepanel/explore/imagePickerImageViewer01.jpg" /></a><span class="xx-flex-hcaption">The Image Picker Image Viewer shows the full size image of the thumbnails in the Image Picker.
+                        <div class="x-para"><ul class="x-none x-compact">
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Close the image viewer and returns to the Image Picker.</div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">Select the image and close the image viewer and Image Picker.</div>
+                            </li>
+                            
+                            
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                Show image info.
+                            </div>
+                            </li>
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                            <div class="x-list-content">
+                                Rotate image by 90 deg.
+                            </div>
+                            </li>
+                            
+                        </ul></div>
+                        
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="InsertIMG"></a> Insert IMG
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/actionInsertImage01.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/actionInsertImage01.jpg" /></a><span class="xx-flex-hcaption">The Insert Image dialog prompt user for parameters for creating
+                        an IMG element. 
+                        <div class="x-para">
+                            <ul class="x-none x-compact">
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    
+                                </div>
+                                <div class="x-list-content">
+                                    Cancel.
+                                </div>
+                                </li>
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    
+                                </div>
+                                <div class="x-list-content">
+                                    OK.
+                                </div>
+                                </li>
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                                <div class="x-list-content">
+                                    Paste text from system clipboard.
+                                </div>
+                                </li>
+                                
+                                
+                                
+                                
+                            </ul>
+                        </div><div class="x-para">The Image URL action bar buttons:</div><div class="x-para"><ul class="x-none x-compact">
+                                
+                                
+                                
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    /
+                                </div>
+                                <div class="x-list-content">
+                                    Toggle between absolute path, relative path and as is.
+                                </div>
+                                </li>
+                                
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    
+                                </div>
+                                <div class="x-list-content">
+                                    Toggle whether to create an A element that wrap the IMG element. Very often, the A
+                                    element links to the full size image while the IMG element shows a thumbnail image.
+                                </div>
+                                </li>
+                                <li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    
+                                </div>
+                                <div class="x-list-content">
+                                    Create a thumbnail for the selected image in the Image URL input. It pop up an
+                                    ImageDimension dialog to get the thumbnail parameters.
+                                </div>
+                                </li><li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                                <div class="x-list-content">
+                                    Import and use an image from Photo Library.
+                                </div>
+                                </li><li class="x-list">
+                                <div class="x-bullet" style="font-family: FontAwesome;">
+                                    
+                                </div>
+                                <div class="x-list-content">
+                                    Open Filepicker to select an image file.
+                                </div>
+                                </li>
+                            </ul></div>
+                        </span>
+                    </div>
+                </div>
+                <div class="x-para">
+                    <div class="x-head3 xx-head-plum">
+                        <a name="PhotoDimension"></a> Photo Dimension
+                    </div>
+                    <div class="x-flex xx-flex-row-wrap">
+                        <a href="../../img/main/contextmenu/crops/takePhoto01.jpg?view"><img class="xx-figure" style="margin:0px 10px 10px 0;" src="../../img/main/contextmenu/crops/takePhoto01.jpg" /></a><span class="xx-flex-hcaption">The Photo Dimension dialog prompt user for the output width, height,
+                        thumbnail width and height, rotation, ... etc. for the import photo action.<div class="x-para">You may optionally&nbsp;create a thumbnail of the imported image by specifying the Tn. width and/or Tn. height inputs.</div><div class="x-para">You may optionally export the photo to the system Photo Album using the <span class="x-symbol" style="font-family: FontAwesome;"> </span>button.</div><div class="x-para">You may also use the Scan Barcode (<span class="x-symbol" style="font-family: FontAwesome;"></span>) action to scan for any barcodes in the photo. If found, the barcode messages would be saved to the clipboard.</div><div class="x-para">See the <a href="#ImageDimension">Image Dimension</a> dialog for description of the other fields.</div>
+                        </span>
+                    </div>
+                </div>
+                <div class="xx-ruler xx-plum">
+                </div>
+
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="x-rightsidebar">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li>
+                        <li class="xx-toc1"><a href="features.html">Features</a></li><li class="xx-toc1"><a href="systemMenu.html">System Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html">Drawing Canvas</a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html"><span class="xx-inactive">Dialogs</span></a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html">Search</a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html">Files</a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html">Events</a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+</body></html>

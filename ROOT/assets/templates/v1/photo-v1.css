@@ -1,0 +1,110 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+span.x-datetime, span.x-date {
+	color: #777;
+}
+div.xx-top {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0 auto;
+	padding-bottom: 75vh;
+}
+div.xx-head {
+	display: flex;
+	min-height: 12ex;
+	margin-bottom: 5px;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 4ex;
+	font-weight: bold;
+	color: #fff;
+}
+div.xx-body {
+	border-bottom: 5px solid #45818e;
+	padding-bottom: 5px;
+}
+div.xx-section {
+	padding: 5px 0;
+	border-top: 1px solid #45818e;
+	margin: 0px;
+}
+div.xx-header {
+	display: flex;
+	align-items: baseline;
+	padding-bottom: 5px;
+}
+div.xx-subject {
+	flex: 1 1 auto;
+	color: #134f5c;
+	font-size: 125%;
+}
+.xx-datetime {
+	flex: 0 0 auto;
+	margin-left: 10px;
+	color: #134f5c;
+	font-family: Antonio-Regular;
+}
+div.xx-content {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+div.xx-photo {
+	display: inline-flex;
+	flex-direction: column;
+	padding: 0px;
+	margin: 5px;
+	border-radius: 5px;
+}
+div.xx-photo.xx-white {
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	box-shadow: 0px 0px 5px #888;
+}
+div.xx-photo.xx-white div.x-photo {
+	background-color: #fff;
+}
+div.xx-photo.xx-red {
+	padding: 10px;
+	background-color: rgb(252, 229, 205);
+	border: 1px solid #e06666;
+	box-shadow: 0px 0px 5px #888;
+}
+div.xx-photo.xx-red div.x-photo {
+	background-color: rgb(252, 229, 205);
+}
+div.xx-photo.xx-green {
+	padding: 10px;
+	background-color: rgb(217, 234, 211);
+	border: 1px solid #6aa84f;
+	box-shadow: 0px 0px 5px #888;
+}
+div.xx-photo.xx-green div.x-photo {
+	background-color: rgb(217, 234, 211);
+}
+div.xx-photo.xx-blue {
+	padding: 10px;
+	background-color: rgb(224, 238, 238);
+	border: rgb(111, 168, 220) 1px solid;
+	box-shadow: 0px 0px 5px #888;
+}
+div.xx-photo.xx-blue div.x-photo {
+	background-color: rgb(224, 238, 238);
+}
+div.xx-caption {
+	padding: 5px 0px;
+}
+div.xx-photo img {
+	width: 40vmin;
+	border-radius: 5px;
+}

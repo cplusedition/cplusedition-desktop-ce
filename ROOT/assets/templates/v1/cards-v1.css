@@ -1,0 +1,143 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+div.xx-top {
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 75vh;
+}
+div.xx-body {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0 auto;
+}
+div.xx-background {
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50vw;
+	height: 100vh;
+	background-color: #fff;
+	background-image: url(/assets/images/wallpapers/cloud01.png);
+	z-index: -100;
+}
+div.xx-head {
+	display: flex;
+	box-sizing: border-box;
+	justify-content: flex-start;
+	margin: 0;
+	padding: 0.5em 1ex 0.5em 10vh;
+	background-color: transparent;
+	overflow: auto;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 8vw;
+	width: 100vh;
+	transform-origin: 0 0;
+	transform: rotate(90deg) translateY(-8vw);
+}
+.xx-title {
+	color: #888;
+	font-size: 4vw;
+	font-weight: bold;
+}
+ul.xx-cards {
+	padding: 5px;
+	margin: 0 auto;
+}
+ul.xx-details {
+	margin-left: 0;
+	padding: 0;
+}
+li.xx-card {
+	display: flex;
+	width: 480px;
+	max-width: 80vw;
+	box-sizing: border-box;
+	flex-direction: column;
+	margin: 5px auto;
+	overflow: auto;
+	background-color: #fff2cc;
+	border: 1px solid #e69138;
+	border-radius: 3px;
+}
+li.xx-section {
+	display: flex;
+	width: 480px;
+	max-width: 80vw;
+	box-sizing: border-box;
+	flex-direction: column;
+	margin: 5px auto;
+	overflow: auto;
+	color: #888;
+	background-color: #ddd;
+	border: 1px solid #888;
+	border-radius: 3px;
+	padding: 5px;
+	font-weight: bold;
+}
+span.xx-bullet {
+	display: inline-block;
+	flex: 0 0 auto;
+	margin: 0 5px 0 0;
+	padding: 0 0 0 2px;
+	width: 1em;
+	overflow: visible;
+	font-family: FontAwesome;
+}
+.xx-date {
+	color: #444;
+	margin-right: 5px;
+}
+div.xx-content {
+	padding: 5px;
+}
+div.xx-name {
+	flex: 0 0 auto;
+	display: block;
+	background-color: #ffd966;
+	border-bottom: 1px solid #f1c232;
+	padding: 1ex 5px;
+	font-weight: bold;
+}
+li.xx-card.xx-blue {
+	background-color: rgb(224, 238, 238);
+	border-color: rgb(61, 133, 198);
+}
+li.xx-card.xx-blue > div.xx-name {
+	background-color: rgb(135, 206, 250);
+	border-bottom-color: rgb(111, 168, 220);
+}
+li.xx-card.xx-green {
+	background-color: rgb(217, 234, 211);
+	border-color: rgb(56, 118, 29);
+}
+li.xx-card.xx-green > div.xx-name {
+	background-color: rgb(182, 215, 168);
+	border-bottom-color: rgb(106, 168, 79);
+}
+li.xx-card.xx-red {
+	background-color: rgb(252, 229, 205);
+	border-color: rgb(204, 0, 0);
+}
+li.xx-card.xx-red > div.xx-name {
+	background-color: rgb(234, 153, 153);
+	border-bottom-color: rgb(224, 102, 102);
+}
+a.xx-section {
+	display: block;
+	font-weight: bold;
+	text-align: center;
+	color: #fff !important;
+	padding: 5px 10px 0 0;
+}
+#x-rightsidepanel div.x-rightsidepanel {
+	border: none;
+	width: 4em;
+	left: calc(100vw - 4em);
+	padding: 1ex 0 4ex 0;
+	background-color: rgb(116, 27, 71);
+}

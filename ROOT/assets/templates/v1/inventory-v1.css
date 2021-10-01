@@ -1,0 +1,137 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+span.x-date {
+	color: #777;
+}
+div.xx-top {
+	box-sizing: border-box;
+	width: 80%;
+	margin: 0 auto;
+	padding-bottom: 75vh;
+}
+div.xx-head {
+	display: flex;
+	min-height: 12ex;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 4ex;
+	font-weight: bold;
+	color: #fff;
+}
+table.xx-body {
+	margin: 5px 0px;
+	box-sizing: border-box;
+	width: 100%;
+	border-bottom: 3px solid #555;
+}
+tr.xx-section>td, tr.xx-section>th {
+	margin: 0;
+	padding: 0;
+}
+tr.xx-total {
+	background-color: #ddd;
+}
+tr.xx-total td {
+	font-weight: bold;
+	padding: 4px 2px;
+	border-top: 3px solid #555;
+}
+td.xx-subtitle {
+	font-weight: bold;
+	padding: 2px;
+	color: #1f9eff;
+}
+table.xx-items {
+	margin: 0px;
+	box-sizing: border-box;
+	width: 100%;
+}
+table.xx-items td, table.xx-items th {
+	padding: 2px;
+	vertical-align: top;
+}
+table.xx-items tr:nth-child(2) td {
+	padding-top: 4px;
+}
+table.xx-items tr:nth-last-child(2) td {
+	padding-bottom: 4px;
+}
+td.xx-status {
+	width: 1.5em;
+	text-align: left;
+}
+th.xx-desc, td.xx-desc {
+	text-align: left;
+}
+th.xx-quantity, td.x-calc-quantity {
+	padding-left: 10px !important;
+	text-align: right;
+	word-break: break-all;
+}
+th.xx-price, td.x-calc-price {
+	padding-left: 10px !important;
+	text-align: right;
+	word-break: break-all;
+}
+td.x-calc-total {
+	min-width: 5em;
+	text-align: right;
+	word-break: break-all;
+}
+tr.xx-header th {
+	font-weight: bold;
+	padding: 4px 2px;
+	border-top: 3px solid #555;
+	border-bottom: 1px solid #444;
+}
+tr.xx-subtotal td {
+	padding: 4px 2px;
+	margin-top: 4px;
+	border-top: 1px solid #444;
+	font-weight: bold;
+}
+table.xx-body.xx-hide tr.xx-done {
+	display: none;
+}
+.xx-date {
+	color: #666;
+	margin-right: 0.5em;
+}
+span.xx-bullet {
+	display: inline-block;
+	flex: 0 0 auto;
+	margin: 0 5px 0 0;
+	padding: 0 0 0 2px;
+	width: 1em;
+	overflow: visible;
+	font-family: FontAwesome;
+}
+th.xx-quantity, td.x-calc-quantity {
+	width: 4em;
+}
+th.xx-price, td.x-calc-price {
+	width: 5em;
+}
+@media ( max-width : 512px) {
+	th.xx-quantity, td.x-calc-quantity {
+		width: 2em;
+	}
+	th.xx-price, td.x-calc-price {
+		width: 4em;
+	}
+}
+span.xx-bullet:before {
+	content: "\f096";
+}
+tr.xx-done span.xx-bullet:before {
+	content: "\f14a";
+}

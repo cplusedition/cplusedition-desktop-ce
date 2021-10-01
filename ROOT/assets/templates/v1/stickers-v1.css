@@ -1,0 +1,117 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+div.xx-top {
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 75vh;
+}
+div.xx-body {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0 auto;
+}
+div.xx-background {
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50vw;
+	height: 100vh;
+	background-color: #efefef;
+	z-index: -100;
+}
+div.xx-head {
+	display: flex;
+	box-sizing: border-box;
+	justify-content: flex-start;
+	margin: 0;
+	padding: 5px 10px 5px 10vh;
+	background-color: transparent;
+	overflow: auto;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 8vw;
+	width: 100vh;
+	transform-origin: 0 0;
+	transform: rotate(90deg) translateY(-8vw);
+}
+div.xx-title {
+	color: #888;
+	font-size: 4vw;
+	font-weight: bold;
+}
+div.xx-sticker {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 320px;
+	max-width: 75vw;
+	display: flex;
+	flex-direction: column;
+	background-color: #fff2cc;
+	border: 1px solid #444;
+	border-radius: 2px;
+	overflow: auto;
+	margin: 0 0 100vh 0;
+}
+div.xx-header {
+	flex: 0 0 auto;
+	display: block;
+	color: #1e90ff;
+	background-color: #fff2cc;
+	border-bottom: 1px solid #444;
+	padding: 0.75ex 0.5ex 0.75ex 0.5ex;
+	font-weight: bold;
+}
+div.xx-sticker.xx-red > div.xx-header {
+	color: #900;
+	background-color: #fa9;
+}
+div.xx-sticker.xx-green > div.xx-header {
+	color: #38761d;
+	background-color: #b6d7a8;
+}
+div.xx-sticker.xx-blue > div.xx-header {
+	color: #15c;
+	background-color: #9cf;
+}
+.xx-datetime {
+	float: right;
+	clear: none;
+	color: #444;
+	font-family: Antonio-Regular;
+	font-size: 0.9em;
+	font-weight: normal;
+	margin-left: 10px;
+}
+div.xx-content {
+	flex: 1 1 auto;
+	display: block;
+	background-color: #ffc;
+	padding: 0.5ex;
+	overflow: auto;
+}
+div.xx-sticker.xx-red > div.xx-content {
+	background-color: #fdc;
+}
+div.xx-sticker.xx-green > div.xx-content {
+	background-color: #d9ead3;
+}
+div.xx-sticker.xx-blue > div.xx-content {
+	background-color: #cfe2f3;
+}
+.xx-low {
+	z-index: 10;
+}
+.xx-high {
+	z-index: 25;
+}
+.xx-higher {
+	z-index: 50;
+}
+.xx-highest {
+	z-index: 100;
+}

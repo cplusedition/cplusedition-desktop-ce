@@ -1,0 +1,76 @@
+body {
+	background-color: #000;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+div.xx-top {
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 75vh;
+}
+div.xx-head {
+	width: 90%;
+	margin: 0 auto;
+	background-color: #741b47;
+	font-family: FingerPaint-Regular;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	color: #fff;
+	box-sizing: border-box;
+	padding: 10px 10px 0 10px;
+	margin: 0 auto;
+	font-size: 4ex;
+	font-weight: bold;
+}
+div.xx-body {
+	display: flex;
+	flex-direction: column;
+	background-color: #741b47;
+	box-sizing: border-box;
+	padding: 10px;
+	width: 90%;
+	margin: 0 auto;
+}
+div.xx-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin: 5px 0;
+}
+div.xx-subject {
+	flex: 1 1 auto;
+	font-family: FingerPaint-Regular;
+	font-weight: bold;
+	color: #fff;
+}
+.xx-datetime {
+	flex: 0 0 auto;
+	font-family: Antonio-Regular;
+	color: #fff;
+}
+div.xx-content {
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+}
+img.xx-canvas {
+	flex: 0 0 auto;
+	align-self: center;
+	box-sizing: border-box;
+	border-radius: 3px;
+	border: none;
+	margin: 0 auto 10px auto;
+	background-color: #fff;
+}
+div.xx-body.xx-hide img.xx-canvas {
+	display: none;
+}
+div.x-t-button {
+	background-color: rgba(30, 144, 255, 1.0);
+	color: #fff !important;
+}

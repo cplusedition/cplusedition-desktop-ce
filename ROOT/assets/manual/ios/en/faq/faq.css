@@ -1,0 +1,130 @@
+body {
+  background-color: rgb(255, 255, 240);
+  font-family: Ruda-Regular;
+}
+div.xx-top {
+  margin: auto;
+  width: 80%;
+  max-width: 512px;
+  padding-bottom: 100vh;
+}
+div.xx-content {
+  line-height: 150%;
+  box-sizing: border-box;
+}
+.x-a-content {
+  line-height: 140%;
+}
+div.x-rightsidepanel {
+  width: 60vw;
+  max-width: 320px;
+  padding: 10px;
+  font-family: PermanentMarker;
+  background-image: url("/assets/images/wallpapers/cloud01.png");
+  background-color: rgb(137, 185, 25);
+}
+div.x-rightsidepanel > div {
+  padding-bottom: 75vh;
+}
+div.x-rightsidepanel div.xx-toc {
+  margin: 0px 0px 10px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+div.x-rightsidepanel ul.xx-toc {
+  color: rgb(17, 17, 17);
+}
+div.x-rightsidepanel span {
+  color: rgb(0, 0, 0);
+}
+div.x-rightsidepanel a {
+  color: rgb(255, 255, 255);
+}
+div.x-rightsidepanel span.xx-inactive {
+  color: rgb(0, 0, 0);
+}
+ul.xx-oneliner li {
+  white-space: nowrap;
+}
+li {
+  list-style-position: outside;
+  margin: 5px 0px 5px 1.5em;
+}
+.xx-title {
+  font-size: 3rem;
+  font-family: Coda-Heavy;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin: 0px 0px 1ex;
+  background-image: url("/assets/images/samples-mosaic/water2.jpg");
+  background-position: center center;
+}
+.xx-title-left {
+  width: 10rem;
+  height: 10rem;
+  font-size: 150%;
+  background-image: url("/assets/images/samples-mosaic/water.jpg");
+  flex: 0 0 auto;
+  text-shadow: rgba(255, 255, 255, 0.75) 2px 2px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.xx-title-right {
+  flex: 1 1 100%;
+  height: 10rem;
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-shadow: rgba(255, 255, 255, 0.75) 2px 2px 2px;
+}
+.xx-top .x-accordion-button::before {
+  color: rgb(119, 119, 119);
+  margin: 0px;
+  padding: 0px 0.5rem 0px 0px;
+  width: 1.5rem;
+  font-size: 1.1rem;
+}
+.xx-top .x-head3 {
+  font-weight: normal;
+  font-size: 1.1rem;
+  font-family: AlegreyaSansSC-Regular;
+}
+.xx-top .x-accordion-show .x-head3 {
+  font-size: 1rem;
+  font-family: unset;
+}
+.x-accordion-content {
+  color: rgb(68, 68, 68);
+  padding-left: 2rem;
+}
+.x-accordion-content li {
+  list-style: none;
+  margin: 1ex 0px;
+  padding: 0px;
+}
+.xx-faq-feature {
+  color: rgb(170, 0, 68);
+}
+.xx-faq-why {
+  color: rgb(0, 102, 0);
+}
+.xx-faq-what {
+  color: rgb(17, 85, 204);
+}
+.xx-faq-tips {
+  color: rgb(180, 95, 6);
+}
+.xx-faq-howto {
+  color: rgb(46, 139, 87);
+}
+@media print {
+  body {
+    background-color: rgb(255, 255, 255) !important;
+  }
+  div.xx-top {
+    padding-bottom: 0px !important;
+  }
+}

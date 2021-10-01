@@ -1,0 +1,106 @@
+.xx-root {
+  background-image: linear-gradient(rgba(217, 234, 211, 0.75), rgba(217, 234, 211, 0.75)), url(/assets/images/wallpapers/cloth01.png);
+}
+div.xx-top {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  overflow: visible;
+  margin: 0 auto;
+  padding: 20px 20px 100vh 20px;
+}
+.xx-title {
+  font-family: Frijole-Regular;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 2px #000;
+  line-height: 1.2;
+  margin: 30px 0 0 0;
+  color: #d9ead3;
+}
+div.x-sticker {
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 10px;
+  overflow: visible;
+  padding: 15px;
+  margin: 10px;
+  border: var(--x-theme-border);
+  border-radius: 5px;
+  box-sizing: content-box;
+  width: min-content;
+  background-color: #fff;
+}
+div.x-sticker.xx-note, div.x-sticker.xx-comment {
+  width: 48em;
+  max-width: 80vw;
+}
+div.x-sticker.xx-note {
+  background-color: #de8;
+}
+div.x-sticker.xx-comment {
+  background-color: #ceb;
+}
+div.x-photo {
+  justify-content: center;
+}
+div.x-photo img {
+  display: block;
+  max-height: 320px;
+  max-width: 180px;
+}
+div.x-photo img.x-landscape {
+  max-width: 320px;
+  max-height: 180px;
+}
+.xx-size-large div.x-photo img {
+  max-height: 400;
+  max-width: 225px;
+}
+.xx-size-large div.x-photo img.x-landscape {
+  max-width: 400px;
+  max-height: 225px;
+}
+.xx-size-xlarge div.x-photo img {
+  max-height: 480px;
+  max-width: 270px;
+}
+.xx-size-xlarge div.x-photo img.x-landscape {
+  max-width: 480px;
+  max-height: 270px;
+}
+.xx-size-xxlarge div.x-photo img {
+  max-height: 640px;
+  max-width: 360px;
+}
+.xx-size-xxlarge div.x-photo img.x-landscape {
+  max-width: 640px;
+  max-height: 360px;
+}
+div.x-sticker > div.x-subject, div.xx-note > div.x-subject {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+div.x-sticker > div.x-subject > span, div.xx-note > div.x-subject > span {
+  display: inline-block;
+  padding-bottom: 10px;
+}
+div.x-sticker div.x-subject span.x-datetime, div.x-sticker div.x-subject span.x-date {
+  margin-left: 1em;
+  float: right;
+  clear: none;
+}
+div.x-sticker div.x-photo ~ div.xx-caption {
+  font-size: 90%;
+  margin: 10px 0 0 0;
+}
+.xx-top.xx-hide .xx-caption {
+  display: none;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

@@ -1,0 +1,111 @@
+.xx-root {
+  background-image: url(/assets/images/wallpapers/cloth01.png);
+  background-color: #ddd;
+}
+div.xx-top {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100vh;
+  background-image: url(/assets/images/wallpapers/cloth01.png);
+  background-color: #fff;
+}
+.xx-header {
+  font-family: FingerPaint-Regular;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 3ex 1em 2ex 1em;
+  line-height: 1.4;
+  font-weight: bold;
+  text-shadow: 2px 2px 1px #fff;
+  color: #044;
+}
+.xx-subheader {
+  text-align: center;
+}
+ul.xx-medias {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+li.xx-media {
+  list-style: none;
+  display: inline-flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min-content;
+  padding: 5px;
+  margin: 5px;
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #999;
+  border-right-color: #bbb;
+  border-bottom-color: #bbb;
+  box-shadow: 2px 2px 1px #fff;
+}
+li.xx-media div.xx-comment {
+  overflow: auto;
+  padding: 5px;
+  width: 180px;
+  height: 240px;
+}
+li.xx-media div.xx-audio audio {
+  width: -webkit-fill-available;
+  padding-top: 10px;
+}
+li.xx-media div.x-media-photo img, li.xx-media div.xx-photo img, li.xx-media div.xx-audio img, li.xx-media div.xx-photo picture, li.xx-media div.xx-video video, li.xx-media div.xx-audio audio, li.xx-media div.xx-comment {
+  display: block;
+  margin: 0 auto;
+  max-width: 240px;
+  max-height: 240px;
+}
+div.xx-body.xx-size-large li.xx-media div.x-media-photo img, div.xx-body.xx-size-large li.xx-media div.xx-photo img, div.xx-body.xx-size-large li.xx-media div.xx-audio img, div.xx-body.xx-size-large li.xx-media div.xx-photo picture, div.xx-body.xx-size-large li.xx-media div.xx-video video, div.xx-body.xx-size-large li.xx-media div.xx-audio audio, div.xx-body.xx-size-large li.xx-media div.xx-comment {
+  max-width: 320px;
+  max-height: 320px;
+}
+div.xx-body.xx-size-xlarge li.xx-media div.x-media-photo img, div.xx-body.xx-size-xlarge li.xx-media div.xx-photo img, div.xx-body.xx-size-xlarge li.xx-media div.xx-audio img, div.xx-body.xx-size-xlarge li.xx-media div.xx-photo picture, div.xx-body.xx-size-xlarge li.xx-media div.xx-video video, div.xx-body.xx-size-xlarge li.xx-media div.xx-audio audio, div.xx-body.xx-size-xlarge li.xx-media div.xx-comment {
+  max-width: 400px;
+  max-height: 400px;
+}
+div.xx-body.xx-size-xxlarge li.xx-media div.x-media-photo img, div.xx-body.xx-size-xxlarge li.xx-media div.xx-photo img, div.xx-body.xx-size-xxlarge li.xx-media div.xx-audio img, div.xx-body.xx-size-xxlarge li.xx-media div.xx-photo picture, div.xx-body.xx-size-xxlarge li.xx-media div.xx-video video, div.xx-body.xx-size-xxlarge li.xx-media div.xx-audio audio, div.xx-body.xx-size-xxlarge li.xx-media div.xx-comment {
+  max-width: 480px;
+  max-height: 480px;
+}
+div.xx-body.xx-size-large li.xx-media div.xx-comment {
+  width: 320px;
+  height: 320px;
+}
+div.xx-body.xx-size-xlarge li.xx-media div.xx-comment {
+  width: 400px;
+  height: 400px;
+}
+div.xx-body.xx-size-xxlarge li.xx-media div.xx-comment {
+  width: 480px;
+  height: 480px;
+}
+div.xx-body.xx-size-xlarge li.xx-media div.x-media-caption, div.xx-body.xx-size-xxlarge li.xx-media div.x-media-caption {
+  font-size: 90%;
+}
+li.xx-media div.x-media-caption {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+  padding: 0 5px;
+  font-size: 85%;
+  overflow: hidden;
+}
+li.xx-media div.x-media-caption span.xx-datetime {
+  color: #666;
+}
+.xx-body.xx-hide li.xx-media .x-media-caption {
+  display: none;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

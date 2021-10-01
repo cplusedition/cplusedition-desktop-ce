@@ -1,0 +1,124 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+div.xx-top {
+	padding-bottom: 75vh;
+}
+div.xx-body {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0 auto;
+}
+div.xx-background {
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50vw;
+	height: 100vh;
+	background-color: #efefef;
+	z-index: -100;
+}
+div.xx-head {
+	min-height: 6ex;
+	margin-bottom: 5px;
+	background-color: #fff;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	color: #444;
+	border-bottom: 1px solid #888;
+	min-height: 2em;
+	padding: 5px 10px;
+	margin-bottom: 5px;
+	font-size: 4ex;
+	font-weight: bold;
+}
+div.xx-body {
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	padding: 0;
+	margin: 0 auto;
+}
+div.xx-body>div.xx-calendar {
+	display: block;
+	align-self: center;
+	list-style: none;
+	margin: 5px;
+	padding: 0;
+	text-align: center;
+}
+div.xx-body>div.xx-header {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	color: #444;
+	background-color: #fff;
+	background-image: url(/assets/images/wallpapers/cloud01.png);
+	border-top: 1px solid #888;
+	border-bottom: 1px solid #888;
+	min-height: 4ex;
+	padding: 5px 10px;
+	margin: 5px 0;
+	font-weight: bold;
+	box-sizing: border-box;
+	width: 100%;
+}
+div.xx-calendar div.x-calendar {
+	border: 1px solid #888;
+}
+div.xx-calendar div.x-cal-head {
+	background-color: #ffd966;
+	border-bottom: 1px solid #888;
+	color: #000;
+	padding: 5px;
+}
+div.xx-calendar div.x-cal-head span.x-date {
+	font-family: inherit;
+}
+div.xx-calendar div.x-cal-body {
+	background-color: #fff2cc;
+	color: #000;
+	border: none;
+}
+div.xx-calendar.xx-blue > div.x-calendar {
+	border: #1e90ff 1px solid;
+}
+div.xx-calendar.xx-blue div.x-cal-head {
+	background-color: rgb(135, 206, 250);
+	border-bottom: #1e90ff 1px solid;
+}
+div.xx-calendar.xx-blue div.x-cal-body {
+	background-color: rgb(224, 238, 238);
+}
+div.xx-calendar.xx-green > div.x-calendar {
+	border: rgb(106, 168, 79) 1px solid;
+}
+div.xx-calendar.xx-green div.x-cal-head {
+	background-color: rgb(182, 215, 168);
+	border-bottom: rgb(106, 168, 79) 1px solid;
+}
+div.xx-calendar.xx-green div.x-cal-body {
+	background-color: rgb(217, 234, 211);
+}
+div.xx-calendar.xx-red > div.x-calendar {
+	border: rgb(224, 102, 102) 1px solid;
+}
+div.xx-calendar.xx-red div.x-cal-head {
+	background-color: rgb(234, 153, 153);
+	border-bottom: rgb(224, 102, 102) 1px solid;
+}
+div.xx-calendar.xx-red div.x-cal-body {
+	background-color: rgb(252, 229, 205);
+}

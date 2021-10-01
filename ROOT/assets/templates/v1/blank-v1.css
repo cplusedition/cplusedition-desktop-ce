@@ -1,0 +1,11 @@
+body {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+div.xx-top {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 75vh;
+}

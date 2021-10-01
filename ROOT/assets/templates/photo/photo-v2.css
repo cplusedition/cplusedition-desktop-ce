@@ -1,0 +1,158 @@
+.xx-root {
+  background-color: #fffff0;
+}
+span.x-datetime, span.x-date {
+  color: #777;
+}
+div.xx-top {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100vh;
+}
+div.xx-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url(/assets/images/samples-mosaic/woods.jpg);
+  background-position: 50% 40%;
+  background-size: cover;
+  min-height: 10ex;
+  margin: 0 0 1px 0;
+  padding: 2ex 0;
+  box-sizing: border-box;
+}
+div.xx-subject {
+  font-family: Frijole-Regular;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 0 2px #000;
+  line-height: 1.2;
+  color: #fff;
+}
+div.xx-body {
+  border-bottom: 5px solid teal;
+}
+div.xx-section {
+  border: none;
+  padding: 0 0 1px 0;
+  margin: 0;
+}
+.xx-datetime {
+  flex: 0 0 auto;
+  color: #777;
+  font-family: Antonio-Regular;
+}
+ul.xx-photos {
+  margin: 0;
+  padding: 0 0 0 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+li.xx-photo {
+  list-style: none;
+  display: inline-flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min-content;
+  padding: 1px;
+  margin: 0;
+}
+div.x-photo img {
+  max-width: 100%;
+  max-height: 100%;
+}
+div.xx-caption {
+  font-family: Antonio-Light;
+  width: 100%;
+  max-width: calc(50vmin - 7px);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.5ex 0.5em 0.5ex 0.5em;
+}
+div.xx-caption-content {
+  overflow: hidden;
+}
+li.xx-photo div.x-photo img {
+  display: block;
+  box-sizing: border-box;
+  max-width: calc(50vmin - 7px);
+  max-height: calc(50vmin - 7px);
+}
+.xx-body.xx-hide .xx-caption {
+  display: none;
+}
+.xx-body.xx-fill .xx-caption {
+  width: 180px;
+  max-width: 180px;
+}
+.xx-body.xx-fill li.xx-photo div.x-photo img {
+  width: 180px;
+  height: 180px;
+}
+li.xx-photo.xx-style01 {
+  background-color: transparent;
+}
+li.xx-photo.xx-style01 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style02 {
+  background-image: url(/assets/images/wallpapers/marble01.png);
+}
+li.xx-photo.xx-style02 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style03 {
+  background-color: #ffffff;
+}
+li.xx-photo.xx-style03 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style04 {
+  background-color: #eee;
+}
+li.xx-photo.xx-style04 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style05 {
+  background-color: #fce5cd;
+}
+li.xx-photo.xx-style05 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style06 {
+  background-color: #d9ead3;
+}
+li.xx-photo.xx-style06 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style07 {
+  background-color: #cfe2f3;
+}
+li.xx-photo.xx-style07 div.x-photo img {
+  border: 5px solid transparent;
+}
+li.xx-photo.xx-style08 {
+  background-color: #000000;
+}
+li.xx-photo.xx-style08 div.xx-caption {
+  color: #fff;
+}
+li.xx-photo.xx-style08 .xx-datetime {
+  color: #bbb;
+}
+li.xx-photo.xx-style08 div.x-photo img {
+  border: 5px solid transparent;
+}
+@media  print {
+  .xx-root {
+    background-color: #fff !important;
+  }
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

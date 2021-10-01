@@ -1,0 +1,120 @@
+body {
+	background-color: rgb(255, 250, 240);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+span.x-datetime, span.x-date {
+	color: rgb(119, 119, 119);
+}
+div.xx-top {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0px auto;
+	padding-bottom: 75vh;
+}
+div.xx-head {
+	display: flex;
+	min-height: 12ex;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 4ex;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+}
+div.xx-body {
+	display: flex;
+	padding: 1ex 0;
+	border-bottom-width: 0.5ex;
+	border-bottom-style: solid;
+	border-bottom-color: rgb(69, 129, 142);
+}
+div.xx-header {
+	font-size: 1.25em;
+	font-weight: bold;
+	color: rgb(46, 139, 87);
+}
+div.xx-leftpanel {
+	flex: 0 1 20%;
+	padding: 0 1em 0 0;
+	font-family: Antonio-Regular;
+}
+div.xx-rightpanel {
+	flex: 1 1 80%;
+	padding: 0;
+}
+ul.xx-tocs {
+	margin: 0;
+	padding: 0;
+}
+ul.xx-tocs > li {
+	list-style: none;
+	padding: 1px 0;
+	margin: 0;
+}
+ul.xx-tocs > li.xx-toc0 {
+	margin: 2px 0;
+	font-size: 1.25em;
+}
+ul.xx-tocs > li.xx-toc1 {
+	margin: 2px 0;
+	font-size: 1.25em;
+}
+li.xx-toc2 {
+	display: flex;
+	align-items: baseline;
+	font-size: 1.1em;
+}
+li.xx-toc3 {
+	display: flex;
+	align-items: baseline;
+	font-size: 1.1em;
+}
+li.xx-toc2 > span.xx-bullet:before {
+	content: "\f105";
+}
+li.xx-toc3 > span.xx-bullet:before {
+	content: "\f101";
+}
+span.xx-bullet {
+	display: inline-block;
+	flex: 0 0 auto;
+	margin: 0 5px 0 0;
+	padding: 0 0 0 2px;
+	width: 1em;
+	overflow: visible;
+	font-family: FontAwesome;
+}
+div.xx-rightpanel ul.xx-tocs > li {
+	list-style: none;
+}
+div.xx-leftpanel li.xx-toc0, div.xx-leftpanel li.xx-toc1 {
+	font-weight: bold;
+	color: rgb(46, 139, 87);
+	list-style: none;
+}
+div.xx-leftpanel li.xx-toc2, div.xx-leftpanel li.xx-toc3 {
+	border-left-width: 0.25rem;
+	border-left-style: solid;
+	border-left-color: rgb(46, 139, 87);
+	padding-left: 0.5rem;
+	margin: 0 0 0 0.125rem;
+	list-style: none;
+}
+div.xx-leftpanel li.xx-toc2 {
+	font-weight: bold;
+}
+div.xx-leftpanel span.xx-bullet {
+	display: none;
+}
+div.xx-sections {
+	display: flex;
+}
+div.xx-section {
+	margin-right: 1em;
+}

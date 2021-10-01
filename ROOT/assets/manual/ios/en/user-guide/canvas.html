@@ -1,0 +1,356 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="dialogs.html" />
+        <link rel="next" type="text/html" href="symbols.html" />
+    </head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title">
+                <span class="x-symbol" style="font-family:FontAwesome;"></span>&nbsp;Drawing Canvas<br />
+                <span class="x-symbol" style="font-family:FontAwesome;"></span>&nbsp;Image annotation
+            </div>
+            <div class="xx-content">
+                <div class="x-head3 xx-head-plum">
+                    <a name="Introduction"></a>Introduction
+                </div>
+                <a href="../../img/main/scribbler/canvas01.jpg?view&amp;mime=image/jpeg"><img class="xx-figure-l" style="clear:none; float:right; padding-right:0;" src="../../img/main/scribbler/canvas01.jpg?t=1446881109707" /></a> 
+                
+                    <div class="x-para">
+                        The insert canvas action (<span class="x-symbol" style="font-family: FontAwesome;"></span>)
+                        starts the drawing tool with a blank canvas. The drawing is embedded directly into the
+                        document.
+                    </div>
+                    <div class="x-para">
+                        The annotate image action (<span style="font-family: FontAwesome;" alt="pencil"></span>)
+                        starts the same drawing tool with an existing image as background that allow you to create
+                        annotations on the image. You has the option to save the result as a new image file or overwrite
+                        the original.
+                    </div>
+                
+                <div class="x-head3 xx-head-plum">
+                    <a name="Toolbar"></a>Toolbar &nbsp;
+                </div>
+                <a href="../../img/main/scribbler/crops/canvasToolbar01.jpg?view&amp;mime=image%2Fjpeg"><div class="x-pictureframe" style="display:flex; "><div style="box-sizing:content-box; display:inline-block; overflow:hidden; "><img class="xx-figure-toolbar" src="../../img/main/scribbler/crops/canvasToolbar01.jpg" style="border: 1px solid #888; margin-left: -33%; " /></div></div></a>
+
+                <ul class="x-none x-compact">
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Exit without save.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Save and exit.</span></li>
+                    
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Redo.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Undo.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Reposition the last drawn item.</span></li>
+
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show contextmenu.</span></li>
+                </ul>
+
+                <div class="x-head3 xx-head-plum">
+                    <a name="Contextmenu"></a>Contextmenu
+                </div>
+                <div class="xx-head3-plum">
+                    <div class="xx-figure"><div><a href="../../img/main/scribbler/crops/canvasContextmenu01.jpg?view&amp;mime=image/jpeg"><img class="xx-figure" style="clear:none; float:right; margin:10px 0 10px 10px;" src="../../img/main/scribbler/crops/canvasContextmenu01.jpg?t=1446884264319" /></a></div><div><a href="../../img/main/scribbler/crops/textAction.jpg?view"><img class="xx-figure x-imageholder" style="clear:none;float:right;margin:10px 0 10px 10px;" src="../../img/main/scribbler/crops/textAction.jpg" /></a></div></div>Drawing actions
+                </div>
+                
+                    <ul class="x-none"><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Show canvas actions.
+                        </div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Export canvas as an image.
+                        </div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Edit drawing history&nbsp; 
+
+                        <div class="x-annotation">
+                            <span class="fa fa-comment-o x-a-target"></span>
+                            <div class="x-smokescreen">
+                                <div class="x-a-content">
+                                    <a href="../../img/main/scribbler/crops/canvasEditHistory01.jpg?view&amp;mime=image/jpeg"><img class="xx-figure" src="../../img/main/scribbler/crops/canvasEditHistory01.jpg" /></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        </span></li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">Change background color.
+                        </div>
+                        </li>
+                        
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Import an image file.</span></li>
+                        <li class="x-none x-flex"><span class="x-bullet" style="align-self:baseline;flex:0 0 auto;"></span><span style="align-self:baseline;flex:1 1 auto;">Draw content of an image file. Only the URI is persisted. So the next time the drawing tool is
+                        opened, it would fetch and draw the current content of the file.</span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Embed an image.</span></li>
+                        <li class="x-none x-flex"><span class="x-bullet" style="align-self:baseline;flex:0 0 auto;"></span><span style="align-self:baseline;flex:1 1 auto;">Draw content of an image file and
+                        embed the image data. No information about the source is persisted. The next time the drawing
+                        tool is opened, it draw the image using the embedded image data.</span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Freehand curves 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li class="x-none x-flex"><span class="x-bullet" style="align-self:baseline;flex:0 0 auto;"></span><span style="align-self:baseline;flex:1 1 auto;">This is the most often used action. It
+                        trace the finger movement and draws curves.</span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Draw open/closed spline curves. 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Draw open/closed polylines. 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Draw text, configure <div class="x-annotation"><span class="x-a-target">text settings</span><div class="x-smokescreen"><div class="x-a-content" style="border: none; background-color: rgb(255, 255, 255);"><a href="../../img/main/scribbler/crops/textAction.jpg?view"><img src="../../img/main/scribbler/crops/textAction.jpg" class="x-imageholder xx-figure x-portrait" style="float: left;" /></a></div></div></div>. 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Draw rectangles with optional text label. 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Draw ellipsis with optional text label. 
+                        <div class="x-annotation">
+                            <span class="x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="padding: 10px; border: 1px solid rgb(136, 136, 136); box-shadow: none; background-color: rgb(255, 217, 102);">
+                                    TODO
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li></li>
+                    </ul><ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">For each action, there is a sub-menu for the drawing parameters, eg. Grid, Stroke color, Line style, Line width, ... etc. Most of them are self-explained.</div>
+                            </li>
+                        </ul>
+                
+                <div class="xx-head3-plum">
+                    Canvas actions&nbsp;<span class="x-symbol" style="font-family: FontAwesome;" alt="gear"></span><a href="../../img/main/scribbler/crops/canvasActions01.jpg?view&amp;mime=image/jpeg" style="clear:none; float:right; "><img class="xx-figure" src="../../img/main/scribbler/crops/canvasActions01.jpg" /></a>
+                </div>
+                
+                    <ul class="x-none x-compact">
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Resize canvas.&nbsp; 
+                        <div class="x-annotation">
+                            <span class="fa fa-comment-o x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content">
+                                    <a href="../../img/main/scribbler/crops/canvasResize01.jpg?view&amp;mime=image/jpeg"><img class="xx-figure" src="../../img/main/scribbler/crops/canvasResize01.jpg" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Resize canvas to fit content&nbsp; 
+
+                        <div class="x-annotation">
+                            <span class="fa fa-comment-o x-a-target"></span>
+                            <div class="x-smokescreen" style="visibility: visible;">
+                                <div class="x-a-content" style="background-color: rgba(255, 255, 255, 0);">
+                                    <a href="../../img/main/scribbler/crops/canvasFit01.jpg?view&amp;mime=image/jpeg"><img class="xx-figure" src="../../img/main/scribbler/crops/canvasFit01.jpg" /></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        </span></li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Shift content.
+                        </div>
+                        </li>
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Clear canvas.
+                        </div>
+                        </li>
+
+                    </ul><div class="xx-head3-plum">
+                    History actions&nbsp;<span class="x-symbol" style="font-family: FontAwesome;" alt="gear"></span><a href="../../img/main/scribbler/crops/canvasHistoryContextmenu01.jpg?view" style="clear:none; float:right; "><img class="xx-figure-toolbar x-imageholder x-landscape" src="../../img/main/scribbler/crops/canvasHistoryContextmenu01.jpg" /></a>
+                </div><ul class="x-none x-compact">
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Edit a text node.&nbsp; 
+                        <div class="x-annotation">
+                            <span class="fa fa-comment-o x-a-target"></span>
+                            <div class="x-smokescreen">
+                                <div class="x-a-content">
+                                    <a href="../../img/main/scribbler/crops/historyEditText01.jpg?view"><img class="xx-figure-b x-imageholder x-portrait" src="../../img/main/scribbler/crops/historyEditText01.jpg" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        </span></li>
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">Reposition an item.
+                        </div>
+                        </li>
+                        
+                        
+
+                    </ul>
+                
+                <div class="x-para xx-head-plum">
+                    <a name="Gestures"></a>Gestures
+                </div>
+                <div class="x-para">
+                    <div class="x-para">
+                        In general:
+                    </div>
+                    <ul class="x-none x-compact">
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <span style="font-weight: bold;">Single finger drag</span>&nbsp;draws.
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <span style="font-weight: bold;">Two finger drag</span> scrolls.
+                        </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="x-para">
+                    However, each action has a few tricks:
+                    <ul class="x-none">
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family:FontAwesome; ">
+                            <br />
+                            <span class="x-symbol" style="font-family: FontAwesome;"></span>
+                        </div>
+                        <div class="x-list-content">
+                            For polycurves and polylines, single finger drag starts a rubber band. A pause define a mid
+                            point and draw a curve segment.
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            <br />
+                            <span class="x-symbol" style="font-family: FontAwesome;"><br />
+                            <span class="x-symbol" style="font-family: FontAwesome;"></span></span>
+                        </div>
+                        <div class="x-list-content">
+                            For text box and shapes, single finger drag draw the shape. Then it starts the positioning
+                            mode, where single finger drag moves the shape and two finger pinch/zoom resize the shape.
+                            A click ends the positioning mode and start the text entering mode. Another click ends the
+                            text entering mode and back to the drawing mode again.
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            <br />
+                            <span class="x-symbol" style="font-family: FontAwesome;"><br />
+                            </span><span class="x-symbol" style="font-family: FontAwesome;"></span>
+                        </div>
+                        <div class="x-list-content">
+                            For export and import actions, single finger drag defines the area for the action. Then it
+                            starts the positioning mode, where single finger drag moves the region and two finger
+                            pinch/zoom resize the region. A click ends the positioning mode and popup the export or
+                            import dialog.
+                        </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="xx-ruler xx-plum">
+                </div>
+
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li>
+                        <li class="xx-toc1"><a href="features.html">Features</a></li><li class="xx-toc1"><a href="systemMenu.html">System Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html"><span class="xx-inactive">Drawing Canvas</span></a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html">Dialogs</a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html">Search</a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html">Files</a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html">Events</a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+</body></html>

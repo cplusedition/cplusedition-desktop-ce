@@ -1,0 +1,12 @@
+div.xx-root {
+  background-color: black;
+}
+div.xx-root:before {
+  content: "";
+  position: fixed;
+  background-image:  url(/assets/images/samples/pink.jpg) !important ;
+  background-position: 100% 100%;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+}

@@ -1,0 +1,42 @@
+{
+    "extends": "./tsconfig-base.json",
+    "compilerOptions": {
+        "target": "ES2016", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
+        "module": "commonjs", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
+        "lib": [
+            "dom",
+        ], /* Specify library files to be included in the compilation. */
+        "outDir": "../ROOT/assets/js", /* Redirect output structure to the directory. */
+        "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+        "typeRoots": [
+            "../../node_modules.electron/electron",
+        ], /* List of folders to include type definitions from. */
+        "types": [
+            "electron"
+        ], /* Type declaration files to be included in compilation. */
+        "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
+        "paths": {
+            // "bot/*": [
+            //     "../../build/bot/*",
+            // ],
+            // "base/*": [
+            //     "../../build/base/*",
+            // ],
+            // "vs/*": [
+            //     "../cplusedition-idea-vscode/build/vs/*",
+            // ],
+        }, /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+        // "rootDirs": [], /* List of root folders whose combined content represents the structure of the project at runtime. */
+        // "typeRoots": [], /* List of folders to include type definitions from. */
+        // "types": [], /* Type declaration files to be included in compilation. */
+        "tsBuildInfoFile": "./tsconfig.tsbuildinfo", /* Specify file to store incremental compilation information */
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.js",
+    ],
+    "exclude": [
+        "node_modules/*",
+        "src/dart/*"
+    ]
+}

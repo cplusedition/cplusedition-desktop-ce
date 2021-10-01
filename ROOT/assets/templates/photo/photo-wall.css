@@ -1,0 +1,90 @@
+.xx-root {
+  background-image: url(/assets/images/wallpapers/cloth01.png);
+  background-color: #ddd;
+}
+div.xx-top {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100vh;
+  background-image: url(/assets/images/wallpapers/cloth01.png);
+  background-color: #fff;
+}
+.xx-subject {
+  font-family: FingerPaint-Regular;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 3ex 1em 2ex 1em;
+  line-height: 1.4;
+  font-weight: bold;
+  text-shadow: 2px 2px 1px #fff;
+  color: #044;
+}
+ul.xx-photos {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+li.xx-photo {
+  list-style: none;
+  display: inline-flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min-content;
+  padding: 5px;
+  margin: 5px;
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #999;
+  border-right-color: #bbb;
+  border-bottom-color: #bbb;
+  box-shadow: 2px 2px 1px #fff;
+}
+div.x-photo {
+  justify-content: center;
+}
+div.x-photo img {
+  display: block;
+  margin: 0 auto;
+  max-width: 240px;
+  max-height: 240px;
+}
+div.xx-body.xx-size-large div.x-photo img {
+  max-width: 320px;
+  max-height: 320px;
+}
+div.xx-body.xx-size-xlarge div.x-photo img {
+  max-width: 400px;
+  max-height: 400px;
+}
+div.xx-body.xx-size-xxlarge div.x-photo img {
+  max-width: 480px;
+  max-height: 480px;
+}
+div.xx-body.xx-size-xlarge div.xx-caption, div.xx-body.xx-size-xxlarge div.xx-caption {
+  font-size: 90%;
+}
+div.xx-caption {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 5px 0 0 0;
+  padding: 5px 5px 0 5px;
+  border-top: 1px solid #ccc;
+  font-size: 85%;
+  overflow: hidden;
+}
+div.xx-caption span.xx-datetime {
+  color: #666;
+}
+.xx-body.xx-hide .xx-caption {
+  display: none;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

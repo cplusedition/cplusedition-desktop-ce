@@ -1,0 +1,109 @@
+.xx-form input:focus, .xx-form button:focus, .xx-form textarea:focus, .xx-form select:focus {
+  outline: none;
+}
+.xx-form input, .xx-form button, .xx-form textarea, .xx-form select {
+  margin: 0;
+}
+.xx-form input[type='radio']:checked {
+  -webkit-appearance: checkbox;
+}
+.xx-top {
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 100vh;
+}
+.xx-form {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.xx-title-left {
+  float: left;
+  clear: none;
+  font-size: 1.5rem;
+  vertical-align: bottom;
+}
+.xx-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.xx-title-right {
+  float: right;
+  clear: none;
+  font-size: 1.5rem;
+  vertical-align: bottom;
+}
+.xx-head {
+  align-self: 0 0 auto;
+}
+.xx-inline-center {
+  display: inline-flex;
+  align-items: center;
+}
+.xx-form-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  box-sizing: border-box;
+  width: 100%;
+}
+.xx-form-cell3 {
+  flex: 0 0 3rem;
+}
+.xx-form-cell {
+  flex: 1 1 100%;
+  box-sizing: border-box;
+}
+.xx-form-heading {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 1ex 0;
+}
+.xx-form-label {
+  flex: 0 0 auto;
+  font-weight: bold;
+}
+.xx-form-text-small {
+  font-size: small;
+  font-family: Antonio-Regular;
+}
+.xx-form-input {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 0 0.5rem;
+  font-family: var(--x-font-default);
+  color: #555;
+}
+.xx-form-table td {
+  padding: 0;
+}
+.xx-form-table td > .xx-form-input, .xx-form-table td > div, .xx-form-table td > span {
+  padding: 0.5ex 0.5rem;
+}
+.xx-form-round-border1 {
+  border: 1px solid rgb(76, 76, 76);
+  border-radius: 0.5ex;
+  padding-top: 0.5ex;
+  padding-bottom: 0.5ex;
+}
+.xx-form-checkbox {
+  width: 1.2em;
+  height: 1.2em;
+  margin: 0;
+  vertical-align: middle;
+}
+.xx-form.xx-style01 {
+  background-color: #fff;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

@@ -1,0 +1,74 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.xx-title {
+	text-align: center;
+	font-family: Rye-Regular;
+	font-size: 2rem;
+	color: rgb(166, 77, 121);
+	margin: 10px auto 0px;
+}
+#x-leftsplitpanel {
+	background-color: rgb(162, 205, 90);
+	width: 30vw;
+	padding: 10px 10px 75vh 20px;
+	border-right: 1px solid #444;
+}
+div.xx-content {
+	padding: 10px 10px 75vh 10px;
+}
+div.xx-body {
+	margin: auto;
+	width: 80%;
+}
+div.xx-header {
+	font-size: 1.25rem;
+	font-weight: bold;
+	color: rgb(67, 67, 67);
+	padding: 10px 0px;
+	border-bottom: 1px solid rgb(116, 27, 71);
+}
+ul.xx-tocs {
+	margin: 0;
+	padding: 0;
+}
+ul.xx-tocs > li {
+	list-style: none;
+	padding: 1px 0;
+	margin: 0;
+}
+ul.xx-tocs > li.xx-toc0 {
+	margin: 2px 0;
+	font-size: 1.25em;
+}
+ul.xx-tocs > li.xx-toc1 {
+	margin: 2px 0;
+	font-size: 1.25em;
+}
+li.xx-toc2 {
+	display: flex;
+	align-items: baseline;
+	font-size: 1.1em;
+}
+li.xx-toc3 {
+	display: flex;
+	align-items: baseline;
+	font-size: 1.1em;
+}
+li.xx-toc2 > span.xx-bullet:before {
+	content: "\f105";
+}
+li.xx-toc3 > span.xx-bullet:before {
+	content: "\f101";
+}
+span.xx-bullet {
+	display: inline-block;
+	flex: 0 0 auto;
+	margin: 0 5px 0 0;
+	padding: 0 0 0 2px;
+	width: 1em;
+	overflow: visible;
+	font-family: FontAwesome;
+}

@@ -1,0 +1,10 @@
+bin
+build
+assets/assets/js/**/*.map
+Home/
+Internal/
+External/
+ROOT/etc/*
+ROOT/lib/cplusedition-desktop-ce*.jar
+ROOT/lib/libunixsocket-cc.so
+

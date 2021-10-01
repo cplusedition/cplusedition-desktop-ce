@@ -1,0 +1,74 @@
+body {
+	background-color: #fffff0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+span.x-date {
+	color: #777;
+}
+div.xx-top {
+	box-sizing: border-box;
+	width: 90%;
+	margin: 0 auto;
+	padding-bottom: 75vh;
+}
+div.xx-head {
+	display: flex;
+	min-height: 12ex;
+	margin-bottom: 5px;
+}
+div.xx-title {
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 4ex;
+	font-weight: bold;
+	color: #fff;
+}
+div.xx-body {
+	padding-bottom: 0.75ex;
+	border-top: 1px solid #741b47;
+	border-bottom: 5px solid #741b47;
+}
+div.xx-header {
+	font-size: 1.25em;
+	font-weight: bold;
+	color: #1e90ff;
+	margin: 0.75ex 0 0.5ex 0;
+	padding: 0;
+}
+ul.xx-todos {
+	margin: 0;
+	padding: 0;
+}
+li.xx-todo {
+	display: flex;
+	align-items: baseline;
+	margin: 0.5ex 0;
+	padding: 0;
+}
+span.xx-bullet {
+	display: inline-block;
+	flex: 0 0 auto;
+	margin: 0 5px 0 0;
+	padding: 0 0 0 2px;
+	width: 1em;
+	overflow: visible;
+	font-family: FontAwesome;
+}
+.xx-date {
+	color: #666;
+	margin: 0 0.5em 0 0;
+}
+div.xx-body.xx-hide li.xx-done {
+	display: none;
+}
+span.xx-bullet:before {
+	content: "\f096";
+}
+li.xx-done span.xx-bullet:before {
+	content: "\f14a";
+}

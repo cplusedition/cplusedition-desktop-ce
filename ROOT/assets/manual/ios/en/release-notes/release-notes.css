@@ -1,0 +1,192 @@
+body {
+  font-family: Ruda-Regular;
+}
+div.x-root {
+  background-color: rgb(255, 255, 240);
+}
+div.xx-top {
+  line-height: 1.4;
+  margin: 0px auto;
+  max-width: 36rem;
+  padding-bottom: 75vh;
+  width: 80vw;
+}
+div.xx-content {
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.x-a-content {
+  line-height: 1.4;
+}
+.x-error {
+  color: rgb(238, 0, 0);
+  border-bottom-width: 1px;
+  border-bottom-style: dashed;
+  border-bottom-color: rgb(238, 0, 0);
+}
+.x-warn {
+  color: rgb(255, 85, 0);
+  border-bottom-width: 1px;
+  border-bottom-style: dashed;
+  border-bottom-color: rgb(255, 85, 0);
+}
+.x-bold {
+  font-weight: bold;
+}
+li.x-list {
+  display: flex;
+  align-items: baseline;
+  margin-left: 0px;
+  list-style: none;
+}
+.x-bullet {
+  display: inline-block;
+  flex: 0 0 auto;
+  justify-content: center;
+  text-align: center;
+  align-self: baseline;
+  box-sizing: border-box;
+  overflow: visible;
+  margin: 0px 0.5em 0px 0px;
+  padding: 0px;
+  width: 1.5em;
+}
+.x-list-content {
+  display: inline-block;
+  width: 100%;
+}
+ul.x-none {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+ul.x-none > li {
+  list-style: none;
+  margin-left: 0px;
+}
+.xx-header {
+  padding-top: 4ex;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+.xx-head {
+  font-family: AlegreyaSansSC-Black;
+  font-size: 2em;
+  padding: 1.5ex 0px 1ex;
+  clear: both;
+}
+.xx-head2 {
+  font-family: AlegreyaSansSC-Black;
+  font-size: 1.5em;
+  padding: 1.5ex 0px 1ex;
+  clear: both;
+}
+.xx-bugs {
+  color: rgb(255, 136, 85);
+}
+ul.xx-oneliner li {
+  white-space: nowrap;
+}
+ul.xx-toc > li {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  line-height: 1.5;
+}
+li {
+  list-style-position: outside;
+  margin: 5px 0px 5px 1.5em;
+}
+div.xx-figure {
+  overflow: hidden;
+  margin: 0px 0px 1ex 1em;
+  float: right;
+  clear: none;
+}
+img.xx-figure {
+  width: 10rem;
+  max-width: 25vw;
+  float: right;
+}
+img.xx-figure-100 {
+  max-width: 100%;
+  float: right;
+}
+img.xx-figure-xs {
+  width: 2rem;
+  max-width: 25vw;
+  float: right;
+}
+img.xx-figure-s {
+  width: 8rem;
+  max-width: 25vw;
+  float: right;
+}
+img.xx-figure-b {
+  width: 10rem;
+  max-width: 25vw;
+  border: 1px solid rgb(136, 136, 136);
+  float: right;
+}
+img.xx-figure-lb {
+  width: 16rem;
+  max-width: 30vw;
+  border: 1px solid rgb(136, 136, 136);
+  float: right;
+}
+img.xx-figure-l {
+  width: 16rem;
+  max-width: 30vw;
+  float: right;
+}
+img.xx-figure-toolbar {
+  height: 2rem;
+}
+img.xx-figure-toolbar2 {
+  height: 4rem;
+}
+img.xx-figure-toolbar3 {
+  height: 6rem;
+}
+.xx-tips {
+  font-family: Julee-Regular;
+  line-height: 1.3;
+}
+.xx-title {
+  font-size: 2.5rem;
+  font-family: Coda-Heavy;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin: 0px 0px 1ex;
+}
+.xx-title-left {
+  align-items: center;
+  background-image: url("/assets/images/samples-mosaic/water.jpg");
+  color: rgb(255, 255, 255);
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 1.5em;
+  height: 3ex;
+  justify-content: flex-end;
+  width: 3ex;
+}
+.xx-title-right {
+  flex: 1 1 100%;
+  height: 3ex;
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.x-head3 {
+  font-weight: normal;
+  font-size: 1.1rem;
+  font-family: AlegreyaSansSC-Regular;
+}
+@media print {
+  div.x-root {
+    background-color: rgb(255, 255, 255) !important;
+  }
+  div.xx-top {
+    padding-bottom: 0px !important;
+  }
+}

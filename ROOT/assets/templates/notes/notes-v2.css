@@ -1,0 +1,135 @@
+.xx-root {
+  margin: 0;
+  padding: 0;
+  background-color: #fffff0;
+}
+div.xx-top {
+  box-sizing: border-box;
+  padding: 0;
+  padding-bottom: 100vh;
+  margin: 0;
+}
+div.xx-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url(/assets/images/wallpapers/cloth01.png);
+  min-height: 6ex;
+  color: #666;
+  margin: 0;
+  padding: 2ex 1em;
+  box-sizing: border-box;
+}
+.xx-title {
+  font-family: Frijole-Regular;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+.xx-subtitle {
+  font-weight: bold;
+  font-size: 1rem;
+}
+div.xx-body {
+  margin: 0;
+  padding: 0;
+  border-bottom: 5px solid #45818e;
+}
+ul.xx-notes {
+  margin: 0;
+  padding: 0;
+}
+li.xx-note {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+div.xx-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1ex 5%;
+  margin: 0;
+  border-top: var(--x-theme-border);
+  border-bottom: var(--x-dotted-border);
+  color: #000;
+  font-weight: bold;
+}
+.xx-datetime {
+  flex: 0 0 auto;
+  color: #444;
+  font-weight: normal;
+  font-family: Antonio-Regular;
+  margin-left: 1em;
+}
+div.xx-content {
+  color: #444;
+  margin-top: 0;
+  padding: 1ex 5%;
+}
+li.xx-note.xx-style01 > div.xx-header {
+  background-color: #fd8;
+}
+li.xx-note.xx-style01 > div.xx-content {
+  background-color: #ffffc0;
+}
+li.xx-note.xx-style02 > div.xx-header {
+  background-color: #f4cccc;
+}
+li.xx-note.xx-style02 > div.xx-content {
+  background-color: #fce5cd;
+}
+li.xx-note.xx-style03 > div.xx-header {
+  background-color: #bd9;
+}
+li.xx-note.xx-style03 > div.xx-content {
+  background-color: #dea;
+}
+li.xx-note.xx-style04 > div.xx-header {
+  background-color: #bde;
+}
+li.xx-note.xx-style04 > div.xx-content {
+  background-color: #cee;
+}
+li.xx-note.xx-style05 > div.xx-header {
+  background-color: #dc8;
+}
+li.xx-note.xx-style05 > div.xx-content {
+  background-color: #eea;
+}
+li.xx-note.xx-style06 > div.xx-header {
+  background-color: #ddd;
+}
+li.xx-note.xx-style06 > div.xx-content {
+  background-color: #f3f3f3;
+}
+li.xx-note.xx-style07 > div.xx-header {
+  background-color: #fff2cc;
+}
+li.xx-note.xx-style08 > div.xx-header {
+  background-color: #f4cccc;
+}
+li.xx-note.xx-style09 > div.xx-header {
+  background-color: #d9ead3;
+}
+li.xx-note.xx-style10 > div.xx-header {
+  background-color: #bde;
+}
+li.xx-note.xx-style11 > div.xx-header {
+  background-color: #ddd;
+}
+li.xx-note.xx-style12 > div.xx-header {
+  background-image: url(/assets/images/wallpapers/cloth02.png);
+}
+ul.xx-notes.xx-hide div.xx-content {
+  display: none;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

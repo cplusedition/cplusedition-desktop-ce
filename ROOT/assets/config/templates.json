@@ -1,0 +1,152 @@
+{
+  "templates": {
+    "Blank": [
+      {
+        "category": "Blank",
+        "label": "Blank",
+        "name": "blank-v2",
+        "classes": "x-emoji-blank",
+        "template": "blank-v2.html",
+        "desc": "A blank page without much bells and whistles."
+      }
+    ],
+    "Blog": [
+      {
+        "category": "Blog",
+        "label": "Blog",
+        "name": "blog-v2",
+        "classes": "x-emoji-blog",
+        "template": "blog-v2.html",
+        "desc": "Template for creating blogs.",
+        "filepath": "blog/${year}/${month}/${day}.html"
+      }
+    ],
+    "Calendar": [
+      {
+        "category": "Calendar",
+        "label": "Calendar",
+        "name": "calendar-v2",
+        "classes": "x-emoji-calendar",
+        "template": "calendar-v2.html",
+        "desc": "Template for managing monthly calendars."
+      }
+    ],
+    "Canvas": [
+      {
+        "category": "Canvas",
+        "label": "Canvas",
+        "name": "canvas-v2",
+        "classes": "x-emoji-canvas",
+        "template": "canvas-v2.html",
+        "desc": "Template for creating drawings."
+      }
+    ],
+    "Cards": [
+      {
+        "category": "Cards",
+        "label": "Cards",
+        "name": "cards-v2",
+        "classes": "x-emoji-cards",
+        "template": "cards-v2.html",
+        "desc": "Template with a stack of index cards."
+      }
+    ],
+    "Home": [
+      {
+        "category": "Home",
+        "label": "Home (Simpler)",
+        "name": "home-simpler",
+        "classes": "x-emoji-home",
+        "template": "home-simpler.html",
+        "desc": "Simpler home/index page."
+      },
+      {
+        "category": "Home",
+        "label": "Home",
+        "name": "home-v2",
+        "classes": "x-emoji-home",
+        "template": "home-v2.html",
+        "desc": "Template for home/index page."
+      }
+    ],
+    "Media": [
+      {
+        "category": "Media",
+        "label": "Media (Wall)",
+        "name": "media-wall",
+        "classes": "x-emoji-photo",
+        "template": "media-wall.html",
+        "desc": "Template for managing medias."
+      },
+      {
+        "category": "Media",
+        "label": "Media (Sticker)",
+        "name": "media-sticker",
+        "classes": "x-emoji-photo",
+        "template": "media-sticker.html",
+        "desc": "Template for managing medias."
+      }
+    ],
+    "Memo": [
+      {
+        "category": "Memo",
+        "label": "Memo",
+        "name": "memo-v2",
+        "classes": "x-emoji-memo",
+        "template": "memo-v2.html",
+        "desc": "Template for writing single page memos."
+      }
+    ],
+    "Notes": [
+      {
+        "category": "Notes",
+        "label": "Notes",
+        "name": "notes-v2",
+        "classes": "x-emoji-notes",
+        "template": "notes-v2.html",
+        "desc": "Template for writing simple notes."
+      },
+      {
+        "category": "Notes",
+        "label": "Notes (Sticker1)",
+        "name": "notes-sticker1",
+        "classes": "x-emoji-notes",
+        "template": "notes-sticker1.html",
+        "desc": "Template for simple sticker notes."
+      }
+    ],
+    "Shopping": [
+      {
+        "category": "Shopping",
+        "label": "Shopping",
+        "name": "shopping-v2",
+        "classes": "x-emoji-shopping",
+        "template": "shopping-v2.html",
+        "desc": "Template for managing a shopping list."
+      }
+    ],
+    "Todo": [
+      {
+        "category": "Todo",
+        "label": "Todo",
+        "name": "todo-v2",
+        "classes": "x-emoji-todo",
+        "template": "todo-v2.html",
+        "desc": "Template for managing a todo list."
+      }
+    ]
+  },
+  "aliases": {
+    "blank": "blank-v2",
+    "blog": "blog-v2",
+    "calendar": "calendar-v2",
+    "canvas": "canvas-v2",
+    "cards": "cards-v2",
+    "home": "home-simpler",
+    "media": "media-wall",
+    "memo": "memo-v2",
+    "notes": "notes-sticker1",
+    "shopping": "shopping-v2",
+    "todo": "todo-v2"
+  }
+}

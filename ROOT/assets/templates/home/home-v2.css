@@ -1,0 +1,908 @@
+.xx-root {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 250, 240);
+}
+.xx-top {
+  padding-bottom: 100vh;
+  box-sizing: border-box;
+  width: 80%;
+  margin: 0 auto;
+}
+.xx-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 10ex;
+  padding: 2ex 1em;
+  box-sizing: border-box;
+  background-image: url(/assets/images/samples-oilify/foliage.jpg);
+  background-size: cover;
+  background-position: 0% 60%;
+}
+.xx-title {
+  font-family: Frijole-Regular;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 0 2px #000;
+  line-height: 1.2;
+  color: #fff;
+}
+.xx-subtitle {
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 0 0 2px #000;
+  color: #fff;
+}
+.xx-body {
+  display: flex;
+  border-bottom: 5px solid forestgreen;
+}
+.xx-left {
+  flex: 1 1 25%;
+  margin: 10px 1em 10px 0;
+  border-radius: 5px;
+}
+.xx-right {
+  flex: 1 1 75%;
+  margin: 10px 0 10px 0;
+}
+.xx-left-background, .xx-right-background {
+  display: none;
+}
+ul.xx-tocs {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+ul.xx-tocs > li {
+  list-style: none;
+  padding: 1px 0;
+  margin: 0;
+}
+ul.xx-tocs > li.xx-toc1 {
+  margin: 2px 0;
+  font-size: 1.25em;
+}
+li.xx-toc2, li.xx-toc3, li.xx-toc4 {
+  display: flex;
+  align-items: baseline;
+}
+li.xx-toc2 > span.xx-bullet:before {
+  content: "\f105";
+}
+li.xx-toc3 > span.xx-bullet:before, li.xx-toc4 > span.xx-bullet:before {
+  content: "\f101";
+}
+span.xx-bullet {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin: 0 5px 0 0;
+  padding: 0 0 0 2px;
+  width: 1em;
+  overflow: visible;
+  font-family: FontAwesome;
+}
+li.xx-toc4 > span.xx-bullet {
+  margin-left: calc(1em + 5px);
+}
+.xx-content {
+  margin-bottom: 1ex;
+}
+.xx-footer {
+  margin-bottom: 1ex;
+}
+.xx-header {
+  font-size: 1.25em;
+  font-weight: bold;
+  margin: 0.5ex 0;
+  color: forestgreen;
+}
+.xx-right ul.xx-tocs > li {
+  list-style: none;
+}
+li.xx-toc1 {
+  color: rgb(46, 139, 87);
+}
+.xx-left li.xx-toc1 {
+  font-weight: bold;
+  list-style: none;
+}
+.xx-left li.xx-toc2, .xx-left li.xx-toc3, .xx-left li.xx-toc4 {
+  border-left: 2px solid rgb(46, 139, 87);
+  padding-left: 0.5rem;
+  margin: 0 0 0 0.125rem;
+  list-style: none;
+}
+.xx-left span.xx-bullet {
+  display: none;
+}
+.xx-above {
+  display: none;
+  margin: 10px 0 0 0;
+}
+div.xx-below {
+  display: none;
+  margin: 10px 0;
+}
+.xx-sections {
+  display: flex;
+  flex-wrap: wrap;
+}
+.xx-section {
+  width: 100%;
+  margin-right: 1em;
+  margin-bottom: 1ex;
+}
+.xx-welcome {
+  text-align: center;
+  font-family: Coda-Heavy;
+  font-weight: bold;
+  font-size: 2rem;
+  line-height: 1.2;
+  text-shadow: 1px 1px 3px #fff;
+  background-image: unset;
+  color: #6aa84f;
+  margin: 1ex auto;
+}
+.xx-vertical-toolbar {
+  background-color: rgb(182, 215, 168);
+  display: none;
+  float: right;
+  clear: none;
+  flex-flow: column wrap;
+  padding: 5px;
+  margin: 0 0 10px 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+.xx-vertical-toolbar > .x-button-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 125%;
+}
+.xx-root.xx-style01 {
+  background: url(/assets/images/wallpapers/cloth02.png) rgb(255, 255, 240);
+}
+.xx-style01 .xx-top {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: 0 5% 100vh 5%;
+  margin: 0 auto;
+}
+.xx-style01 .xx-head {
+  background-image: unset;
+}
+.xx-style01 .xx-title {
+  text-shadow: none;
+  color: rgb(166, 77, 121);
+}
+.xx-style01 .xx-subtitle {
+  text-shadow: none;
+  margin-top: 1ex;
+  color: rgb(166, 77, 121);
+}
+.xx-style01 .xx-body {
+  margin-bottom: 5vh;
+  border: none;
+}
+.xx-style01 .xx-left, .xx-style01 .xx-content {
+  display: none;
+}
+.xx-style01 .xx-right {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(255, 255, 240, 0.75);
+  border-top: 5px solid rgb(116, 27, 71);
+  border-bottom: 5px solid rgb(116, 27, 71);
+  padding: 5px 1em 0 1em;
+  margin: 0;
+}
+.xx-style01 .xx-section {
+  width: unset;
+}
+.xx-style01 .xx-tocs {
+  padding: 5px 0;
+  border-top: 1px solid rgb(116, 27, 71);
+}
+.xx-style01 .xx-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #444;
+  padding: 0 0 5px 0;
+}
+.xx-vertical-toolbar {
+  background-color: transparent;
+}
+.xx-style02.xx-root {
+  background-image: url(/assets/images/wallpapers/cloth03.png);
+  background-repeat: repeat;
+}
+.xx-style02 .xx-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  min-height: unset;
+  padding: 0 1em 15vh 1em;
+  box-sizing: border-box;
+  background-image: url(/assets/images/samples-oilify/woods.jpg);
+  background-size: cover;
+  background-position: center;
+}
+.xx-style02 .xx-body {
+  border: none;
+  width: 80%;
+  max-width: 640px;
+  margin: 15vh auto 5vh auto;
+  transform: translate3d(0,0,0);
+  z-index: 10;
+}
+.xx-style02 .xx-right {
+  background-color: rgb(182, 215, 168);
+  padding: 1.5ex 1em;
+  margin: 0;
+  border: var(--x-theme-border);
+  border-radius: 5px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.xx-style02 .xx-top {
+  width: 100%;
+  margin: 0;
+}
+.xx-style02 .xx-title {
+  font-size: 5vh;
+  text-shadow: 0 0 1px #000;
+}
+.xx-style02 .xx-left {
+  background-color: rgb(182, 215, 168);
+  padding: 1.5ex 1em;
+  margin: 0 10px 0 0;
+  border: var(--x-theme-border);
+  border-radius: 5px;
+}
+.xx-style02 .xx-header {
+  color: forestgreen;
+}
+.xx-style02 .xx-vertical-toolbar {
+  display: unset;
+  background-color: rgb(147,196,125);
+}
+@media  print {
+  .xx-style02 .xx-head {
+    position: absolute !important;
+  }
+}
+.xx-style03 .xx-top {
+  width: 100%;
+}
+.xx-style03 .xx-left-background, .xx-style03 .xx-right-background {
+  position: fixed;
+  display: block;
+  background-position: 100% 0;
+  top: 0;
+  height: 100vh;
+}
+.xx-style03 .xx-left-background {
+  background-image: url(/assets/images/samples-oilify/water.jpg);
+  left: 0;
+  width: 40vw;
+}
+.xx-style03 .xx-right-background {
+  background-image: url(/assets/images/samples-oilify/wall.jpg);
+  left: 40vw;
+  width: 60vw;
+}
+.xx-style03 .xx-head {
+  background-image: unset;
+  display: none;
+}
+.xx-style03 .xx-body {
+  border: none;
+  width: 80%;
+  max-width: 28rem;
+  margin: 15vh auto 5vh auto;
+  transform: translate3d(0,0,0);
+  z-index: 10;
+}
+.xx-style03 .xx-left {
+  display: none;
+}
+.xx-style03 .xx-right {
+  background-color: rgb(182, 215, 168);
+  padding: 1.5ex 1em;
+  margin: 0;
+  border: var(--x-theme-border);
+  border-radius: 5px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.xx-style03 .xx-top {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+}
+.xx-style03 .xx-title {
+  font-size: 5vh;
+  text-shadow: 0 0 1px #000;
+}
+.xx-style03 .xx-left {
+  background-color: rgb(182, 215, 168);
+  padding: 1.5ex 1em;
+  margin: 0 10px 0 0;
+  border: var(--x-theme-border);
+  border-radius: 5px;
+}
+.xx-style03 .xx-header {
+  color: forestgreen;
+}
+.xx-style03 .xx-vertical-toolbar {
+  display: unset;
+  background-color: rgb(147,196,125);
+}
+.xx-style04 .xx-head {
+  display: none !important;
+}
+.xx-style04 .xx-top {
+  width: 100vw;
+  padding-bottom: 0;
+}
+.xx-style04 .xx-body {
+  border: none;
+}
+.xx-style04 .xx-left {
+  display: inline-block !important;
+  width: 35vw;
+  max-width: 35vw;
+  height: 100vh;
+  padding: 1.5ex 1em;
+  margin: 0;
+  background-color: rgb(147,196,125);
+  border-radius: 0;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.xx-style04 .xx-right {
+  display: inline-block;
+  width: 65vw;
+  max-width: 65vw;
+  height: 100vh;
+  padding: 1.5ex 1em;
+  margin: 0;
+  background-color: rgb(182,215,168);
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.xx-style04 .xx-left > div, .xx-style04 .xx-right > div {
+  padding-bottom: 100vh;
+}
+@media  print {
+  .xx-style04 .xx-left, .xx-style04 .xx-right {
+    min-height: 100vh;
+    height: unset !important;
+  }
+  .xx-style04 .xx-left > div, .xx-style04 .xx-right > div {
+    padding-bottom: 0 !important;
+  }
+}
+.xx-root.xx-style05 {
+  background-image: url(/assets/images/samples-oilify/woods.jpg);
+  background-size: cover;
+  background-position: 0% 0%;
+}
+.xx-style05 .xx-top {
+  margin-bottom: 5vh;
+  width: 100%;
+}
+.xx-style05 .xx-body {
+  border: none;
+}
+.xx-style05 .xx-head {
+  background-image: unset;
+  display: none;
+}
+.xx-style05 .xx-left {
+  display: none;
+  border-radius: 0;
+  background-color: rgba(182,215,168,0.975);
+}
+.xx-style05 .xx-right {
+  flex: unset;
+  width: 80%;
+  max-width: 28rem;
+  min-height: 100vh;
+  padding: 15vh 1em 2ex 1em;
+  margin: 0 10% 0 auto;
+  box-sizing: border-box;
+  background-color: rgba(182,215,168,0.975);
+}
+.xx-style05 .xx-right > div {
+  padding: 0;
+}
+.xx-style05 .xx-vertical-toolbar {
+  display: unset;
+  background-color: rgb(147,196,125);
+}
+.xx-style05 span.x-hide-in-wide-screen {
+  display: inline !important;
+}
+.xx-root.xx-style06 {
+  background-image: url(/assets/images/samples-oilify/woods.jpg);
+  background-size: cover;
+  background-position: 0% 0%;
+}
+.xx-style06 .xx-top {
+  width: 100%;
+}
+.xx-style06 .xx-body {
+  margin: 0 10% 5vh auto;
+  padding: 0;
+  width: 80%;
+  min-height: 100vh;
+  max-width: 36rem;
+  box-sizing: border-box;
+  border: none;
+}
+.xx-style06 .xx-head {
+  background-image: unset;
+  display: none;
+}
+.xx-style06 .xx-left, .xx-style06 .xx-right {
+  margin: 0;
+  padding: 15vh 1em 2ex 1em;
+  box-sizing: border-box;
+}
+.xx-style06 .xx-left {
+  display: flex !important;
+  flex: 1 1 40%;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+  text-align: right;
+  border-radius: 0;
+  background-color: rgba(147,196,125,0.975);
+}
+.xx-style06 .xx-right {
+  flex: 1 1 60%;
+  background-color: rgba(182,215,168,0.975);
+}
+.xx-style06 .xx-left .xx-section {
+  margin-right: 0;
+}
+.xx-style06 .xx-left li {
+  display: flex;
+  justify-content: flex-end;
+  text-align: right;
+  font-weight: normal;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.xx-style06 .xx-vertical-toolbar {
+  background-color: rgb(147,196,125);
+}
+.xx-root.xx-style07 {
+  background-image: linear-gradient(rgb(192, 224, 192) 33%, rgb(255, 176, 176));
+}
+.xx-style07 .xx-top {
+  transform: translate3d(0,0,0);
+  margin-bottom: 5vh;
+  width: 100%;
+}
+.xx-style07 .xx-right-background {
+  position: fixed;
+  display: block;
+  left: 30vw;
+  top: 0;
+  width: 70vw;
+  height: 60vh;
+  border-radius: 0 0 0 10px;
+  background-color: rgba(142, 207, 255, 0.5);
+}
+.xx-style07 .xx-left-background {
+  position: fixed;
+  display: block;
+  left: 0;
+  top: 30vh;
+  width: 70vw;
+  height: 70vh;
+  border-radius: 0 10px 0 0;
+  background-color: rgba(255, 255, 208, 0.5);
+}
+.xx-style07 .xx-head {
+  background-image: unset;
+  display: none;
+}
+.xx-style07 .xx-body {
+  border: none;
+}
+.xx-style07 .xx-left, .xx-style07 .xx-right {
+  padding: 15vh 1em 1.5ex 1em;
+  min-height: 75vh;
+  box-sizing: border-box;
+  border: var(--x-light-border);
+  border-color: rgba(147, 196, 125, 0.75);
+  background-color: rgba(178, 208, 124, 0.6);
+}
+.xx-style07 .xx-right {
+  flex: unset;
+  border-radius: 0 0 5px 5px;
+  width: 80%;
+  max-width: 28rem;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+.xx-style07 .xx-left {
+  display: none;
+  border-radius: 0 0 5px 5px;
+  max-width: 20%;
+  margin: 0 10px 0 0;
+}
+.xx-style07 .xx-vertical-toolbar {
+  display: unset;
+  background-color: rgba(106, 168, 79, 0.5);
+}
+.xx-root.xx-style08 {
+  background-image: -webkit-radial-gradient(circle, #fdd 25%, #faa);
+}
+.xx-style08 .xx-top {
+  margin-bottom: 5vh;
+  width: 100%;
+}
+.xx-style08 .xx-welcome {
+  color: #a00;
+}
+.xx-style08 .xx-head {
+  background-image: unset;
+  display: none;
+}
+.xx-style08 .xx-body {
+  color: #900;
+  border: none;
+}
+.xx-style08 .xx-left, .xx-style08 .xx-right {
+  padding: 15vh 1em 1.5ex 1em;
+  min-height: 75vh;
+  box-sizing: border-box;
+  background-color: rgba(255, 0, 0, 0.25);
+  border: none;
+}
+.xx-style08 .xx-right {
+  flex: unset;
+  width: 80%;
+  max-width: 28rem;
+  min-height: 100vh;
+  border-radius: 0 0 5px 5px;
+  margin: 0 auto;
+}
+.xx-style08 .xx-left {
+  display: none;
+  border-radius: 0 0 5px 5px;
+  max-width: 20%;
+  margin: 0 10px 0 0;
+}
+.xx-style08 .xx-header {
+  color: #900;
+}
+.xx-style08 .xx-vertical-toolbar {
+  display: unset;
+  background-color: rgba(224, 0, 0, 0.25);
+}
+.xx-style08 .x-root a {
+  color: #c00 !important;
+}
+.xx-style09.xx-root {
+  background-repeat: repeat;
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(rgba(255,255,255,0.5),rgba(255,255,255,0.5)),url(/assets/images/samples/rain.jpg);
+}
+.xx-style09 .xx-top {
+  margin-bottom: 5vh;
+  width: 100%;
+}
+.xx-style09 .xx-welcome {
+  text-shadow: 2px 2px 1px #fff;
+  color: forestgreen;
+}
+.xx-style09 .xx-head {
+  background-image: unset;
+  visibility: hidden;
+}
+.xx-style09 .xx-body {
+  border: none;
+}
+.xx-style09 .xx-left, .xx-style09 .xx-right {
+  background-image: linear-gradient(rgba(255,208,0,0.9),rgba(255,128,0,0.9));
+  border: none;
+  padding: 2ex 1em 2ex 1.5em;
+  min-height: 75vh;
+  flex: unset;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.65);
+  box-sizing: border-box;
+  border-radius: 0 0 5px 5px;
+}
+.xx-style09 .xx-left {
+  display: none;
+}
+.xx-style09 div.xx-right {
+  width: 80%;
+  max-width: 28rem;
+  margin: 0 auto 5vh auto;
+}
+.xx-style09 .xx-header {
+  font-family: Ruda-Black;
+  text-shadow: 2px 2px 1px rgba(255, 255, 200, 0.75);
+  color: forestgreen;
+}
+.xx-style09 .xx-toc1 {
+  font-weight: bold;
+  color: #000;
+}
+.xx-style09 .x-root a {
+  color: #900 !important;
+}
+.xx-style09 .x-root .x-a-content a {
+  color: var(--x-link-color) !important;
+}
+.xx-style09 .xx-vertical-toolbar {
+  display: unset;
+  margin-right: 0;
+  text-shadow: 2px 2px 1px rgba(255, 255, 255, 0.75);
+  color: #000;
+  background-color: transparent;
+}
+.xx-style10.xx-root {
+  background-position: top right;
+  background-repeat: repeat;
+  background-size: cover;
+  background-image: url(/assets/images/samples/orange.jpg);
+}
+.xx-style10 .x-placeholder {
+  color: #eee !important;
+}
+.xx-style10 .xx-top {
+  margin-bottom: 5vh;
+  width: 100%;
+}
+.xx-style10 .xx-welcome {
+  color: #360;
+}
+.xx-style10 .xx-head {
+  background-image: unset;
+  visibility: hidden;
+}
+.xx-style10 .xx-body {
+  border: none;
+}
+.xx-style10 .xx-left, .xx-style10 .xx-right {
+  background-image: url(/assets/images/wallpapers/cloth03.png);
+  background-color: rgba(106, 168, 79, 0.9);
+  color: #fff;
+  border: 1px solid rgba(56, 118, 29, 0.5);
+  font-weight: bold;
+  box-shadow: unset;
+  padding: 2ex 1em 2ex 1.5em;
+  min-height: 75vh;
+  box-sizing: border-box;
+  border-radius: 0 0 5px 5px;
+}
+.xx-style10 .xx-left {
+  display: none;
+}
+.xx-style10 div.xx-right {
+  flex: unset;
+  width: 80%;
+  max-width: 28rem;
+  margin: 0 auto 5vh auto;
+}
+.xx-style10 .xx-header {
+  font-family: Ruda-Black;
+  font-weight: bold;
+  color: #fc0;
+}
+.xx-style10 .xx-toc1 {
+  font-weight: bold;
+  color: #fc0;
+}
+.xx-style10 .xx-vertical-toolbar {
+  display: unset;
+  margin-right: 0;
+  text-shadow: 2px 2px 1px rgba(255, 255, 255, 0.5);
+  color: #000;
+  background-color: transparent;
+}
+.xx-style10 .x-root a {
+  color: #fe0 !important;
+}
+.xx-style10 .x-root .x-a-content a {
+  color: var(--x-link-color) !important;
+}
+.xx-style11.xx-root {
+  background-color: unset;
+  background-image: unset;
+}
+.xx-style11 .xx-top {
+  background-image: url("/assets/images/wallpapers/sand01.png"),radial-gradient(circle closest-corner at 50vw 50vh, rgba(255, 255, 0, 0.75), rgba(255, 224, 0, 0.75));
+  text-shadow: rgba(0, 0, 0, 0.2) 0.4em 0.4ex 2px;
+  margin: 0;
+  min-height: 100vh;
+  width: 100%;
+}
+.xx-style11 .xx-welcome {
+  text-shadow: 0.4em 0.4ex 2px rgba(0, 0, 0, 0.2);
+  color: rgba(0, 136, 0, 0.75);
+  font-size: 2.5rem;
+}
+.xx-style11 .xx-head {
+  background-image: unset;
+  visibility: hidden;
+}
+.xx-style11 .xx-title {
+  font-family: JotiOne-Regular;
+  font-size: 3em;
+  color: #070;
+  text-shadow: rgba(0, 0, 0, 0.2) 0.4em 0.4ex 2px;
+  padding-bottom: 0;
+}
+.xx-style11 .xx-subtitle {
+  font-family: JotiOne-Regular;
+  font-size: 1.25rem;
+  color: #070;
+  text-shadow: rgba(0, 0, 0, 0.2) 0.4em 0.4ex 2px;
+}
+.xx-style11 .xx-body {
+  border: none;
+}
+.xx-style11 .xx-left, .xx-style11 .xx-right {
+  border: none;
+  padding: 0 1em;
+  flex: unset;
+  box-sizing: border-box;
+}
+.xx-style11 .xx-left {
+  display: none;
+}
+.xx-style11 div.xx-right {
+  width: 80%;
+  max-width: 28rem;
+  margin: 0 auto 5vh auto;
+}
+.xx-style11 .xx-header {
+  font-family: JotiOne-Regular;
+  font-size: 2em;
+  text-shadow: rgba(0, 0, 0, 0.2) 0.4em 0.4ex 2px;
+  margin: 1ex 0;
+  color: #900;
+}
+.xx-style11 .xx-toc1 {
+  font-weight: bold;
+  color: #444;
+}
+.xx-style11 .x-root a {
+  color: #070 !important;
+}
+.xx-style11 .x-root .x-a-content a {
+  color: var(--x-link-color) !important;
+}
+.xx-style11 .xx-vertical-toolbar {
+  display: unset;
+  margin-right: 0;
+  text-shadow: rgba(0, 0, 0, 0.2) 0.4em 0.4ex 2px;
+  color: #000;
+  background-color: transparent;
+}
+.xx-style12.xx-root {
+  background-color: unset;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.9), rgba(0,0,0,0.25)),url(/assets/images/samples-mosaic/water.jpg);
+}
+.xx-style12 .xx-top {
+  width: unset;
+}
+.xx-style12 .xx-welcome {
+  text-shadow: 0.4em 0.4ex 2px rgba(0, 0, 0, 0.2);
+  color: rgba(0, 136, 0, 0.75);
+  font-size: 2.5rem;
+}
+.xx-style12 .xx-head {
+  background-image: radial-gradient(circle farthest-corner, rgba(255, 224, 0, 1.0), rgba(255, 255, 0, 0)),radial-gradient(circle closest-side, rgba(255, 224, 0, 1.0), rgba(255, 255, 0, 0), rgba(255, 255, 0, 0));
+  background-color: transparent;
+  width: fit-content;
+  padding: 0 2em;
+  margin: 2ex auto;
+  visibility: hidden;
+}
+.xx-style12 .xx-title {
+  font-size: 2rem;
+  font-family: JotiOne-Regular;
+  text-shadow: 2px 2px 1px rgba(255, 255, 0, 0.75);
+  color: #000;
+  padding: 1ex 1em;
+}
+.xx-style12 .xx-subtitle {
+  font-size: 1rem;
+  font-family: JotiOne-Regular;
+  text-shadow: 2px 2px 1px rgba(255, 255, 0, 0.75);
+  color: #000;
+  margin-top: -2ex;
+  padding: 0 1em 1ex 1em;
+}
+.xx-style12 .xx-body {
+  max-width: 80%;
+  margin: 0 auto;
+  border: none;
+}
+.xx-style12 .xx-left, .xx-style12 .xx-right {
+  background-image: radial-gradient(rgba(255, 255, 0, 0.9), rgba(255, 224, 0, 0.9) 60%, rgba(255, 208, 0, 0.9) 80%);
+  border: none;
+  border-radius: 0 5px 5px 5px;
+  padding: 2ex 2em;
+  flex: unset;
+  box-sizing: border-box;
+}
+.xx-style12 .xx-left {
+  display: none;
+}
+.xx-style12 div.xx-right {
+  display: flex;
+  justify-content: center;
+  width: unset;
+  max-width: 28rem;
+  margin: 0 auto 5vh auto;
+}
+.xx-style12 .xx-content {
+  display: flex;
+  flex-flow: column;
+}
+.xx-style12 .xx-header {
+  text-shadow: 2px 2px 1px rgba(255, 255, 200, 0.75);
+  color: #444;
+  font-family: JotiOne-Regular;
+}
+.xx-style12 .xx-section {
+  width: unset;
+}
+.xx-style12 .xx-tocs {
+  padding: 5px 0;
+  border-top: 1px solid rgb(116, 27, 71);
+}
+.xx-style12 .xx-toc1 {
+  color: #444;
+  font-weight: bold;
+}
+.xx-style12 .x-root a {
+  color: #900 !important;
+}
+.xx-style12 .x-root .x-a-content a {
+  color: var(--x-link-color) !important;
+}
+.xx-style12 .xx-vertical-toolbar {
+  margin-right: -0.5em;
+  color: #000;
+  text-shadow: 2px 2px 1px rgba(255, 255, 255, 0.75);
+  background-color: transparent;
+}
+@media  print {
+  .x-root {
+    position: static !important;
+  }
+  .xx-root {
+    min-height: 100vh;
+    height: unset !important;
+  }
+  .xx-root.xx-style00, .xx-root.xx-style01 {
+    background-color: #fff !important;
+  }
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

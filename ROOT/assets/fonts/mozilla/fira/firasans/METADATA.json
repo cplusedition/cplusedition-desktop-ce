@@ -1,0 +1,10 @@
+{
+  "name": "FiraSans",
+  "license": "OFL",
+  "visibility": "External",
+  "category": "Sans Serif",
+  "subsets": [
+    "latin",
+    "menu"
+  ]
+}
