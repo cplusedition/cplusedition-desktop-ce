@@ -1,4 +1,5 @@
-/*!            
+"use strict";
+/*!
     C+edition for Desktop, Community Edition.
     Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
     
@@ -14,7 +15,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-"use strict";
 /// Utilities that works with nodejs.
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -849,9 +849,9 @@ class Filepath extends Basepath {
         }
     }
 }
-exports.Filepath = Filepath;
 Filepath.DIRMODE = 0o755;
 Filepath.FILEMODE = 0o644;
+exports.Filepath = Filepath;
 class IOUt {
     static readAndClose_(input, reduce) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -899,7 +899,6 @@ class IOUt {
 exports.IOUt = IOUt;
 class Encoding {
 }
-exports.Encoding = Encoding;
 Encoding.ascii$ = "ascii";
 Encoding.utf8$ = "utf8";
 Encoding.utf16le$ = "utf16le";
@@ -910,4 +909,5 @@ Encoding.win1252$ = "win-1252";
 Encoding.iso88591$ = "ISO-8859-1";
 Encoding.base64$ = "base64";
 Encoding.hex$ = "hex";
+exports.Encoding = Encoding;
 //# sourceMappingURL=botnode.js.map

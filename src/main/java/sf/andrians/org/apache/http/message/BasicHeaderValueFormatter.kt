@@ -55,24 +55,24 @@ import sf.andrians.org.apache.http.util.CharArrayBuffer
  * @since 4.0
  */
 class BasicHeaderValueFormatter : HeaderValueFormatter {
-    override fun formatElements(charBuffer: CharArrayBuffer?,
+    override fun formatElements(buffer: CharArrayBuffer?,
                                 elems: Array<HeaderElement>,
                                 quote: Boolean): CharArrayBuffer {
         Args.notNull(elems, "Header element array")
         val len = estimateElementsLen(elems)
-        var buffer = charBuffer
-        if (buffer == null) {
-            buffer = CharArrayBuffer(len)
+        var buf = buffer
+        if (buf == null) {
+            buf = CharArrayBuffer(len)
         } else {
-            buffer.ensureCapacity(len)
+            buf.ensureCapacity(len)
         }
         for (i in elems.indices) {
             if (i > 0) {
-                buffer.append(", ")
+                buf.append(", ")
             }
-            formatHeaderElement(buffer, elems[i], quote)
+            formatHeaderElement(buf, elems[i], quote)
         }
-        return buffer
+        return buf
     }
 
     /**
@@ -86,38 +86,38 @@ class BasicHeaderValueFormatter : HeaderValueFormatter {
         if (elems == null || elems.size < 1) {
             return 0
         }
-        var result = (elems.size - 1) * 2 // elements separated by ", "
+        var result = (elems.size - 1) * 2
         for (elem in elems) {
             result += estimateHeaderElementLen(elem)
         }
         return result
     }
 
-    override fun formatHeaderElement(charBuffer: CharArrayBuffer?,
+    override fun formatHeaderElement(buffer: CharArrayBuffer?,
                                      elem: HeaderElement,
                                      quote: Boolean): CharArrayBuffer {
         Args.notNull(elem, "Header element")
         val len = estimateHeaderElementLen(elem)
-        var buffer = charBuffer
-        if (buffer == null) {
-            buffer = CharArrayBuffer(len)
+        var buf = buffer
+        if (buf == null) {
+            buf = CharArrayBuffer(len)
         } else {
-            buffer.ensureCapacity(len)
+            buf.ensureCapacity(len)
         }
-        buffer.append(elem.name)
+        buf.append(elem.name)
         val value = elem.value
         if (value != null) {
-            buffer.append('=')
-            doFormatValue(buffer, value, quote)
+            buf.append('=')
+            doFormatValue(buf, value, quote)
         }
         val parcnt = elem.parameterCount
         if (parcnt > 0) {
             for (i in 0 until parcnt) {
-                buffer.append("; ")
-                formatNameValuePair(buffer, elem.getParameter(i), quote)
+                buf.append("; ")
+                formatNameValuePair(buf, elem.getParameter(i), quote)
             }
         }
-        return buffer
+        return buf
     }
 
     /**
@@ -131,39 +131,39 @@ class BasicHeaderValueFormatter : HeaderValueFormatter {
         if (elem == null) {
             return 0
         }
-        var result = elem.name.length // name
+        var result = elem.name.length
         val value = elem.value
         if (value != null) {
-            result += 3 + value.length // ="value"
+            result += 3 + value.length
         }
         val parcnt = elem.parameterCount
         if (parcnt > 0) {
             for (i in 0 until parcnt) {
-                result += 2 +  // ; <param>
+                result += 2 +
                         estimateNameValuePairLen(elem.getParameter(i))
             }
         }
         return result
     }
 
-    override fun formatParameters(charBuffer: CharArrayBuffer?,
+    override fun formatParameters(buffer: CharArrayBuffer?,
                                   nvps: Array<NameValuePair>,
                                   quote: Boolean): CharArrayBuffer {
         Args.notNull(nvps, "Header parameter array")
         val len = estimateParametersLen(nvps)
-        var buffer = charBuffer
-        if (buffer == null) {
-            buffer = CharArrayBuffer(len)
+        var buf = buffer
+        if (buf == null) {
+            buf = CharArrayBuffer(len)
         } else {
-            buffer.ensureCapacity(len)
+            buf.ensureCapacity(len)
         }
         for (i in nvps.indices) {
             if (i > 0) {
-                buffer.append("; ")
+                buf.append("; ")
             }
-            formatNameValuePair(buffer, nvps[i], quote)
+            formatNameValuePair(buf, nvps[i], quote)
         }
-        return buffer
+        return buf
     }
 
     /**
@@ -177,31 +177,31 @@ class BasicHeaderValueFormatter : HeaderValueFormatter {
         if (nvps == null || nvps.size < 1) {
             return 0
         }
-        var result = (nvps.size - 1) * 2 // "; " between the parameters
+        var result = (nvps.size - 1) * 2
         for (nvp in nvps) {
             result += estimateNameValuePairLen(nvp)
         }
         return result
     }
 
-    override fun formatNameValuePair(charBuffer: CharArrayBuffer?,
+    override fun formatNameValuePair(buffer: CharArrayBuffer?,
                                      nvp: NameValuePair,
                                      quote: Boolean): CharArrayBuffer {
         Args.notNull(nvp, "Name / value pair")
         val len = estimateNameValuePairLen(nvp)
-        var buffer = charBuffer
-        if (buffer == null) {
-            buffer = CharArrayBuffer(len)
+        var buf = buffer
+        if (buf == null) {
+            buf = CharArrayBuffer(len)
         } else {
-            buffer.ensureCapacity(len)
+            buf.ensureCapacity(len)
         }
-        buffer.append(nvp.name)
+        buf.append(nvp.name)
         val value = nvp.value
         if (value != null) {
-            buffer.append('=')
-            doFormatValue(buffer, value, quote)
+            buf.append('=')
+            doFormatValue(buf, value, quote)
         }
-        return buffer
+        return buf
     }
 
     /**
@@ -215,10 +215,10 @@ class BasicHeaderValueFormatter : HeaderValueFormatter {
         if (nvp == null) {
             return 0
         }
-        var result = nvp.name.length // name
+        var result = nvp.name.length
         val value = nvp.value
         if (value != null) {
-            result += 3 + value.length // ="value"
+            result += 3 + value.length
         }
         return result
     }
@@ -380,4 +380,4 @@ class BasicHeaderValueFormatter : HeaderValueFormatter {
                     .formatNameValuePair(null, nvp, quote).toString()
         }
     }
-} // class BasicHeaderValueFormatter
+}

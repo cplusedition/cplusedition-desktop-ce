@@ -16,7 +16,6 @@
 */
 package com.cplusedition.bot.core
 
-import com.cplusedition.bot.core.WithUtil.Companion.With
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -32,9 +31,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.nio.charset.Charset
+import java.nio.file.Files
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -47,185 +47,53 @@ fun Int.isOdd(): Boolean {
     return (this and 0x01) != 0
 }
 
-fun <T> MutableList<T>.removeLast(): T? {
-    if (isEmpty()) {
-        return null
-    }
-    val ret = this.last()
-    this.removeAt(this.lastIndex)
-    return ret
-}
+val <T> Iterator<T>.bot: IteratorExt<T>
+    get() = IteratorExt(this)
 
-fun <T> MutableList<T>.addAll(vararg elements: T): Boolean {
-    return addAll(elements)
-}
+val <T> Iterable<T>.bot: IterableExt<T>
+    get() = IterableExt(this)
 
-fun <T> Iterator<T>.join(sep: CharSequence): String {
-    if (!hasNext()) return ""
-    val first = next().toString()
-    if (!hasNext()) return first
-    val b = StringBuilder(first)
-    if (sep.isEmpty()) {
-        for (t in this) b.append(t.toString())
-    } else {
-        for (t in this) {
-            b.append(sep)
-            b.append(t.toString())
-        }
-    }
-    return b.toString()
-}
+val <T> Sequence<T>.bot: SequenceExt<T>
+    get() = SequenceExt(this)
 
-fun <T> Iterable<T>.join(sep: CharSequence): String {
-    return this.iterator().join(sep)
-}
+val <T> Array<T>.bot: ArrayExt<T>
+    get() = ArrayExt(this)
 
-fun <T> Iterable<T>.joinln(): String {
-    return this.iterator().join(TextUt.LB)
-}
+val <C, K, V> C.bot: MapExt<C, K, V> where C : Map<K, V>
+    get() = MapExt(this)
 
-/**
- * @return A filepath joined by File.separator.
- */
-fun <T> Iterable<T>.joinPath(): String {
-    return this.iterator().join(File.separator)
-}
+val <C, T> C.bot: MutableCollectionExt<C, T> where C : MutableCollection<T>
+    get() = MutableCollectionExt(this)
 
-fun <K, V> Map<K, V>.map(mapper: (K, V) -> V?): MutableMap<K, V> {
-    val ret = mutableMapOf<K, V>()
-    for ((k, v) in entries) {
-        val value = mapper(k, v) ?: continue
-        ret[k] = value
-    }
-    return ret
-}
+val <C, T> C.bot: MutableListExt<C, T> where C : MutableList<T>
+    get() = MutableListExt(this)
 
-fun <K, V> MutableMap<K, V>.add(map: Map<K, V>): MutableMap<K, V> {
-    for ((k, v) in map.entries) {
-        if (v != null) {
-            this[k] = v
-        }
-    }
-    return this
-}
+val <C, K, V> C.bot: MutableMapExt<C, K, V> where C : MutableMap<K, V>
+    get() = MutableMapExt(this)
 
-fun <K, V> MutableMap<K, V>.add(key: K, value: V): MutableMap<K, V> {
-    if (value != null) {
-        this[key] = value
-    }
-    return this
-}
+val <C, K, KK, VV> C.bot: MutableMapOfMapExt<C, K, KK, VV> where C : MutableMap<K, MutableMap<KK, VV>>
+    get() = MutableMapOfMapExt(this)
 
-fun <T> Array<T>.join(sep: CharSequence): String {
-    return this.iterator().join(sep)
-}
+val <C, K, VV> C.bot: MutableMapOfSetExt<C, K, VV> where C : MutableMap<K, MutableSet<VV>>
+    get() = MutableMapOfSetExt(this)
 
-fun <T> Array<T>.joinln(): String {
-    return this.iterator().join(TextUt.LB)
-}
+val <C, K, VV> C.bot: MutableMapOfListExt<C, K, VV> where C : MutableMap<K, MutableList<VV>>
+    get() = MutableMapOfListExt(this)
 
-/**
- * @return Filepath joined by File.separator.
- */
-fun <T> Array<T>.joinPath(): String {
-    return this.iterator().join(File.separator)
+val NodeList.bot: NodeListExt
+    get() = NodeListExt(this)
 
-}
+val <F, S>Pair<F, S>.bot: PairExt<F, S>
+    get() = PairExt(this)
 
-fun <F, S> Pair<F, S>.join(sep: CharSequence): String {
-    return "$first$sep$second"
-}
+val <V> V?.bot: NullableExt<V>
+    get() = NullableExt<V>(this)
 
-fun NodeList.elements(): Iterable<Element> {
-    return NodeListElementIterable(this)
-}
+val String.bot: StringExt
+    get() = StringExt(this)
 
-fun NodeList.nodes(): Iterable<Node> {
-    return NodeListIterable(this)
-}
-
-class ElementListIterable(
-        private val list: NodeList
-) : Iterable<Element>, Iterator<Element> {
-    var length = list.length
-    private var index = 0
-    override fun hasNext(): Boolean {
-        return index < length
-    }
-
-    override fun next(): Element {
-        return list.item(index++) as Element
-    }
-
-    override fun iterator(): Iterator<Element> {
-        return this
-    }
-}
-
-class NodeListElementIterable(
-        private val list: NodeList
-) : Iterable<Element>, Iterator<Element> {
-    var length = list.length
-    private var index = 0
-    private var current: Element? = null
-
-    init {
-        next1()
-    }
-
-    override fun hasNext(): Boolean {
-        return current != null
-    }
-
-    override fun next(): Element {
-        val ret = current!!
-        next1()
-        return ret
-    }
-
-    override fun iterator(): Iterator<Element> {
-        return this
-    }
-
-    private fun next1() {
-        for (i in index until length) {
-            val e = list.item(i)
-            if (e is Element) {
-                index = i + 1
-                current = e
-                return
-            }
-        }
-        index = length
-        current = null
-
-    }
-}
-
-class NodeListIterable(
-        private val list: NodeList
-) : Iterable<Node>, Iterator<Node> {
-    var length = list.length
-    private var index = 0
-    override fun hasNext(): Boolean {
-        return index < length
-    }
-
-    override fun next(): Node {
-        return list.item(index++)
-    }
-
-    override fun iterator(): Iterator<Node> {
-        return this
-    }
-
-}
-
+object With : WithUtil()
 open class WithUtil {
-
-    companion object {
-        val With = WithUtil()
-    }
 
     fun await(count: Int = 1, code: Fun10<CountDownLatch>) {
         val done = CountDownLatch(count)
@@ -256,7 +124,7 @@ open class WithUtil {
 
     /**
      * If code throws an exception, ignores it.
-     * If code does not throw an exception, throw an exception.
+     * If code does not throw an exception, throw an IllegalStateException.
      */
     fun exceptionOrFail(code: Fun00): Exception {
         try {
@@ -265,6 +133,14 @@ open class WithUtil {
             return e
         }
         throw IllegalStateException()
+    }
+
+    fun <R> exceptionResult(code: Fun01<R>): IBotResult<R, Exception> {
+        return try {
+            BotResult.ok(code())
+        } catch (e: Exception) {
+            BotResult.fail(e)
+        }
     }
 
     /**
@@ -281,7 +157,7 @@ open class WithUtil {
 
     /**
      * If code throws a Throwable, ignores it.
-     * If code does not throw a Throwable, throw an exception.
+     * If code does not throw a Throwable, throw an IllegalStateException.
      */
     fun throwableOrFail(code: Fun00): Throwable {
         try {
@@ -290,6 +166,18 @@ open class WithUtil {
             return e
         }
         throw IllegalStateException()
+    }
+
+    /**
+     * If code throws a Throwable, ignores it.
+     * If code does not throw a Throwable, throw an IllegalStateException.
+     */
+    fun <R> throwableResult(code: Fun01<R>): IBotResult<R, Throwable> {
+        return try {
+            BotResult.ok(code())
+        } catch (e: Throwable) {
+            BotResult.fail(e)
+        }
     }
 
     fun <T : Closeable, R> closeable(target: T, code: Fun11<T, R>): R {
@@ -328,12 +216,12 @@ open class WithUtil {
 
     @Throws(IOException::class)
     fun bufferedWriter(file: File, charset: Charset = Charsets.UTF_8, code: Fun10<BufferedWriter>) {
-        BufferedWriter(OutputStreamWriter(FileOutputStream(file), charset)).use(code)
+        FileOutputStream(file).bufferedWriter(charset).use(code)
     }
 
     @Throws(IOException::class)
     fun bufferedReader(file: File, charset: Charset = Charsets.UTF_8, code: Fun10<BufferedReader>) {
-        BufferedReader(InputStreamReader(FileInputStream(file), charset)).use(code)
+        FileInputStream(file).bufferedReader(charset).use(code)
     }
 
     @Throws(IOException::class)
@@ -342,11 +230,18 @@ open class WithUtil {
             val buf = ByteArray(bufsize)
             while (true) {
                 val n = input.read(buf)
-                if (n < 0) {
-                    break
-                }
-                code(buf, n)
+                if (n < 0) break
+                if (n > 0) code(buf, n)
             }
+        }
+    }
+
+    fun bytes(input: InputStream, bufsize: Int = K.BUFSIZE, code: Fun20<ByteArray, Int>) {
+        val buf = ByteArray(bufsize)
+        while (true) {
+            val n = input.read(buf)
+            if (n < 0) break
+            if (n > 0) code(buf, n)
         }
     }
 
@@ -389,7 +284,7 @@ open class WithUtil {
                     while (true) {
                         val line = reader.readLine() ?: break
                         val output = code(line)
-                        if (output != null) writer.appendln(output)
+                        if (output != null) writer.appendLine(output)
                     }
                 }
             }
@@ -397,40 +292,28 @@ open class WithUtil {
     }
 
     /**
+     * Rewrite a file with a line by line transform.
+     *
+     * @param code(String): String?.
+     */
+    @Throws(IOException::class)
+    fun rewriteLineList(file: File, charset: Charset = Charsets.UTF_8, code: Fun11<List<String>, List<String>?>) {
+        val lines = file.readLines(charset)
+        val output = code(lines)
+        if (output != null && !StructUt.equals(output, lines)) {
+            file.bufferedWriter(charset).use {
+                for (line in output) it.appendLine(line)
+            }
+        }
+    }
+
+    /**
      *  If code() does not return null then fail.
      */
-    @Throws(IllegalStateException::class)
+    @Throws(AssertionError::class)
     fun nullOrFail(code: Fun01<String?>) {
         val error = code() ?: return
         throw IllegalStateException(error)
-    }
-
-    /**
-     * @param code(tmpdir)
-     * @throws Exception If operation fail.
-     */
-    @Throws(Exception::class)
-    fun tmpdir(dir: File? = null, code: Fun10<File>) {
-        val tmpdir = createTempDir(directory = dir)
-        try {
-            code(tmpdir)
-        } finally {
-            tmpdir.deleteRecursively()
-        }
-    }
-
-    /**
-     * @param code(tmpfile)
-     * @throws Exception If operation fail.
-     */
-    @Throws(Exception::class)
-    fun tmpfile(suffix: String = "tmp", dir: File? = null, code: Fun10<File>) {
-        val tmpfile = createTempFile(suffix = suffix, directory = dir)
-        try {
-            code(tmpfile)
-        } finally {
-            tmpfile.delete()
-        }
     }
 
     /**
@@ -438,12 +321,13 @@ open class WithUtil {
      * @throws Exception If operation fail.
      */
     @Throws(Exception::class)
-    fun <T> tmpdir(dir: File? = null, code: Fun11<File, T>): T {
-        val tmpdir = createTempDir(directory = dir)
+    fun <T> tmpdir(dir: File, code: Fun11<File, T>): T {
+        dir.mkdirsOrFail()
+        val tmpdir = Files.createTempDirectory(dir.toPath(), "tmp").toFile()
         try {
             return code(tmpdir)
         } finally {
-            tmpdir.deleteRecursively()
+            FileUt.deleteRecursively(tmpdir)
         }
     }
 
@@ -452,31 +336,71 @@ open class WithUtil {
      * @throws Exception If operation fail.
      */
     @Throws(Exception::class)
-    fun <T> tmpfile(suffix: String? = null, dir: File? = null, code: Fun11<File, T>): T {
-        val tmpfile = createTempFile(suffix = suffix, directory = dir)
+    fun <T> tmpfile(dir: File?, suffix: String = ".tmp", code: Fun11<File, T>): T {
+        val tmpfile = File.createTempFile("tmp", suffix, dir)
         try {
             return code(tmpfile)
         } finally {
-            tmpfile.delete()
+            FileUt.delete(tmpfile)
+        }
+    }
+
+    @Throws(Exception::class)
+    fun <T> atmpdir(dir: File, code: Fun21<File, Fun00, T>): T {
+        dir.mkdirsOrFail()
+        val tmpdir = Files.createTempDirectory(dir.toPath(), "tmp").toFile()
+        return code(tmpdir) {
+            FileUt.deleteRecursively(tmpdir)
+        }
+    }
+
+    @Throws(Exception::class)
+    fun <T> atmpfile(dir: File?, suffix: String = ".tmp", code: Fun21<File, Fun00, T>): T {
+        val tmpfile = File.createTempFile("tmp", suffix, dir)
+        return code(tmpfile) {
+            FileUt.delete(tmpfile)
         }
     }
 
     /**
      * Create a tmpfile, call code(tmpfile, file) with tmpfile as dst and input file as src.
-     * If operation succeed, ie. without throwing exception, copy tmpfile to input file.
+     * If code() return true and without throwing exception, copy tmpfile to input file.
      * Delete the tmpfile in either case,
      *
-     * @param code(dstfile, srcfile)
+     * @param code(dstfile, srcfile) True to apply changes to outfile, false or exception to leave outfile intact.
      * @throws Exception If operation fail.
      */
     @Throws(Exception::class)
     fun backup(outfile: File, code: Fun20<File, File>) {
-        val tmpfile = createTempFile()
-        try {
-            code(tmpfile, outfile)
-            FileUt.copy(outfile, tmpfile)
-        } finally {
-            tmpfile.delete()
+        tmpfile(outfile.parentFile) {
+            code(it, outfile)
+            _renameOrCopy(outfile, it)
+        }
+    }
+
+    private fun _renameOrCopy(dst: File, src: File): Boolean {
+        if (dst.exists() && !dst.delete()) return false
+        if (!src.renameTo(dst)) {
+            FileUt.copyas(dst, src)
+            src.delete()
+        }
+        return true
+    }
+
+    /**
+     * Create a tmpfile, call code(tmpfile, file) with tmpfile as dst and input file as src.
+     * If code() return true and without throwing exception, copy tmpfile to input file.
+     * Delete the tmpfile in either case,
+     *
+     * @param code(dstfile, srcfile) True to apply changes to outfile, false or exception to leave outfile intact.
+     * @throws Exception If operation fail.
+     */
+    @Throws(Exception::class)
+    fun backup21(outfile: File, code: Fun21<File, File, Boolean>) {
+        tmpfile(outfile.parentFile) {
+            if (code(it, outfile)) {
+                _renameOrCopy(outfile, it)
+            }
         }
     }
 
@@ -492,18 +416,11 @@ open class WithUtil {
      */
     @Throws(Exception::class)
     fun backup(outfile: File, backupfile: File, code: Fun20<File, File>) {
-        if (backupfile.exists() && !backupfile.delete()) throw IOException("Delete backup failed")
-        if (outfile.exists() && !outfile.renameTo(backupfile)) {
-            FileUt.copy(backupfile, outfile)
-        }
+        if (!_renameOrCopy(backupfile, outfile)) throw IOException()
         try {
             code(outfile, backupfile)
         } catch (e: Throwable) {
-            outfile.delete()
-            if (backupfile.exists() && !backupfile.renameTo(outfile)) {
-                FileUt.copy(outfile, backupfile)
-                backupfile.delete()
-            }
+            _renameOrCopy(outfile, backupfile)
             throw IOException(e)
         }
     }
@@ -529,10 +446,10 @@ open class WithUtil {
 
     @Throws(TimeoutException::class, InterruptedException::class)
     fun sync(
-            count: Int = 1,
-            timeout: Long = DateUt.DAY,
-            timeunit: TimeUnit = TimeUnit.MILLISECONDS,
-            code: Fun10<Fun00>
+        count: Int = 1,
+        timeout: Long = DateUt.DAY,
+        timeunit: TimeUnit = TimeUnit.MILLISECONDS,
+        code: Fun10<Fun00>
     ) {
         val done = CountDownLatch(count)
         code { done.countDown() }
@@ -541,10 +458,10 @@ open class WithUtil {
 
     @Throws(TimeoutException::class, InterruptedException::class)
     fun <V> sync(
-            count: Int = 1,
-            timeout: Long = DateUt.DAY,
-            timeunit: TimeUnit = TimeUnit.MILLISECONDS,
-            code: Fun10<Fun10<V>>
+        count: Int = 1,
+        timeout: Long = DateUt.DAY,
+        timeunit: TimeUnit = TimeUnit.MILLISECONDS,
+        code: Fun10<Fun10<V>>
     ): V {
         val done = CountDownLatch(count)
         var ret: V? = null
@@ -557,20 +474,17 @@ open class WithUtil {
     }
 }
 
+object Without : WithoutUtil()
+
 open class WithoutUtil {
 
-    companion object {
-        val Without = WithoutUtil()
-    }
-
     /**
-     * @return False if code() throws an exception, otherwise true.
+     * @return False if code() throws an exception, otherwise return value of code().
      * Example: let ok = Without.exceptionOrFalse { code }
      */
-    fun exceptionOrFalse(code: Fun00): Boolean {
+    fun exceptionOrFalse(code: Fun01<Boolean>): Boolean {
         return try {
             code()
-            true
         } catch (e: Exception) {
             false
         }
@@ -589,8 +503,9 @@ open class WithoutUtil {
     }
 
     /**
-     * @return Result of the given block or null if there is an exception.
-     * Example: let value = Without.exception(Int.parse(s)) ?: -1
+     * @return Result of the given block if it does not throw an Exception,
+     * otherwise throw an IllegalStateException.
+     * Example: val value = Without.exception(Int.parse(s))
      */
     fun <T> exceptionOrFail(code: () -> T): T {
         try {
@@ -613,10 +528,11 @@ open class WithoutUtil {
     }
 
     /**
-     * @return Result of the given block or null if there is an exception.
-     * Example: let value = Without.throwable(Int.parse(s)) ?: -1
+     * @return Result of the given block if it does not throw a Throwable,
+     * otherwise throw an IllegalStateException.
+     * Example: val value = Without.throwableOrFail(Int.parse(s))
      */
-    fun <T> throwableOrFail(code: () -> T): T? {
+    fun <T> throwableOrFail(code: () -> T): T {
         try {
             return code()
         } catch (e: Throwable) {
@@ -631,6 +547,348 @@ open class WithoutUtil {
                 code(it)
             }
         }
+    }
+}
+
+open class IteratorExt<T> constructor(
+    private val c: Iterator<T>
+) {
+    fun join(sep: CharSequence): String {
+        if (!c.hasNext()) return ""
+        val first = c.next().toString()
+        if (!c.hasNext()) return first
+        val b = StringBuilder(first)
+        if (sep.isEmpty()) {
+            for (t in c) b.append(t.toString())
+        } else {
+            for (t in c) {
+                b.append(sep)
+                b.append(t.toString())
+            }
+        }
+        return b.toString()
+    }
+
+    fun joinln(): String {
+        return join(LS)
+    }
+}
+
+open class IterableExt<T> constructor(
+    private val c: Iterable<T>,
+) {
+    fun joinln(): String {
+        return c.joinToString(LS)
+    }
+
+    fun joinlns(): String {
+        val ret = c.joinToString(LS)
+        return if (ret.endsWith(LS)) ret else ret + LS
+    }
+
+    /**
+     * @return A filepath joined by File.separator.
+     */
+    fun joinPath(): String {
+        return c.joinToString(FS)
+    }
+}
+
+open class SequenceExt<T> constructor(
+    private val c: Sequence<T>,
+) {
+    fun joinln(): String {
+        return c.joinToString(LS)
+    }
+
+    fun joinlns(): String {
+        val ret = c.joinToString(LS)
+        return if (ret.endsWith(LS)) ret else ret + LS
+    }
+
+    /**
+     * @return A filepath joined by File.separator.
+     */
+    fun joinPath(): String {
+        return c.joinToString(FS)
+    }
+}
+
+open class ArrayExt<T> constructor(
+    private val c: Array<T>,
+) {
+    fun joinln(): String {
+        return c.joinToString(LS)
+    }
+
+    fun joinPath(): String {
+        return c.joinToString(FS)
+    }
+}
+
+open class MutableCollectionExt<C, T> constructor(
+    private val c: C,
+) : IterableExt<T>(c) where C : MutableCollection<T> {
+    fun adding(vararg a: T): C {
+        c.addAll(a)
+        return c
+    }
+}
+
+open class MutableListExt<C, T> constructor(
+    private val c: C,
+) : IterableExt<T>(c) where C : MutableList<T> {
+    fun addAll(vararg elements: T): Boolean {
+        return c.addAll(elements)
+    }
+
+    fun adding(vararg elements: T): C {
+        c.addAll(elements)
+        return c
+    }
+
+    fun addAt(index: Int, value: T): C {
+        c.add(index, value)
+        return c
+    }
+}
+
+open class MapExt<C, K, V> constructor(
+    private val c: C,
+) where C : Map<K, V> {
+    fun map(mapper: (K, V) -> V?): MutableMap<K, V> {
+        val ret = mutableMapOf<K, V>()
+        for ((k, v) in c.entries) {
+            val value = mapper(k, v) ?: continue
+            ret[k] = value
+        }
+        return ret
+    }
+}
+
+open class MutableMapExt<C, K, V> constructor(
+    private val c: C,
+) : MapExt<C, K, V>(c) where C : MutableMap<K, V> {
+    fun getOrCreate(k: K, ctor: Fun11<K, V>): V {
+        return c.get(k) ?: ctor(k).also { c.put(k, it) }
+    }
+
+    fun adding(map: Map<K, V>): C {
+        for ((k, v) in map.entries) {
+            if (v != null) {
+                c[k] = v
+            }
+        }
+        return c
+    }
+
+    fun adding(key: K, value: V): C {
+        if (value != null) {
+            c[key] = value
+        }
+        return c
+    }
+}
+
+open class MutableMapOfMapExt<C, K, KK, VV> constructor(
+    private val c: C,
+) : MutableMapExt<C, K, MutableMap<KK, VV>>(c) where C : MutableMap<K, MutableMap<KK, VV>> {
+    fun getOrCreate(k: K): MutableMap<KK, VV> {
+        return c.get(k) ?: TreeMap<KK, VV>().also { c.put(k, it) }
+    }
+
+    fun merging(other: C): C {
+        for ((k, v) in other) {
+            val map = getOrCreate(k)
+            map.putAll(v)
+        }
+        return c
+    }
+
+    fun adding2(k: K, kk: KK, value: VV): C {
+        val map = getOrCreate(k)
+        map[kk] = value
+        return c
+    }
+}
+
+open class MutableMapOfSetExt<C, K, VV> constructor(
+    private val c: C,
+) : MutableMapExt<C, K, MutableSet<VV>>(c) where C : MutableMap<K, MutableSet<VV>> {
+    fun getOrCreate(k: K): MutableSet<VV> {
+        return c.get(k) ?: TreeSet<VV>().also { c.put(k, it) }
+    }
+
+    fun merging(other: C): C {
+        for ((k, v) in other) {
+            val set = getOrCreate(k)
+            set.addAll(v)
+        }
+        return c
+    }
+
+    fun adding2(key: K, value: VV): C {
+        val set = getOrCreate(key)
+        set.add(value)
+        return c
+    }
+}
+
+open class MutableMapOfListExt<C, K, VV> constructor(
+    private val c: C,
+) : MutableMapExt<C, K, MutableList<VV>>(c) where C : MutableMap<K, MutableList<VV>> {
+    fun getOrCreate(k: K): MutableList<VV> {
+        return c.get(k) ?: ArrayList<VV>().also { c.put(k, it) }
+    }
+
+    fun merging(other: C): C {
+        for ((k, v) in other) {
+            val list = getOrCreate(k)
+            list.addAll(v)
+        }
+        return c
+    }
+
+    fun adding2(key: K, value: VV): C {
+        val list = getOrCreate(key)
+        list.add(value)
+        return c
+    }
+}
+
+open class PairExt<F, S> constructor(
+    private val c: Pair<F, S>
+) {
+    fun join(sep: CharSequence): String {
+        return "${c.first}$sep${c.second}"
+    }
+}
+
+open class NullableExt<V> constructor(
+    private val c: V?
+) {
+    fun <R> notnull(code: Fun11<V, R>): R? {
+        return if (c == null) null else code(c)
+    }
+
+    fun emptyOr(def: String): String {
+        return if (c == null) "" else def
+    }
+}
+
+open class StringExt constructor(
+    private val c: String?
+) {
+    fun notNullOrEmpty(code: Fun11<String, String>): String? {
+        return if (c.isNullOrEmpty()) c else code(c)
+    }
+
+    fun emptyOr(def: String): String {
+        return if (c.isNullOrEmpty()) "" else def
+    }
+}
+
+open class NodeListExt constructor(
+    private val c: NodeList
+) {
+
+    fun elements(): Iterable<Element> {
+        return NodeListElementIterable(c)
+    }
+
+    fun nodes(): Iterable<Node> {
+        return NodeListIterable(c)
+    }
+}
+
+class ElementListIterable(
+    private val list: NodeList
+) : Iterable<Element>, Iterator<Element> {
+    var length = list.length
+    private var index = 0
+    override fun hasNext(): Boolean {
+        return index < length
+    }
+
+    override fun next(): Element {
+        return list.item(index++) as Element
+    }
+
+    override fun iterator(): Iterator<Element> {
+        return this
+    }
+}
+
+class NodeListElementIterable(
+    private val list: NodeList
+) : Iterable<Element>, Iterator<Element> {
+    var length = list.length
+    private var index = 0
+    private var current: Element? = null
+
+    init {
+        next1()
+    }
+
+    override fun hasNext(): Boolean {
+        return current != null
+    }
+
+    override fun next(): Element {
+        val ret = current!!
+        next1()
+        return ret
+    }
+
+    override fun iterator(): Iterator<Element> {
+        return this
+    }
+
+    private fun next1() {
+        for (i in index until length) {
+            val e = list.item(i)
+            if (e is Element) {
+                index = i + 1
+                current = e
+                return
+            }
+        }
+        index = length
+        current = null
+    }
+}
+
+class NodeListIterable(
+    private val list: NodeList
+) : Iterable<Node>, Iterator<Node> {
+    var length = list.length
+    private var index = 0
+    override fun hasNext(): Boolean {
+        return index < length
+    }
+
+    override fun next(): Node {
+        return list.item(index++)
+    }
+
+    override fun iterator(): Iterator<Node> {
+        return this
+    }
+}
+
+class EnumerationIterable<T>(
+    private val list: Enumeration<T>
+) : Iterable<T>, Iterator<T> {
+    override fun hasNext(): Boolean {
+        return list.hasMoreElements()
+    }
+
+    override fun next(): T {
+        return list.nextElement()
+    }
+
+    override fun iterator(): Iterator<T> {
+        return this
     }
 }
 

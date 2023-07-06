@@ -1,0 +1,243 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="settingsPanel.html" />
+        <link rel="next" type="text/html" href="calendarPanel.html" />
+    </head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title xx-green">
+                Files Panel
+            </div>
+            <div class="xx-content">
+                <div class="x-head3 xx-head-green">
+                    <a name="FilesPanel"></a>Introduction
+                </div>
+                <div class="x-para">
+                    The Files Panel is the UI to the file manager. There are actions to create directory, copy, cut,
+                    rename or delete files, ... etc. There are also actions to browse images in the current directory
+                    and action to import/export images.
+                </div>
+                <div class="x-para">
+                    <a href="../../../img/sidepanel/explore/filesPanel01.jpg?view"><img class="xx-figure-l" style="border:1px solid #888; margin-right:10px; " src="../../../img/sidepanel/explore/filesPanel01.jpg" /></a>
+                    
+                        
+                    
+                </div>
+                <div class="x-head3 xx-head-green">
+                    Toolbar
+                </div>
+                <div class="x-para">
+                    <div class="x-para">
+                        <a href="../../../img/sidepanel/explore/filesPanelToolbar01.jpg?view"><img src="../../../img/sidepanel/explore/filesPanelToolbar01.jpg" style="border:1px solid #888; height:2rem; vertical-align:middle; " /></a>
+                    </div>
+                    <ul class="x-none xx-compact">
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show contextmenu.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show images of current directory in an ImagePicker.</span></li>
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Create a new page using a <div class="x-annotation"><span class="x-a-target">template</span><div class="x-smokescreen" style="visibility: visible;"><div class="x-a-content" style="background-color: rgba(255, 255, 255, 0);"><a href="../../../img/sidepanel/explore/newPage01.jpg?view"><img class="xx-figure-xs" src="../../../img/sidepanel/explore/newPage01.jpg" /></a></div></div></div> or open/edit an existing
+                        page.</span></li>
+
+                    </ul>
+                </div><div class="x-para">
+                    <div class="x-para">
+                        <a href="../../../img/sidepanel/explore/filesPanelRecoverToolbar.jpg?view"><img style="border:1px solid #888;height:2rem;vertical-align:middle;" class="x-imageholder" src="../../../img/sidepanel/explore/filesPanelRecoverToolbar.jpg" /></a>
+                    </div>
+                    <ul class="x-none xx-compact">
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">This Cleanup action is only available when current directory is under the <span class="x-color-plum">Recover</span> tree. It remove recursively, under the current directory, all the files that are more than 14 days old and all the empty directories.</span></li>
+                        
+                        
+
+                    </ul>
+                </div>
+                <div class="x-para">
+                    <div class="x-para">
+                        <a href="../../../img/sidepanel/explore/filesPanelSearch01.jpg?view"><img src="../../../img/sidepanel/explore/filesPanelSearch01.jpg" style="border:1px solid #888; height:2rem; vertical-align:middle; " /></a>
+                    </div>
+                    <ul class="x-none xx-compact">
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show contextmenu.</span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Search for files with filename containing the search text, ignorecased.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show previous match.</span></li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show next match.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Filename search text.</span></li>
+                    </ul>
+                </div>
+
+                <div class="x-head3 xx-head-green">
+                    Contextmenu
+                </div><div style="float: right; clear: none;" class="x-pictureframe" name="x-pictureframe"><div style="box-sizing:content-box; display:inline-block; margin:10px 0 10px 10px; overflow:hidden; padding:0px; "><a href="../../../img/sidepanel/explore/filesPanelContextmenu01.jpg?view"><img class="xx-figure-s" src="../../../img/sidepanel/explore/filesPanelContextmenu01.jpg" /></a></div></div>
+
+                <ul class="x-none xx-compact">
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content"><a name="Copy"></a>Mark selected file or, if the filename input is empty, all files in
+                    the current directory recursively for copy.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Mark the selected file or, if the filename input is
+                    empty, all files under the current directory recursively for move. The files are not
+                    deleted until they are paste somewhere.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Paste files that has been marked for copy/move. A 
+                    <div class="x-annotation">
+                        <span class="x-a-target">confirmation dialog</span>
+                        <div class="x-smokescreen">
+                            <div class="x-a-content" style="box-shadow: none;">
+                                <a href="../../../img/sidepanel/explore/copyConfirmation01.jpg?view"><img class="xx-figure-l" src="../../../img/sidepanel/explore/copyConfirmation01.jpg" /></a>
+                            </div>
+                        </div>
+                    </div>show files to be copy/move, files that would overwriting existing files and files that cannot be copied/moved. Individual file can be selected or deselected for the action there.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content"><a name="Delete"></a>Delete file/directory/tree.
+If the filename input is not empty, it delete
+                    the specified file. Otherwise, it delete all files in the current directory. If there are only
+                    sub-directories in the current directory, it delete all the sub-directories recursively.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Create directory.</span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Rename file/directory. 
+                    <div class="x-para xx-tips">
+                        <span class="x-symbol" style="font-family: FontAwesome;" alt="lightbulb-o"></span> To rename a
+                        directory, go into to the directory, left the filename input empty and click the rename button.
+                    </div>
+                    </span></li>
+                    <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Toggle the nobackup marker file. The backup action ignore everything under a directory with the marker file.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Remove all empty directories recursively under the current directory.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Goto the directory that contains the current document.</span></li>
+                    
+                    <li class="x-list"><div class="x-bullet" style="font-family: FontAwesome;"></div><div class="x-list-content">Open/create documents.</div></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Import image from Photo Library.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Export selected image to Photo Library.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Import media file (PDF, audio and image) from the backup directories.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Export selected file (PDF, audio,  image, HML, CSS) to the backup directories.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">View selected media file (PDF, audio and image), through an Activity Chooser, at an external viewer. Note that if there is only one activity that would handle the media exported by this Share action, Android may open the media directly with that activity instead of going through an Activity Chooser.<div class="x-para xx-tips">
+                        <span class="x-symbol" style="font-family: FontAwesome;" alt="lightbulb-o"></span>  Note that all the Import, Export and Share actions require login as they work with the backup directories or external activities.</div></span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content"><div><a href="../../../drawings/importExport03.png?view"><img src="../../../drawings/importExport03.png" class="x-imageholder xx-figure-l x-landscape" style="float: left; max-width: 100%; width: 28rem; " /></a></div></span></li><li class="x-list"><div class="x-bullet" style="font-family: FontAwesome;"></div><div class="x-list-content">Show the search bar or the toolbar.</div></li>
+                </ul>
+
+                <div class="x-head3 xx-head-green">
+                    <a name="Filename"></a>Filename 
+                </div>
+                <div class="x-para">There
+                    are restrictions on filenames for portability and safety reasons: 
+                    <ul class="x-none x-compact" style="margin-top:5px; ">
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Only Letter or Digit Unicode characters and the following ASCII punctuation characters are
+                            allowed: <span class="x-plum">!"$&amp;'()*+,-.:&lt;=&gt;@^_`{|}~</span>. That is <span class="x-plum">?#%[];\</span> are NOT allowed. The <span class="x-plum">/</span> character
+                            is the path separator and would not be consider as part of a filename.
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Space character (0x20) is allowed in the middle of the filename, but the filename must not
+                            start or ends with spaces.
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Tab (0x09), non-break space (0xa0) and line breaks characters (0x0a, 0x0d, ... etc) are NOT
+                            allowed.
+                        </div>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="x-head3 xx-head-green">
+                    <a name="DirectoryPath"></a>Directory path
+                </div>
+                <div class="x-para">
+                    The <div name="x-annotation" class="x-annotation"><span class="x-a-target">directory path panel</span><div class="x-smokescreen"><div class="x-a-content" style="background-color: rgba(255, 255, 255, 0);"><img src="../../../img/sidepanel/explore/filesPanelDirpath01.jpg" class="xx-figure-toolbar" /></div></div></div> shows the path to the current directory. Parent directories are links.
+                    Click on one of the link goes directly to that parent directory. The root (<span class="x-symbol" style="font-family: FontAwesome;" tooltips="bookmark-o">)</span> symbol represents the root
+                    directory. Click on it to go directly to the root directory.
+                </div>
+                <div class="x-head3 xx-head-green">
+                    <a name="DirectoryTree"></a>Directory tree 
+                </div>
+                <div class="x-para">
+                    The directory tree panel show the content of the current directory. Click on a directory to go into that directory. Click on a file to enter the name to the filename input. Click on the size info at the
+                    left of a file entry to open the file directly.
+                </div>
+                <div class="x-head3 xx-head-green">
+                    <a name="RootDirectories"></a>Root directories
+                </div>
+                <div class="x-para">
+                    There are a number of predefined directories at the root. User is not allowed to create/delete
+                    directories/files at the root. All user created documents are located at the <span class="x-color-plum">/Home</span> or the <span class=""><span class="x-color-plum">/Private</span></span>
+                    directory.
+                    <ul class="x-none">
+                        <li><span class="x-head3">/Home</span> The public home directory contains all the public (unencrypted) user
+                        documents. When user is not logged in, this is the only directory where user may create
+                        documents.</li>
+                        <li><span class="x-head3">/Private</span> The private home directory contains all the private (encrypted) user documents. All documents and images created in the <span class="x-color-plum">/Private</span> directory are encrypted
+                        automatically on write and decrypted automatically on read. You can copy or move documents between the <span class="x-color-plum">/Home</span> and the <span class="x-color-plum">/Private</span> directory. This directory and
+                        the files under it are not visible/accessible when user is NOT
+                        logged in.</li>
+                        <li><span class="x-head3">/Restore/Home</span> This directory contains the public user
+                        documents restored by the Restore action. Files in this directory are not editable. But user
+                        may read/copy/delete files in this directory. All files in this directory are removed when another Restore action takes place.</li>
+                        <li><span class="x-head3">/Restore/Private</span> This directory contains the private user
+                        documents restored by the Restore action. This directory is visible only when user is logged
+                        in. Otherwise, it behaves very much like the /Restore/Home directory.</li><li><span class="x-head3">/Recover/Home</span>, <span class="x-head3">/Recover/Private</span> These directories contains the recovery or backup files. Files are readonly but deletable. Recovery file, that ends with ~recovery~ is saved if you leave the app while in editing mode or when you cancel edit. When you save a document, the old version is moved to the /Recover tree as a backup. You may simply copy files from here in case you want to recover the unsaved content or the previous version.<ul class="x-none xx-tips"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that like files in the /Restore directory, relative links in documents in the /Recover directory may be broken. However, the links would work when the file is restored to its previous location. </span></li></ul></li>
+                        <li><span class="x-head3">/assets</span> This read only directory contains user accessible
+                        assets, eg. templates, the manual, sample images, ... etc. These files are read only and cannot
+                        be deleted.</li>
+                    </ul>
+                </div>
+                <div class="x-head3 xx-head-green">
+                    <a name="PredefinedDirectories"></a>Predefined directories
+                </div>
+                <ul class="x-none">
+                    <li><span class="x-head3">/Home/drafts, /Home/blog</span> New documents are usually created in the same directory as the current document in the editing area. In some cases, when no suitable directory can be found, <span class="x-color-plum">/Home/drafts</span> would be used as default. The Blog template, however, create new documents in <span class="x-color-plum">/Home/blog</span> by default.<br /></li>
+                    <li><span class="x-head3">/Private/drafts, /Private/blog</span> When user is logged in, these directories are used as default instead of the <span class="x-color-plum">/Home/drafts</span> and <span class="x-color-plum">/Home/blog</span> directories above.</li>
+                </ul>
+                <div class="xx-ruler xx-green">
+                    <br />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li><li class="xx-toc1"><span><a href="features.html">Features</a></span></li>
+                        <li class="xx-toc1"><a href="systemMenu.html">System Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html">Drawing Canvas</a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html">Dialogs</a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html">Search</a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html"><span class="xx-inactive">Files</span></a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html">Events</a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    
+
+
+
+
+
+</body></html>

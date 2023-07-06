@@ -16,15 +16,14 @@
 */
 package com.cplusedition.bot.core
 
-import com.cplusedition.bot.core.WithUtil.Companion.With
-import com.cplusedition.bot.core.WithoutUtil.Companion.Without
 import java.io.File
 import java.util.*
+
+object MavenUt : MavenUtil()
 
 open class MavenUtil {
 
     companion object {
-        val MavenUt = MavenUtil()
         private val SEPCHAR = File.separatorChar
     }
 
@@ -71,7 +70,7 @@ open class MavenUtil {
                 if (a.any { it.isEmpty() }) return null
                 val index = a.lastIndex
                 val artifact = a[index]
-                val group = a.subList(0, index).join(".")
+                val group = a.subList(0, index).joinToString(".")
                 return GA(group, artifact)
             }
 
@@ -144,18 +143,23 @@ open class MavenUtil {
 
         val groupId = ga.groupId
         val artifactId = ga.artifactId
+
         /** @return GAV in form: groupId:artifactId:version. */
         val gav: String by lazy {
             "$groupId:$artifactId:$version"
         }
+
+        val av: String get() = "$artifactId-$version"
+
         /** @return GAV in path form: groupId/artifactId/version. */
         val path: String
             get() {
                 return "${ga.path}$SEPCHAR$version"
             }
+
         /** @return Artifact path in form: groupId/artifactId/version/artifactId-version. */
         val artifactPath: String by lazy {
-            "${ga.path}$SEPCHAR$version$SEPCHAR$artifactId-$version"
+            "${ga.path}$SEPCHAR$version$SEPCHAR$av"
         }
 
         fun artifactPath(suffix: String): String {
@@ -218,7 +222,7 @@ open class MavenUtil {
                     version = a[index--]
                 }
                 val artifact = a[index]
-                val group = a.subList(0, index).join(".")
+                val group = a.subList(0, index).joinToString(".")
                 return GAV(group, artifact, version)
             }
 
@@ -234,6 +238,7 @@ open class MavenUtil {
                         if (a.any { it.isEmpty() }) return null
                         return GAV(a[0].replace(SEPCHAR, '.'), a[1], a[2])
                     }
+
                     else -> return null
                 }
             }
@@ -329,7 +334,7 @@ open class MavenUtil {
                             if (w != ow) {
                                 return if (w > ow) 1 else -1
                             }
-                            if (w != 0 && ow != 0) {
+                            if (w != 0) {
                                 result = U.compareQualifier(qualifier, otherQualifier)
                             }
                             if (result == 0) {
@@ -390,13 +395,13 @@ open class MavenUtil {
         }
 
         private object K {
-            const val ZERO = '0'.toInt()
-            const val NINE = '9'.toInt()
-            const val UA = 'A'.toInt()
-            const val UZ = 'Z'.toInt()
-            const val LA = 'a'.toInt()
-            const val LZ = 'z'.toInt()
-            const val TILE = '~'.toInt()
+            const val ZERO = '0'.code
+            const val NINE = '9'.code
+            const val UA = 'A'.code
+            const val UZ = 'Z'.code
+            const val LA = 'a'.code
+            const val LZ = 'z'.code
+            const val TILE = '~'.code
         }
 
         private object U {
@@ -404,13 +409,13 @@ open class MavenUtil {
                 return c in K.ZERO..K.NINE
             }
 
-            internal fun compareQualifier(ver1: CharSequence?, ver2: CharSequence?): Int {
+            fun compareQualifier(ver1: CharSequence?, ver2: CharSequence?): Int {
                 if (ver1 == null) return if (ver2 == null) 0 else -1
                 if (ver2 == null) return 1
                 return compareQualifier1(ver1, ver2)
             }
 
-            internal fun compareQualifier1(ver1: CharSequence, ver2: CharSequence): Int {
+            fun compareQualifier1(ver1: CharSequence, ver2: CharSequence): Int {
                 fun weight(c: Int): Int {
                     return if (c == K.TILE) -2
                     else if (c == -1
@@ -465,14 +470,14 @@ open class MavenUtil {
                 }
             }
 
-            internal fun parse1(version: String): ArtifactVersion {
+            fun parse1(version: String): ArtifactVersion {
                 var majorVersion = 0
                 var minorVersion = 0
                 var incrementalVersion = 0
                 var extraVersion = 0
                 var buildNumber = 0
                 var qualifier: String? = null
-                val index = version.lastIndexOf('-') // Check for build number, eg. 1.0-aplha-9
+                val index = version.lastIndexOf('-')
                 val part1: String
                 var part2: String? = null
                 if (index < 0) {
@@ -481,7 +486,7 @@ open class MavenUtil {
                     part1 = version.substring(0, index)
                     part2 = version.substring(index + 1)
                 }
-                val dot = '.'.toInt()
+                val dot = '.'.code
                 val s = VersionScanner(part1)
                 while (true) {
                     var n = s.nextInt()
@@ -563,7 +568,7 @@ open class MavenUtil {
                  * @return The next char as integer value, -1 if end of string.
                  */
                 fun get(): Int {
-                    return if (index < length) source[index++].toInt() else -1
+                    return if (index < length) source[index++].code else -1
                 }
 
                 fun unget() {
@@ -582,7 +587,7 @@ open class MavenUtil {
                 }
             }
 
-            private class VersionScanner internal constructor(private val source: String) {
+            private class VersionScanner(private val source: String) {
                 private val scanner = StringScanner(source)
                 fun nextInt(): Int {
                     var ret = -1

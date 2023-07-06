@@ -23,27 +23,33 @@ import sf.andrians.cplusedition.support.IStorage
 import sf.andrians.cplusedition.support.handler.IFilepickerHandler.IThumbnailCallback
 
 class FilepickerHandler(
-        storage: IStorage,
-        private val ajax: IAjax?,
-        private val thumbnailCallback: IThumbnailCallback
+    storage: IStorage,
+    private val ajax: IAjax?,
+    private val thumbnailCallback: IThumbnailCallback
 ) : FilepickerHandlerBase(storage) {
 
     @Throws(Exception::class)
-    override fun handle(cmd: Int, params: JSONObject): String {
+    override fun handle(cmd: Int, params: JSONObject): JSONObject {
         val serial = params.optLong(An.Key.serial, -1L)
         if (ajax == null || serial < 0) {
-            return handle1(cmd, params).toString()
+            return storage.submit {
+                handle1(cmd, params)
+            }.get()
         }
         storage.submit {
             try {
                 val result = handle1(cmd, params)
                 result.put(An.Key.serial, serial)
-                ajax.result(result.toString())
+                ajax.response(result.toString())
             } catch (e: Exception) {
                 ajax.error(serial, R.string.CommandFailed)
             }
         }
-        return "{}"
+        return JSONObject()
+    }
+
+    override fun listDir(ret: JSONObject, cpath: String): JSONObject {
+        return listdir(ret, cpath)
     }
 
     fun handle1(cmd: Int, params: JSONObject): JSONObject {
@@ -65,6 +71,7 @@ class FilepickerHandler(
                 An.FilepickerCmd.LIST_RECURSIVE -> actionListRecursive(params)
                 An.FilepickerCmd.FILEINFOS -> actionFileInfos(params)
                 An.FilepickerCmd.DIRINFO -> actionDirInfo(params)
+                An.FilepickerCmd.SHRED -> actionShred(params)
                 else -> rsrc.jsonObjectError(R.string.InvalidFilepickerCommand_, cmd.toString())
             })
         } catch (e: Exception) {

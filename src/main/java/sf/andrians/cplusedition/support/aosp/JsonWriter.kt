@@ -31,7 +31,7 @@
  */
 package sf.andrians.cplusedition.support.aosp
 
-import sf.andrians.ancoreutil.util.text.TextUtil
+import com.cplusedition.bot.core.TextUt
 import java.io.Closeable
 import java.io.IOException
 import java.io.Writer
@@ -397,19 +397,19 @@ class JsonWriter(out: Writer?) : Closeable {
             val c = value[i]
             when (c) {
                 '"', '\\' -> {
-                    out.write('\\'.toInt())
-                    out.write(c.toInt())
+                    out.write('\\'.code)
+                    out.write(c.code)
                 }
                 '\t' -> out.write("\\t")
                 '\b' -> out.write("\\b")
                 '\n' -> out.write("\\n")
                 '\r' -> out.write("\\r")
                 '\u000c' -> out.write("\\f")
-                '\u2028', '\u2029' -> out.write(TextUtil.format("\\u%04x", c.toInt()))
-                else -> if (c.toInt() <= 0x1F) {
-                    out.write(TextUtil.format("\\u%04x", c.toInt()))
+                '\u2028', '\u2029' -> out.write(TextUt.format("\\u%04x", c.code))
+                else -> if (c.code <= 0x1F) {
+                    out.write(TextUt.format("\\u%04x", c.code))
                 } else {
-                    out.write(c.toInt())
+                    out.write(c.code)
                 }
             }
             i++
@@ -435,9 +435,9 @@ class JsonWriter(out: Writer?) : Closeable {
     @Throws(IOException::class)
     private fun beforeName() {
         val context = peek()
-        if (context == JsonScope.NONEMPTY_OBJECT) { // first in object
-            out.write(','.toInt())
-        } else check(context == JsonScope.EMPTY_OBJECT) {  // not in an object!
+        if (context == JsonScope.NONEMPTY_OBJECT) {
+            out.write(','.code)
+        } else check(context == JsonScope.EMPTY_OBJECT) {
             "Nesting problem: $stack"
         }
         newline()

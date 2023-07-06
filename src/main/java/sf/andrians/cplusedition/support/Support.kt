@@ -16,40 +16,146 @@
 */
 package sf.andrians.cplusedition.support
 
+import com.cplusedition.anjson.JSONUtil.mapsStringNotNull
 import com.cplusedition.anjson.JSONUtil.stringOrDef
 import com.cplusedition.anjson.JSONUtil.stringOrNull
+import com.cplusedition.bot.core.Basepath
+import com.cplusedition.bot.core.FileUt
+import com.cplusedition.bot.core.Fun01
+import com.cplusedition.bot.core.Fun10
+import com.cplusedition.bot.core.Fun11
+import com.cplusedition.bot.core.Fun31
+import com.cplusedition.bot.core.Fun41
+import com.cplusedition.bot.core.IInputStreamProvider
+import com.cplusedition.bot.core.ITraceLogger
+import com.cplusedition.bot.core.TextUt
+import com.cplusedition.bot.core.Without
+import com.cplusedition.bot.core.XMLUt
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import sf.andrians.ancoreutil.util.text.TextUtil
 import sf.andrians.cplusedition.R
+import sf.andrians.cplusedition.support.An.DEF
+import sf.andrians.cplusedition.support.An.Key
 import sf.andrians.cplusedition.support.handler.IResUtil
+import sf.andrians.cplusedition.support.media.MimeUtil
+import sf.andrians.cplusedition.support.media.MimeUtil.Suffix
+import sf.andrians.org.apache.http.client.utils.URLEncodedUtils
+import sf.llk.grammar.html.parser.ASTstartTag
+import sf.llk.grammar.html.parser.ASTtext
+import sf.llk.grammar.html.parser.HtmlLexer
+import sf.llk.grammar.html.parser.HtmlSaxAdapter
+import sf.llk.share.support.DefaultTokenHandler
+import sf.llk.share.support.LLKLexerInput
 import java.io.File
 import java.text.DateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-object Support {
+object Support : ITraceLogger {
     private val datetimeFormatter = DateFormat.getDateTimeInstance()
     private val SEPA = File.separator.toCharArray()
+    private var level = 0
+    private var quiet = false
+    private val quietStack = Stack<Boolean>()
     val LOCALE = Locale.US
-    fun log(msg: String?) {
-        //#IF ENABLE_LOG
-        println(msg)
-        //#ENDIF ENABLE_LOG
+
+    override fun d(msg: String, e: Throwable?) {
     }
 
-    fun d(msg: String?) {
-        //#IF ENABLE_LOG
-        println(msg)
-        //#ENDIF ENABLE_LOG
+    override fun i(msg: String, e: Throwable?) {
+        log(
+            msg
+            , null
+        )
     }
 
-    fun d(msg: String?, e: Throwable?) {
-        //#IF ENABLE_LOG
-        println(msg)
-        e?.printStackTrace(System.out)
-        //#ENDIF ENABLE_LOG
+    override fun w(msg: String, e: Throwable?) {
+        log(msg, e)
+    }
+
+    override fun e(msg: String, e: Throwable?) {
+        log(msg, e)
+    }
+
+    override val debugging: Boolean
+        get() =
+    false
+
+    override fun d(e: Throwable?, message: Fun11<Throwable?, String>) {
+    }
+
+    override fun i(e: Throwable?, message: Fun11<Throwable?, String>) {
+        log(
+            null,
+            message
+        )
+    }
+
+    override fun w(e: Throwable?, message: Fun11<Throwable?, String>) {
+        log(e, message)
+    }
+
+    override fun e(e: Throwable?, message: Fun11<Throwable?, String>) {
+        log(e, message)
+    }
+
+    override fun enter(msg: String) {
+        this.d("# ${TextUt.stringOf('+', ++level)} $msg")
+    }
+
+    override fun <T> enter(msg: String, code: Fun01<T>): T {
+        enter(msg)
+        try {
+            return code()
+        } finally {
+            leave(msg)
+        }
+    }
+
+    override fun leave(msg: String) {
+        this.d("# ${TextUt.stringOf('-', if (level > 0) --level else level)} $msg")
+    }
+
+    override fun <R> quiet(code: Fun01<R>): R {
+        singleThreadPool.submit {
+            quietStack.push(quiet)
+            quiet = true
+        }
+        try {
+            return code()
+        } finally {
+            singleThreadPool.submit {
+                quiet = quietStack.pop()
+            }
+        }
+    }
+
+    private fun log(msg: String, e: Throwable?) {
+        singleThreadPool.submit {
+            if (!quiet) {
+                println(msg)
+                e?.printStackTrace(System.out)
+            }
+        }
+    }
+
+    private fun log(e: Throwable?, callback: Fun11<Throwable?, String>) {
+        singleThreadPool.submit {
+            if (!quiet) {
+                println(callback(e))
+                e?.printStackTrace(System.out)
+            }
+        }
+    }
+
+    fun <R> ignoreThrowable(msg: Any, code: Fun01<R>): R? {
+        try {
+            return code()
+        } catch (e: Throwable) {
+            d("# Ignored throwable: $msg: $e", e);
+            return null
+        }
     }
 
     fun assertion(ok: Boolean) {
@@ -80,7 +186,7 @@ object Support {
         return b.toString()
     }
 
-    fun updateSettings(res: IResUtil, current: JSONObject, update: JSONObject): List<String> {
+    fun updateUISettings(res: IResUtil, current: JSONObject, update: JSONObject): List<String> {
         val errors = ArrayList<String>()
         val it = update.keys()
         while (it.hasNext()) {
@@ -93,6 +199,7 @@ object Support {
                     An.SettingsKey.fixedFontStyle,
                     An.SettingsKey.dateFormat,
                     An.SettingsKey.timeFormat,
+                    An.SettingsKey.timeZone,
                     An.SettingsKey.dialogBGColor,
                     An.SettingsKey.headingColor,
                     An.SettingsKey.linkColor,
@@ -104,6 +211,7 @@ object Support {
                             current.put(key, value)
                         }
                     }
+
                     An.SettingsKey.buttonSize,
                     An.SettingsKey.uiFontSize,
                     An.SettingsKey.imageDimension
@@ -113,6 +221,7 @@ object Support {
                             current.put(key, value)
                         }
                     }
+
                     else -> {
                         val msg = res.format(R.string.invalidNameValue, key, update.opt(key))
                         
@@ -153,7 +262,7 @@ object Support {
                     start = -1
                 }
                 b.append('%')
-                b.append(Integer.toHexString(c.toInt()))
+                b.append(Integer.toHexString(c.code))
             } else if (start < 0) {
                 start = i
             }
@@ -173,15 +282,16 @@ object Support {
      * returns "./" /Documents/manual/test.html?mime=text/html return "../../"
      */
     fun toContext(path: String?): String? {
-        var path = path ?: return null
-        val index = path.indexOf('?')
+        var p = path ?: return null
+        val index = p.indexOf('?')
         if (index >= 0) {
-            path = path.substring(0, index)
+            p = p.substring(0, index)
         }
-        if (path.length == 0) {
+        if (p.startsWith("/")) p = p.substring(1)
+        if (p.isEmpty()) {
             return "./"
         }
-        val segments = TextUtil.split(path, "/")
+        val segments = p.split("/")
         val n = segments.size - 1
         if (n <= 0) {
             return "./"
@@ -201,7 +311,7 @@ object Support {
      */
     fun getcleanrpath(path: String?): String? {
         if (path == null) return null
-        val cleanpath = TextUtil.trim(SEPA, TextUtil.cleanupFilePath(path).toString())
+        val cleanpath = Basepath.cleanPath(path).trim(File.separatorChar)
         return if (cleanpath.startsWith("..${File.separatorChar}") || cleanpath == "..") null else cleanpath
     }
 
@@ -233,10 +343,10 @@ object Support {
 
     ///# NOTE \\ is made invalid to avoid the escape hell.
     /// ?#%;[] are made invalid because Tomcat do not decode them in request.getPathInfo().
-    private const val ValidFilenameChars = " !\"$&'()*+,-./:<=>@^_`{|}~" // Invalid \\?#%;[]
-    private val InvalidFilenameChars = "/\\?#%;[]".codePoints().toArray()
+    private const val ValidFilenameChars = " !\"$&'()*+,-./:<=>@^_`{|}[]~"
+    private val InvalidFilenameChars = "/\\?#%;".codePoints().toArray()
 
-    private fun sanitizeFilename1(illegals: MutableCollection<Int>, filename: String, len: Int) {
+    private fun sanitizeFilename1(illegals: MutableCollection<Int>, filename: String) {
         filename.codePoints().forEach {
             if (InvalidFilenameChars.contains(it) || !Character.isDefined(it)) {
                 illegals.add(it)
@@ -266,6 +376,7 @@ object Support {
                     Character.INITIAL_QUOTE_PUNCTUATION,
                     Character.FINAL_QUOTE_PUNCTUATION
                     -> Unit
+
                     else -> {
                         illegals.add(it)
                     }
@@ -280,17 +391,17 @@ object Support {
     fun escIllegals(illegals: Collection<Int>): String {
         val b = StringBuilder()
         for (c in illegals) {
-            if (c >= 0x20 && c < 0x7f && c != '\\'.toInt()) {
+            if (c >= 0x20 && c < 0x7f && c != '\\'.code) {
                 b.append(c.toChar())
             } else {
-                b.append(TextUtil.format("{0x%04x}", c))
+                b.append(TextUt.format("{0x%04x}", c))
             }
         }
         return b.toString()
     }
 
-    fun <T : MutableCollection<String>> sanitizeFilepath(errors: T, res: IResUtil, apath: String?): T {
-        return sanitizeFilepath(errors, res, TextUtil.split(StringTokenizer(apath, "/")))
+    fun <T : MutableCollection<String>> sanitizeFilepath(errors: T, res: IResUtil, apath: String): T {
+        return sanitizeFilepath(errors, res, apath.split("/"))
     }
 
     fun <T : MutableCollection<String>> sanitizeFilepath(errors: T, res: IResUtil, segments: Collection<String?>): T {
@@ -308,7 +419,7 @@ object Support {
      * Similar to sanitizeFilepathStrict1, but allow empty filename.
      */
     fun <T : MutableCollection<String>> sanitizeFilepathStrict0(errors: T, res: IResUtil, apath: String) {
-        sanitizeFilepathStrict0(errors, res, TextUtil.split(StringTokenizer(apath, "/")))
+        sanitizeFilepathStrict0(errors, res, apath.split("/"))
     }
 
     /**
@@ -330,10 +441,10 @@ object Support {
      * //, and thus the empty filename only occurs at the end which is OK.
      */
     fun <T : MutableCollection<String>> sanitizeFilenameStrict0(
-            errors: T,
-            res: IResUtil,
-            illegals: MutableCollection<Int>,
-            filename: String?
+        errors: T,
+        res: IResUtil,
+        illegals: MutableCollection<Int>,
+        filename: String?
     ) {
         if (filename == null) {
             errors.add(res.get(R.string.FilenameMustNotBeNull))
@@ -354,7 +465,7 @@ object Support {
         if (Character.isSpaceChar(c)) {
             errors.add(res.get(R.string.FilenameMustNotEndsWithSpaces))
         }
-        sanitizeFilename1(illegals, filename, len)
+        sanitizeFilename1(illegals, filename)
     }
 
     /**
@@ -368,7 +479,7 @@ object Support {
      * Similar to sanitizeFilepath, but also check that filename do not start with . and spaces and do not end with spaces.
      */
     fun <T : MutableCollection<String>> sanitizeFilepathStrict(errors: T, res: IResUtil, apath: String): T {
-        return sanitizeFilepathStrict(errors, res, TextUtil.split(StringTokenizer(apath, "/")))
+        return sanitizeFilepathStrict(errors, res, apath.split("/"))
     }
 
     fun <T : MutableCollection<String>> sanitizeFilepathStrict(errors: T, res: IResUtil, segments: Collection<String>): T {
@@ -395,12 +506,25 @@ object Support {
      * Also check that filename is not empty.
      */
     fun <T : MutableCollection<String>> sanitizeFilenameStrict1(
-            errors: T, res: IResUtil, illegals: MutableCollection<Int>, filename: String?
+        errors: T, res: IResUtil, illegals: MutableCollection<Int>, filename: String?
     ) {
         sanitizeFilenameStrict0(errors, res, illegals, filename)
         if (filename != null && filename.isEmpty()) {
             errors.add(res.get(R.string.FilenameMustNotBeEmpty))
         }
+    }
+
+    fun validateFilepath(rsrc: IResUtil, path: String): MutableCollection<String> {
+        val errors = ArrayList<String>()
+        sanitizeFilepathStrict(errors, rsrc, path)
+        return errors
+    }
+
+    fun validateFilename(rsrc: IResUtil, filename: String?): MutableCollection<String> {
+        val errors = ArrayList<String>()
+        val illegals = TreeSet<Int>()
+        sanitizeFilenameStrict1(errors, rsrc, illegals, filename)
+        return errors
     }
 
     fun datetime(ms: Long): String {
@@ -410,36 +534,34 @@ object Support {
     object Def {
         const val recentsSize = 24
         const val UnexpectedException = "Unexpected exception"
-        const val maxInputImageArea = 32 * 1024 * 1024
+        const val maxInputImageArea = DEF.maxOutputImageArea
         const val thumbnailMiniHeight = 384
         const val thumbnailMiniWidth = 512
-        const val loginFailureTimeout: Long = 5000
-        const val memoryInfoInterval: Long = 3000
-        const val scaleImageTimeout: Long = 10000
-        const val thumbnailTimeout: Long = 5000
+        const val loginFailureTimeout = 5000L
+        const val memoryInfoInterval = 3000L
+        const val scaleImageTimeout = 30 * 1000L
+        const val thumbnailTimeout = 10 * 1000L
     }
 
     object SettingsDefs {
-        //#BEGIN SHUFFLE
-        val symbolFamily = "FontAwesome"
-        val buttonSize = 40
-        val annotationColor = "#9400d3"
-        val fixedFontStyle = "Regular"
-        val dateFormat = "mm/dd/yyyy"
-        val highlightColor = "rgba(255, 255, 128, 0.75)"
-        val winHeight = 640
-        val winWidth = 360
-        val dialogBGColor = "rgba(255, 255, 255, 0.80)"
-        val uiFontName = "Ruda"
-        val timeFormat = "hh:mm"
-        val uiFontStyle = "Regular"
-        val linkColor = "#0000cc"
-        val imageDimension = 1024
-        val fixedFontName = "UbuntuMono"
-        val dpi = 160
-        val headingColor = "#1e90ff"
-        val fontSize = 16.0
-        //#END SHUFFLE
+        const val symbolFamily = "FontAwesome"
+        const val buttonSize = 40
+        const val annotationColor = "#9400d3"
+        const val fixedFontStyle = "Regular"
+        const val dateFormat = "mm/dd/yyyy"
+        const val highlightColor = "rgba(255, 255, 128, 0.75)"
+        const val winHeight = 640
+        const val winWidth = 360
+        const val dialogBGColor = "rgba(255, 255, 240, 0.95)"
+        const val uiFontName = "Ruda"
+        const val timeFormat = "hh:mm"
+        const val uiFontStyle = "Regular"
+        const val linkColor = "#0000cc"
+        const val imageDimension = 1024
+        const val fixedFontName = "UbuntuMono"
+        const val dpi = 160
+        const val headingColor = "#1e90ff"
+        const val fontSize = 16.0
     }
 
     class JSONArrayStringValueIterables(private val array: JSONArray) : Iterable<String>, MutableIterator<String> {
@@ -479,8 +601,9 @@ object Support {
 
     object EffectUtil {
         val Name = arrayOf(
-                "",
-                "Gray (4 levels)", "Black and white")
+            "",
+            "Gray (4 levels)", "Black and white"
+        )
 
         fun toString(effect: Int): String {
             return if (effect >= 0 && effect < Name.size) Name[effect] else Name[An.Effect.NONE]
@@ -500,7 +623,7 @@ object Support {
             canedit.add(An.ATTR.xPlaceholder)
             canedit.add(An.ATTR.xTemplate)
             canedit.add(An.ATTR.xTemplatePlaceholder)
-            canedit.add(An.ATTR.xFormat)
+            canedit.add(An.ATTR.xDateFormat)
             canedit.add(An.ATTR.xInfo)
             canedit.add(An.ATTR.xTooltips)
         }
@@ -508,20 +631,20 @@ object Support {
 
     object PathUtil {
         private val assets_ = arrayOf(
-                An.PATH._assets_,
-                An.PATH.assets_
+            An.PATH._assets_,
+            An.PATH.assets_
         )
         private val assets = arrayOf(
-                An.PATH._assets,
-                An.PATH.assets
+            An.PATH._assets,
+            An.PATH.assets
         )
         private val homePrivate_ = arrayOf(
-                An.PATH._Home_,
-                An.PATH.Home_
+            An.PATH._Home_,
+            An.PATH.Home_
         )
         private val homePrivate = arrayOf(
-                An.PATH._Home,
-                An.PATH.Home
+            An.PATH._Home,
+            An.PATH.Home
         )
 
         fun isAssetsSubtree(cpath: String?): Boolean {
@@ -552,11 +675,11 @@ object Support {
                     )
         }
 
-        fun getHomeHtml(loggedin: Boolean): String {
+        fun getHomeHtml(): String {
             return /* if (loggedin) An.PATH._PrivateIndexHtml else */ An.PATH._HomeIndexHtml
         }
 
-        fun getHome(loggedin: Boolean): String {
+        fun getHome(): String {
             return /* if (loggedin) An.PATH.Private else */ An.PATH.Home
         }
 
@@ -577,17 +700,18 @@ object Support {
             } else "/$path"
         }
 
-        fun interpretPath(isloggedin: Boolean, path: String): String {
+        fun interpretPath(path: String): String {
             if (!path.contains("{")) {
                 return path
             }
             val time = System.currentTimeMillis()
-            val year = TextUtil.format("%tY", time)
-            val month = TextUtil.format("%tm", time)
-            val day = TextUtil.format("%td", time)
-            val date = TextUtil.format("%1\$tY%1\$tm%1\$td", time)
-            val home = getHome(isloggedin)
-            return path.replace("{home}", home).replace("{date}", date).replace("{year}", year).replace("{month}", month).replace("{day}", day)
+            val year = TextUt.format("%tY", time)
+            val month = TextUt.format("%tm", time)
+            val day = TextUt.format("%td", time)
+            val date = TextUt.format("%1\$tY%1\$tm%1\$td", time)
+            val home = getHome()
+            return path.replace("{home}", home).replace("{date}", date).replace("{year}", year).replace("{month}", month)
+                .replace("{day}", day)
         }
 
         /**
@@ -615,12 +739,11 @@ object Support {
         fun defaultSettings(dpi: Int): JSONObject {
             val buttonsize = (dpi / 4f).roundToInt()
             val fontsize = (dpi * 15f / 160f).roundToInt()
-            val symbolsize = (dpi / 8f).roundToInt()
-            return initdefaults(buttonsize, fontsize, fontsize, symbolsize)
+            return initdefaults(buttonsize, fontsize)
         }
 
         @Throws(JSONException::class)
-        private fun initdefaults(buttonsize: Int, fontsize: Int, fixedfontsize: Int, symbolsize: Int): JSONObject {
+        private fun initdefaults(buttonsize: Int, fontsize: Int): JSONObject {
             val ret = JSONObject()
             val locale = Locale.getDefault()
             val cal = Calendar.getInstance(locale)
@@ -658,9 +781,7 @@ object Support {
             if (!time.startsWith("14")) {
                 timeformat = "hh:mm+M"
             }
-            //#IF ENABLE_LOG
-            log("# locale=$locale, date=$date, time=$time, dateformat=$dateformat, timeformat=$timeformat")
-            //#ENDIF ENABLE_LOG
+            
             ret.put(An.SettingsKey.buttonSize, buttonsize)
             ret.put(An.SettingsKey.uiFontName, SettingsDefs.uiFontName)
             ret.put(An.SettingsKey.uiFontStyle, SettingsDefs.uiFontStyle)
@@ -772,8 +893,9 @@ object Support {
 
     object RecentsCmdUtil {
         private val names = arrayOf(
-                "INVALID",
-                "CLEAR", "CLEAN", "INFO", "BACK", "PEEK", "FORWARD")
+            "INVALID",
+            "CLEAR", "CLEAN", "INFO", "BACK", "PEEK", "FORWARD"
+        )
 
         fun toString(cmd: Int): String {
             return if (cmd < 0 || cmd >= names.size) {
@@ -784,15 +906,656 @@ object Support {
 
     object FilepickerCmdUtil {
         private val names = arrayOf(
-                "INVALID", "FILEINFO", "GOTO", "VALIDATE", "LISTDIR", "LISTDIR1", "LIST_DIRTREE", "MKDIR",
-                "RENAME", "COPY",
-                "COPY_INFO", "DELETE", "DELETE_DIRTREE", "DELETE_DIRSUBTREE", "DELETE_ALL", "DELETE_INFO", "IMAGE_INFO", "IMAGE_INFOS",
-                "IMAGE_THUMBNAILS")
+            "INVALID", "FILEINFO", "GOTO", "VALIDATE", "LISTDIR", "LISTDIR1", "LIST_DIRTREE", "MKDIR",
+            "RENAME", "COPY",
+            "COPY_INFO", "DELETE", "DELETE_DIRTREE", "DELETE_DIRSUBTREE", "DELETE_ALL", "DELETE_INFO", "IMAGE_INFO", "IMAGE_INFOS",
+            "IMAGE_THUMBNAILS"
+        )
 
         fun toString(cmd: Int): String {
             return if (cmd < 0 || cmd >= names.size) {
                 names[An.FilepickerCmd.INVALID]
             } else names[cmd]
         }
+    }
+}
+
+class GalleryParams constructor(
+    val outpath: String,
+    val templatepath: String,
+    val options: GalleryOptions,
+    val dirpath: String,
+    val rpaths: Collection<String>?,
+) {
+    companion object {
+        fun from(args: JSONArray, index: Int): GalleryParams {
+            val outpath = args.getString(index)
+            val templatepath = args.getString(index + 1)
+            val options = GalleryOptions.from(args.getJSONArray(index + 2))
+            val dirpath = args.getString(index + 3)
+            val rpaths = args.getJSONArray(index + 4).mapsStringNotNull { it }.toList()
+            return GalleryParams(outpath, templatepath, options, dirpath, rpaths)
+        }
+    }
+}
+
+class GalleryOptions constructor(
+    val descending: Boolean,
+    val singleSection: Boolean,
+    val largeTn: Boolean,
+    val scrollableTn: Boolean,
+    val preserving: Boolean,
+) {
+    companion object {
+        fun from(args: JSONArray, start: Int = 0): GalleryOptions {
+            return GalleryOptions(
+                args.getBoolean(start),
+                args.getBoolean(start + 1),
+                args.getBoolean(start + 2),
+                args.getBoolean(start + 3),
+                args.getBoolean(start + 4),
+            )
+        }
+    }
+}
+
+class GalleryGenerator constructor(
+    private val storage: IStorage,
+    private val params: GalleryParams,
+    private val isLandscape: Fun31<String, IInputStreamProvider, Int, Boolean?>,
+    private val thumbnailGenerator: Fun41<IFileInfo, Int, Int, Int, String?>,
+) {
+    private val rsrc = storage.rsrc
+    private val options = params.options
+    private val major = if (options.scrollableTn) 0 else
+        if (options.largeTn) DEF.previewPhotoSize else
+            DEF.thumbnailSize
+    private val minor = if (options.scrollableTn) DEF.scrollableThumbnailSize else
+        if (options.largeTn) DEF.previewPhotoSize else
+            DEF.thumbnailSize
+
+    private class GalleryInfos constructor(
+        val size: Long,
+        val count: Int,
+        val infos: Map<String, List<GalleryInfo>>
+    )
+
+    private class GalleryInfo constructor(
+        val fileinfo: IFileInfo,
+        val filestat: IFileStat,
+        val cpath: String,
+        val rpath: String,
+        val basepath: Basepath,
+        val poster: String?,
+        var thumbnail: GalleryInfo?
+    )
+
+    fun run(done: Fun10<JSONObject>) {
+        fun error(msgid: Int, vararg args: String) {
+            done(rsrc.jsonObjectError(msgid, *args))
+        }
+
+        fun error(msg: Collection<String>) {
+            done(rsrc.jsonObjectError(msg))
+        }
+
+        fun result(result: JSONObject) {
+            done(result)
+        }
+
+        val rpaths = params.rpaths
+            ?: return error(R.string.ParametersInvalid)
+        val outinfo = storage.fileInfoAt(params.outpath).result()
+        val outdirinfo = outinfo?.parent
+        if (outinfo == null || outdirinfo == null)
+            return error(R.string.InvalidOutputPath_, params.outpath)
+        if (outdirinfo.stat()?.writable != true)
+            return error(R.string.DestinationNotWritable_, params.outpath)
+        val templateinfo = storage.fileInfoAt(params.templatepath).let {
+            it.result() ?: return error(it.failure()!!)
+        }
+        if (!templateinfo.exists)
+            return error(R.string.NotFound_, params.templatepath)
+        val dirinfo = storage.fileInfoAt(params.dirpath).let {
+            it.result() ?: return error(it.failure()!!)
+        }
+        if (!dirinfo.exists)
+            return error(R.string.NotFound_, params.dirpath)
+        try {
+            val template = uplink(templateinfo.content().readText(), makelinklabel(outdirinfo.name))
+            val bydir = sortbydir(rpaths)
+            if (bydir.length() == 0) {
+                return result(JSONObject())
+            }
+            val dirprefix = if (Support.PathUtil.isAssetsTree(params.dirpath)) dirinfo.apath
+            else (FileUt.rpathOrNull(dirinfo.apath, outdirinfo.apath) ?: dirinfo.apath)
+            
+            val basepath = Basepath.from(params.templatepath)
+            when (basepath.stem) {
+                An.TemplateName.audioV2 -> generateAudioV2Gallery(
+                    outinfo,
+                    template,
+                    dirprefix,
+                    dirinfo,
+                    bydir,
+                    done
+                )
+
+                An.TemplateName.homeSimpler -> generateHomeSimplerGallery(
+                    outinfo,
+                    template,
+                    dirprefix,
+                    dirinfo,
+                    bydir,
+                    done
+                )
+
+                An.TemplateName.mediaSticker -> generateMediaStickerGallery(
+                    outinfo,
+                    template,
+                    dirprefix,
+                    dirinfo,
+                    bydir,
+                    done
+                )
+
+                An.TemplateName.mediaWall -> generateMediaWallGallery(
+                    outinfo,
+                    template,
+                    dirprefix,
+                    dirinfo,
+                    bydir,
+                    done
+                )
+
+                else -> error(R.string.InvalidTemplate)
+            }
+        } catch (e: Exception) {
+            return error(R.string.CommandFailed)
+        }
+    }
+
+    private fun makelinklabel(name: String): String {
+        return TextUt.capitalCase(name).replace(labelPat, " ")
+    }
+
+    private fun uplink(template: String, label: String): String {
+        val main = NullLLKMain("")
+        val input = LLKLexerInput(template.toCharArray(), main)
+        val doc = object : HtmlSaxAdapter(
+            HtmlLexer(
+                input,
+                DefaultTokenHandler.getInstance(input, HtmlLexer.specialTokens(), true, true)
+            )
+        ) {
+            private var state = 0
+            override fun startTag(node: ASTstartTag) {
+                Support.ignoreThrowable(node) {
+                    when (state) {
+                        0 -> if (node.getAttributeText(An.ATTR.id) == An.ID.xRightSidebar) state = 1
+                        1 -> {
+                            node.getAttributeText(An.ATTR.classes)?.let { classes ->
+                                classes.contains(An.CSS.xRightSidebarTab) && classes.contains(An.CSS.xPlaceholder)
+                                node.getAttribute(An.ATTR.href)?.let { a ->
+                                    a.valueToken.text = XMLUt.quoteAttr("../index.html")
+                                    state = 2
+                                }
+                            }
+                        }
+
+                        else -> {
+                            if (state >= 2) state = 0
+                        }
+                    }
+                    super.startTag(node)
+                }
+            }
+
+            override fun text(node: ASTtext?) {
+                when (state) {
+                    2 -> {
+                        node?.text = XMLUt.escText(label)
+                        state = 0
+                    }
+                }
+            }
+        }.parse()
+        return XrefUt.render(doc.firstToken).toString()
+    }
+
+    private fun getStringList(a: JSONArray): List<String> {
+        val ret: MutableList<String> = ArrayList()
+        var index = 0
+        val len = a.length()
+        while (index < len) {
+            val s = a.stringOrNull(index)
+            if (s != null) {
+                ret.add(s)
+            }
+            ++index
+        }
+        return ret
+    }
+
+    private fun _sorted0(ret: List<String>, descending: Boolean): List<String> {
+        val c = java.util.Comparator { a: String, b: String -> a.compareTo(b) }
+        ret.sortedWith(if (descending) c.reversed() else c)
+        return ret
+    }
+
+    private fun _sorted(a: Collection<String>, descending: Boolean): List<String> {
+        return _sorted0(ArrayList(a), descending)
+    }
+
+    private fun _sorted(a: Iterator<String>, descending: Boolean): List<String> {
+        return _sorted0(a.asSequence().toList(), descending)
+    }
+
+    private fun _sorted(a: JSONArray, descending: Boolean): List<String> {
+        return _sorted0(getStringList(a), descending)
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generateAudioV2Gallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>,
+    ) {
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+
+        val addaudio = { path: String, cpath: String, filestat: IFileStat ->
+            val url = href(path)
+            section.put(
+                cpath, JSONObject()
+                    .put(Key.url, url)
+                    .put(Key.filestat, FileInfoUtil.toJSONFileStat(JSONObject(), filestat))
+            )
+        }
+        val addvideo = { path: String, cpath: String, filestat: IFileStat ->
+            val url = href(path)
+            section.put(
+                cpath, JSONObject()
+                    .put(Key.url, url)
+                    .put(Key.filestat, FileInfoUtil.toJSONFileStat(JSONObject(), filestat))
+            )
+        }
+        for (sec in bydir.keys()) {
+            for (rpath in bydir.getJSONArray(sec).mapsStringNotNull { it }) {
+                val basepath = Basepath.from(rpath)
+                val lcsuffix = basepath.lcSuffix
+                if (MimeUtil.isAudioLcSuffix(lcsuffix)) {
+                    val fileinfo = dirinfo.fileInfo(rpath)
+                    val filestat = fileinfo.stat()
+                    if (filestat == null || !filestat.isFile) {
+                        continue
+                    }
+                    addaudio(Basepath.joinRpath(dirprefix, rpath), fileinfo.cpath, filestat)
+                } else if (MimeUtil.isVideoLcSuffix(lcsuffix)) {
+                    val fileinfo = dirinfo.fileInfo(rpath)
+                    val filestat = fileinfo.stat()
+                    if (filestat == null || !filestat.isFile) {
+                        continue
+                    }
+                    addvideo(Basepath.joinRpath(dirprefix, rpath), fileinfo.cpath, filestat)
+                }
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.audioV2)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generateHomeSimplerGallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>
+    ) {
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+        val addtoc2 = { rpathAndLabel: Pair<String, String>, cpath: String ->
+            val url = href(Basepath.joinRpath(dirprefix, rpathAndLabel.first))
+            section.put(
+                cpath, JSONObject()
+                    .put(Key.url, url)
+                    .put(Key.text, rpathAndLabel.second)
+            )
+        }
+        val addtoc3 = { rpathAndLabel: Pair<String, String>, cpath: String ->
+            val url = href(Basepath.joinRpath(dirprefix, rpathAndLabel.first)) + "?view"
+            section.put(
+                cpath, JSONObject()
+                    .put(Key.url, url)
+                    .put(Key.text, rpathAndLabel.second)
+            )
+        }
+        for (sec in bydir.keys()) {
+            for (rpath in bydir.getJSONArray(sec).mapsStringNotNull { it }) {
+                val basepath = Basepath.from(rpath)
+                val lcsuffix = basepath.lcSuffix
+                val fileinfo = dirinfo.fileInfo(rpath)
+                val filestat = fileinfo.stat()
+                if (filestat == null || !filestat.isFile) {
+                    continue
+                }
+                if (lcsuffix == Suffix.HTML) {
+                    addtoc2(Pair(rpath, label(basepath)), fileinfo.cpath)
+                } else if (MimeUtil.isViewerLcSuffix(lcsuffix)) {
+                    addtoc3(Pair(rpath, label(basepath)), fileinfo.cpath)
+                }
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.homeSimpler)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generatePhotoSticker1Gallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>
+    ) {
+        val infos = scanMedias(dirinfo, bydir, MimeUtil::isImageLcSuffix)
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+        for (sec in infos.infos.keys) {
+            for (info in infos.infos[sec]!!) {
+                if (!info.fileinfo.exists) continue
+                addmedia(section, dirprefix, info)
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.photoSticker1)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generatePhotoWallGallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>
+    ) {
+        val infos = scanMedias(dirinfo, bydir, MimeUtil::isImageLcSuffix)
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+        for (sec in infos.infos.keys) {
+            for (info in infos.infos[sec]!!) {
+                if (!info.fileinfo.exists) continue
+                addmedia(section, dirprefix, info)
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.photoWall)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generateMediaStickerGallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>
+    ) {
+        val infos = scanMedias(dirinfo, bydir, MimeUtil::isMediaLcSuffix)
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+        for (sec in infos.infos.keys) {
+            for (info in infos.infos[sec]!!) {
+                if (!info.fileinfo.exists) continue
+                addmedia(section, dirprefix, info)
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.mediaSticker)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    @Throws(JSONException::class, StorageException::class)
+    private fun generateMediaWallGallery(
+        outinfo: IFileInfo,
+        template: String,
+        dirprefix: String?,
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        done: Fun10<JSONObject>
+    ) {
+        val infos = scanMedias(dirinfo, bydir, MimeUtil::isMediaLcSuffix)
+        val result = JSONObject()
+        var section = JSONObject()
+        if (options.singleSection) result.put("", section)
+        val endsection = { name: String ->
+            if (!options.singleSection) {
+                result.put(name, section)
+                section = JSONObject()
+            }
+        }
+        for (sec in infos.infos.keys) {
+            for (info in infos.infos[sec]!!) {
+                if (!info.fileinfo.exists) continue
+                addmedia(section, dirprefix, info)
+            }
+            endsection(sec)
+        }
+        done(
+            JSONObject()
+                .put(Key.type, An.TemplateName.mediaWall)
+                .put(Key.backward, options.descending)
+                .put(Key.path, outinfo.cpath)
+                .put(Key.template, template)
+                .put(Key.text, if (options.preserving && outinfo.exists) outinfo.content().readText() else "")
+                .put(Key.result, result)
+        )
+    }
+
+    private fun addmedia(section: JSONObject, dirprefix: String?, galleryinfo: GalleryInfo) {
+        
+        val path = Basepath.joinRpath(dirprefix, galleryinfo.rpath)
+        val url = href(path)
+        val item = JSONObject()
+            .put(Key.url, url)
+            .put(Key.text, label(galleryinfo.basepath))
+            .put(Key.filestat, FileInfoUtil.toJSONFileStat(JSONObject(), galleryinfo.filestat))
+        Without.throwableOrNull {
+            val islandscape = isLandscape(galleryinfo.basepath.suffix, galleryinfo.fileinfo.content(), 0)
+            val orientation = if (islandscape == null) ""
+            else if (islandscape == true) An.CSS.xLandscape
+            else An.CSS.xPortrait
+            item.put(Key.orientation, orientation)
+            if (galleryinfo.poster != null) item.put(Key.poster, galleryinfo.poster)
+            val tn = galleryinfo.thumbnail
+            if (tn != null) {
+                item.put(Key.src, href(Basepath.joinRpath(dirprefix, tn.rpath)))
+            } else if (MimeUtil.isImageLcSuffix(galleryinfo.basepath.lcSuffix)) {
+                if (galleryinfo.filestat.length > DEF.thumbnailThreshold) {
+                    thumbnailGenerator(
+                        galleryinfo.fileinfo,
+                        if (islandscape == true) major else minor,
+                        if (islandscape == true) minor else major,
+                        DEF.jpegQualityVeryLow
+                    )?.let {
+                        item.put(Key.src, it)
+                        if (options.scrollableTn) {
+                            item.put(Key.css, if (islandscape == true) An.CSS.xxScrollH else An.CSS.xxScrollV)
+                        }
+                        item
+                    } ?: item.put(Key.src, url)
+                }
+            }
+            item
+        } ?: return
+        section.put(galleryinfo.cpath, item)
+    }
+
+    private fun href(path: String): String {
+        return URLEncodedUtils.encPath(path, Charsets.UTF_8).replace("\"", "&quot;")
+    }
+
+    private fun label(basepath: Basepath): String {
+        val text = if (basepath.name == "index.html" && basepath.dir != null)
+            Basepath.from(basepath.dir!!).stem else
+            basepath.stem
+        if (text.isEmpty())
+            return text
+        val label = text.replace(labelPat, " ").trim().ifEmpty { text }
+        val c = label[0]
+        return if (Character.isUpperCase(c)) label else
+            Character.toUpperCase(c).toString() + label.substring(1)
+    }
+
+    @Throws(JSONException::class)
+    private fun sortbydir(rpaths: Collection<String>): JSONObject {
+        val ret = JSONObject()
+        for (rpath in rpaths) {
+            val basepath = Basepath.from(rpath)
+            var section = basepath.dir
+            if (section == null) section = ""
+            val sections = ret.optJSONArray(section)
+            if (sections != null) {
+                sections.put(rpath)
+            } else {
+                ret.put(section, JSONArray().put(rpath))
+            }
+        }
+        return ret
+    }
+
+    private fun sectionname(prefix: String, rdir: String): String {
+        return Basepath.joinRpath(prefix, rdir)
+    }
+
+    @Throws(JSONException::class)
+    private fun scanMedias(
+        dirinfo: IFileInfo,
+        bydir: JSONObject,
+        ismedia: Fun11<String, Boolean>
+    ): GalleryInfos {
+        var size = 0L
+        var count = 0
+        val map: MutableMap<String, List<GalleryInfo>> = TreeMap()
+        dirinfo.root.transaction {
+            for (section in bydir.keys()) {
+                val sorted: MutableList<GalleryInfo> = ArrayList()
+                for (rpath in bydir.getJSONArray(section).mapsStringNotNull { it }) {
+                    val basepath = Basepath.from(rpath)
+                    val lcsuffix = basepath.lcSuffix
+                    if (ismedia(lcsuffix)) {
+                        val fileinfo = dirinfo.fileInfo(rpath)
+                        val filestat = fileinfo.stat()
+                        if (filestat == null || !filestat.isFile) {
+                            continue
+                        }
+                        size += filestat.length
+                        count += 1
+                        val poster = if (lcsuffix == MimeUtil.Suffix.PDF) {
+                            thumbnailGenerator(fileinfo, DEF.pdfPosterSize, DEF.pdfPosterSize, DEF.jpegQualityThumbnail)
+                        } else if (MimeUtil.isVideoLcSuffix(lcsuffix)) {
+                            thumbnailGenerator(fileinfo, DEF.pdfPosterSize, DEF.pdfPosterSize, DEF.jpegQualityThumbnail)
+                        } else null
+                        sorted.add(GalleryInfo(fileinfo, filestat, fileinfo.cpath, rpath, basepath, poster, null))
+                    }
+                }
+                val filtered = filterThumbnails(sorted)
+                if (filtered.isNotEmpty()) {
+                    map[section] = filtered
+                }
+            }
+        }
+        return GalleryInfos(size, count, map)
+    }
+
+    ///// @page 0 for first page.
+
+    private fun filterThumbnails(a: MutableList<GalleryInfo>): List<GalleryInfo> {
+        return a
+    }
+
+    companion object {
+        private val labelPat = Regex("[-_]")
     }
 }

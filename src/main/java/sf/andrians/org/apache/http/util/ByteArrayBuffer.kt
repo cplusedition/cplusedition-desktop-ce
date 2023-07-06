@@ -138,13 +138,13 @@ class ByteArrayBuffer(capacity: Int) : Serializable {
         var i1 = off
         var i2 = oldlen
         while (i2 < newlen) {
-            val c = b[i1].toInt()
-            if (c >= 0x20 && c <= 0x7E ||  // Visible ASCII
-                    c >= 0xA0 && c <= 0xFF || // Visible ISO-8859-1
-                    c == 0x09) {                // TAB
+            val c = b[i1].code
+            if (c >= 0x20 && c <= 0x7E ||
+                c >= 0xA0 && c <= 0xFF ||
+                c == 0x09) {
                 buffer[i2] = c.toByte()
             } else {
-                buffer[i2] = '?'.toByte()
+                buffer[i2] = '?'.code.toByte()
             }
             i1++
             i2++

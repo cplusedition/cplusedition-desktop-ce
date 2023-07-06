@@ -21,7 +21,7 @@ import java.io.InputStream
 interface ICpluseditionResponse {
     fun setContentLength(length: Long)
     fun setContentType(type: String)
-    fun setHeader(name: String, value: String)
+   fun setHeader(name: String, value: String)
     fun setStatus(status: Int)
     fun setData(data: InputStream)
     fun getStatus(): Int

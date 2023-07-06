@@ -50,10 +50,10 @@ import java.nio.charset.Charset
  * @since 4.2
  */
 object Consts {
-    const val CR = 13 // <US-ASCII CR, carriage return (13)>
-    const val LF = 10 // <US-ASCII LF, linefeed (10)>
-    const val SP = 32 // <US-ASCII SP, space (32)>
-    const val HT = 9 // <US-ASCII HT, horizontal-tab (9)>
+    const val CR = 13
+    const val LF = 10
+    const val SP = 32
+    const val HT = 9
     val UTF_8 = Charset.forName("UTF-8")
     val ASCII = Charset.forName("US-ASCII")
     val ISO_8859_1 = Charset.forName("ISO-8859-1")

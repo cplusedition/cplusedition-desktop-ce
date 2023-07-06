@@ -21,34 +21,35 @@ import com.cplusedition.anjson.JSONUtil.stringOrNull
 import org.json.JSONObject
 
 object MediaInfo {
-    //#BEGIN SINCE 2.9
-    //#BEGIN MediaInfo
-        final val Bitrate = "#XS7"
-        final val Channels = "#X7h"
-        final val CreationDate = "#XqK"
-        final val DataUrl = "#XUn"
-        final val Description = "#XNL"
-        final val Duration = "#Xzr"
-        final val Error = "#Xnv"
-        final val FileDate = "#XP0"
-        final val FileExists = "#XHR"
-        final val FileSize = "#X86"
-        final val FrameRate = "#X1w"
-        final val Height = "#XWL"
-        final val Id = "#Xt8"
-        final val Mime = "#Xhy"
-        final val Playable = "#XEP"
-        final val Private = "#XsM"
-        final val Rotation = "#XHA"
-        final val SampleRate = "#Xm8"
-        final val StagingId = "#Xoi"
-        final val Title = "#XYA"
-        final val TnInfo = "#XUq"
-        final val Uri = "#XOu"
-        final val Width = "#Xwt"
-    //#END MediaInfo
+    final const val Bitrate = "#Xvx"
+    final const val Channels = "#XVO"
+    final const val CreationDate = "#XZy"
+    final const val DataUrl = "#Xy5"
+    final const val Description = "#XU5"
+    final const val Duration = "#X6s"
+    final const val Error = "#Xpv"
+    final const val FileDate = "#X0w"
+    final const val FileExists = "#Xob"
+    final const val FileSize = "#Xzt"
+    final const val FrameRate = "#Xs8"
+    final const val Height = "#XNV"
+    final const val Id = "#Xcu"
+    final const val Mime = "#XBo"
+    final const val Playable = "#X1P"
+    final const val Private = "#XAs"
+    final const val Rotation = "#XFw"
+    final const val SampleRate = "#XE7"
+    final const val StagingId = "#XHs"
+    final const val Title = "#XFE"
+    final const val TnInfo = "#Xu3"
+    final const val Uri = "#XIE"
+    final const val Width = "#XvV"
     fun id(info: JSONObject): Long {
         return info.optLong(Id, -1)
+    }
+
+    fun cpath(info: JSONObject): String? {
+        return info.stringOrNull(Id)
     }
 
     fun mime(info: JSONObject): String? {
@@ -67,48 +68,48 @@ object MediaInfo {
         return info.stringOrDef(Description, "")
     }
 
-    fun creationDate(info: JSONObject): Long {
-        return info.optLong(CreationDate, 0)
+    fun creationDate(info: JSONObject, def: Long = 0): Long {
+        return info.optLong(CreationDate, def)
     }
 
-    fun lastModified(info: JSONObject): Long {
-        return info.optLong(FileDate, 0)
+    fun lastModified(info: JSONObject, def: Long = 0): Long {
+        return info.optLong(FileDate, def)
     }
 
-    fun size(info: JSONObject): Long {
-        return info.optLong(FileSize, 0)
+    fun size(info: JSONObject, def: Long = 0): Long {
+        return info.optLong(FileSize, def)
     }
 
-    fun width(info: JSONObject): Int {
-        return info.optInt(Width, -1)
+    fun width(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(Width, def)
     }
 
-    fun height(info: JSONObject): Int {
-        return info.optInt(Height, -1)
+    fun height(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(Height, def)
     }
 
-    fun rotation(info: JSONObject): Int {
-        return info.optInt(Rotation, -1)
+    fun rotation(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(Rotation, def)
     }
 
-    fun duration(info: JSONObject): Double {
-        return info.optDouble(Duration, -1.0)
+    fun duration(info: JSONObject, def: Double = -1.0): Double {
+        return info.optDouble(Duration, def)
     }
 
-    fun bitrate(info: JSONObject): Int {
-        return info.optInt(Bitrate, -1)
+    fun bitrate(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(Bitrate, def)
     }
 
-    fun samplerate(info: JSONObject): Int {
-        return info.optInt(SampleRate, -1)
+    fun samplerate(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(SampleRate, def)
     }
 
-    fun framerate(info: JSONObject): Double {
-        return info.optDouble(FrameRate, -1.0)
+    fun framerate(info: JSONObject, def: Double = -1.0): Double {
+        return info.optDouble(FrameRate, def)
     }
 
-    fun channels(info: JSONObject): Int {
-        return info.optInt(Channels, -1)
+    fun channels(info: JSONObject, def: Int = -1): Int {
+        return info.optInt(Channels, def)
     }
 
     fun isPlayable(info: JSONObject): Boolean {
@@ -158,5 +159,4 @@ object MediaInfo {
             }
         }
     }
-    //#END SINCE 2.9
 }

@@ -1,0 +1,364 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="introduction.html" />
+        <link rel="next" type="text/html" href="mainToolbar.html" />
+    </head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title">
+                System Toolbar</div>
+
+            <div class="xx-content">
+                <div class="xx-ruler xx-plum">
+                </div>
+                <div style="width: fit-content; max-width: 100%; overflow: auto; margin-top: 1ex; " <a="" href="../../img/main/toolbar/crops/system01.jpg?view"><img class="xx-figure-toolbar" src="../../img/main/toolbar/crops/system01.jpg" style="float: right; " />
+                </div>
+                <div style="clear:both; ">
+                    <div class="xx-padding-top-bottom-left" style="clear:none; display:flex; flex-direction:column; float:right;">
+                        
+                        <div style="display:flex; flex-direction:column; margin-top:10px; ">
+                            <div class="" style="flex: 0 0 auto; height:">
+                                <a href="../../img/system/createLoginDialogWithTouchID.jpg?view"><img class="xx-figure-lb" src="../../img/system/createLoginDialogWithTouchID.jpg" /></a>
+                            </div>
+                            <div class="x-caption" style="flex:0 0 auto;margin-top:5px;padding-top:5px;">
+                                First Login
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; margin-top:10px; ">
+                            <div class="" style="flex: 0 0 auto; height:">
+                                <a href="../../img/system/touchIDLogin.jpg?view"><img class="xx-figure-lb" src="../../img/system/touchIDLogin.jpg" /></a>
+                            </div>
+                            <div class="x-caption" style="flex:0 0 auto;margin-top:5px;padding-top:5px;">Fingerprint Login
+                            </div>
+                        </div>
+                        
+                        <div style="display:flex; flex-direction:column; margin-top:10px; ">
+                            <div class="" style="flex: 0 0 auto; height:">
+                                <div class="x-pictureframe" style="display:inline-block; height:120px; max-height:25vw; ">
+                                    <a href="../../img/system/backupFilepicker01.jpg?view"><img class="xx-figure-lb" src="../../img/system/backupFilepicker01.jpg" /></a>
+                                </div>
+                            </div>
+                            <div class="x-caption" style="flex:0 0 auto;margin-top:5px;padding-top:5px;">
+                                Backup / Restore
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; margin-top:10px; ">
+                            <div class="" style="flex: 0 0 auto; height:">
+                                <a href="../../img/system/backupKeysPasswordDialog.jpg?view"><img class="xx-figure-lb" src="../../img/system/backupKeysPasswordDialog.jpg" /></a>
+                            </div>
+                            <div class="x-caption" style="flex:0 0 auto;margin-top:5px;padding-top:5px;">
+                                Backup keys
+                            </div>
+                        </div>
+                    </div>
+                    <div class="x-para">
+                        The System Toolbar provide actions for backup, restore, print, reset, ... etc.</div>
+                    <div class="x-head3 xx-head-plum">Login (<span class="x-symbol" style="font-family: FontAwesome;">)</span></div>
+                    <div class="x-para">On system that support fingerprint authentication, the fingerprint icon in the login dialog indicates that fingerprint  login is available. There must be at least one fingerprint registered in <span class=""><span class="x-color-darkblue">Settings</span></span> / <span class="x-color-darkblue">Security</span> / <span class="x-color-darkblue">Fingerprint</span> and screen lock enabled to enable fingerprint login. See Android documentation for details.<div class="x-para">When the icon is tinted orange, fingerprint login is available but disabled. When you try to login with fingerprint, you would be prompted to enter the login password to enable fingerprint login. Likewise, when password login is disabled but fingerprint login is enabled, try login with password and you be prompted to enter the fingerprint to enable password login.</div></div>
+                    <div class="x-para">When fingerprint login is enabled, click on the fingerprint icons shows the option to disable fingerprint login.<br /></div><ul class="x-none">
+                            <li class="x-list">
+                            <div class="x-bullet x-red" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content">
+                                <span class="x-error">Any change to the fingerprint settings, including adding fingers, would invalidate the fingerprint protected login credential</span>. Make sure password login is enabled before you change the fingerprint settings.</div>
+                            </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Password should consists of ASCII characters between 0x21..0x7e inclusive only.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that the login password is app specific. It has nothing to do with the screen lock or device passcode.</span></li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                All system actions except restoring of the master keys require login first. The login
+                                password and master keys are created on first login or on restoring of the master keys.<br />
+                            </div>
+                        </div>
+                        </li>
+                        </ul>
+                    <div class="x-head3 xx-head-plum">
+                        <a name="Print"></a>
+                        Print</div><div class="x-para">
+                        The print action (<span class="x-symbol" style="font-family: FontAwesome;"></span>) print the current HTML documents using standard <div name="x-annotation" class="x-annotation"><span class="x-a-target">Android Print Service</span><div class="x-smokescreen"><div class="x-a-content" style="border: none; background-color: rgb(255, 255, 255);"><a href="../../img/system/printDialog.jpg?view"><img class="xx-figure-l x-portrait" style="float:left;" src="../../img/system/printDialog.jpg" /></a></div></div></div>, with standard options like Print to PDF, page ranges, ... etc. <ul class="x-none xx-tips"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that the print action load and render the document in its own context according to paper size, orientation, ... etc. The document formatted for print may looks very different from how it appears on screen. So check the preview first.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">If you need to print elements that are not visible by default, eg. right side panel, annotations, ... etc, you need to edit the document to force them visible on load before print.</span></li></ul></div><div class="x-head3 xx-head-plum">
+                        <a name="Backup"></a>
+                        Backup
+                    </div>
+                    <div class="x-pictureframe" name="x-pictureframe" style="display:block;"><div style="display:inline-block; overflow:hidden; box-sizing:content-box; "><img class="xx-figure-toolbar" style="border:1px solid #888; margin-left:-60%; " src="../../img/main/contextmenu/crops/backupFilepickerToolbar.jpg" /></div></div>
+                    <ul class="x-none">
+
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                Cancel
+                            </div>
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            <span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            Perform the backup action, the backup file extension determines what to backup:
+                        </div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"><br /></span><span class="x-list-content"><ul class="x-none"><li class=""><span class="x-bold">.ibackup</span> Create an incremental data backup.</li><li class=""><span class="x-bold">.backup</span> Create a full data backup.</li><li class=""><span class="x-bold">.keys</span> Create a backup of the master keys.</li><li class=""><span class="x-bold">.events</span> Create a backup of the calendar events.</li><li class=""><span class="x-bold">.zip</span> Create an unencrypted zip archive of a directory..</li></ul></span></li>
+                        
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content"><div class="x-pictureframe" name="x-pictureframe" style="clear:none; display:block; float:right; margin-left:10px; margin-top:10px; "><div style="display:inline-block; overflow:hidden; box-sizing:content-box; "><img class="xx-figure-s" src="../../img/main/contextmenu/crops/filePickerContextmenu.jpg" /></div></div>Show context menu that contains the standard file operations (copy, cut, paste, delete, mkdir and rename) as in the normal file picker. See descriptions in the <a href="filesPanel.html#Copy">Files Panel</a> for details.</span></li>
+
+                        
+                        
+
+                    </ul><ul class="x-none"><li class="x-list xx-tips">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>For security and stability reason, the unencrypted zip archive cannot be used for restore.</div>
+                        </div>
+                        </li><li class="x-list xx-tips">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>The data backup contains only the documents, no keys, and no events. The data backup is protected by one of the master keys, so no password is required.</div>
+                        </div>
+                        </li><li class="x-list xx-tips">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>The events backup contains only the calendar events and alarms. The events backup is protected by one of the master keys, so no password is required.</div>
+                        </div>
+                        </li><li class="x-list xx-tips">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>The keys backup contains only the master keys. The backup file is protected by a password that should be 8 characters or more.</div>
+                        </div>
+                        </li><li class="x-list xx-tips">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>See the <a href="#IncrementalBackup">Incremental backup</a> section below on how incremental backup works.</div></div></li></ul><div class="x-para">
+                                You can save the backups to two directories. The <span class="x-plum x-color-darkblue">Internal</span>
+                                backup directory is private and accessible only by this app. It is good for saving
+                                snapshots. The <span class="x-plum x-color-darkblue">External</span> backup directory is located at the primary sdcard, or emulated sdcard. In most case, it should be under / <span class="x-color-darkblue">sdcard</span> / <span class="x-color-darkblue">Android</span> / <span class="x-color-darkblue">data</span>. It can be accessed by any app that has <span class="x-color-darkblue">READ/WRITE EXTERNAL STORAGE</span> permission, so you can move the backups to other places, eg. through File managers or <span class="x-color-darkblue">adb</span>.  <span class="x-error">Note that both backup directories would be deleted when you uninstall the app</span>, so you better move your backups to some safer places first.<br /><br /><ul class="x-none"><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            <span style="color: rgb(255, 0, 0);"></span>
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                <span class="x-error"><a name="BackupMasterKeys"></a>Be sure to create at least one backup of the master keys</span>.
+                                The master keys are random generated and unique on each generation. Regeneration
+                                create new keys which would not be able to read documents and backups that are
+                                protected by the original master keys.
+                            </div>
+                        </div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            <span class="x-red"></span>
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                <span class="x-error">Be sure to keep the master keys backup in a private
+                                location</span>. The master keys backup is protected by a password. For determined hackers, password protected files are easy to crack if provided unlimited access. Decryption of the
+                                masters keys would enable reading of all encrypted data backups and private documents.
+                            </div>
+                        </div>
+                        </li>
+                            <li class="x-list">
+                            <div class="x-bullet x-red" style="font-family: FontAwesome;">
+                                
+                            </div>
+                            <div class="x-list-content"><span class="x-error"><b>IMPORTANT</b>: The app deliberately <span class=""><b>OPT OUT</b></span> of the standard Android Auto Backup</span>. So none of the documents and backup directories would be backup automatically by Android. You have to manually create backups and move them to some secondary storage regularly.</div>
+                            </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">However, if your system have other backup agents that do not require opt-in and has sufficient privileges, the app cannot prevent them from backing up the app data.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Since content of the <span class="x-color-darkblue">/External</span> directory is accessible by any app that has <span class="x-color-darkblue">READ/WRITE EXTERNAL STORAGE</span> permission, it should be used as a transient storage only. Use the <span class="x-color-darkblue">/Internal</span> directory for backups. You can move files between the <span class="x-color-darkblue">/Internal</span> and <span class="x-color-darkblue">/External</span> directories at any time.</span></li>
+                        </ul>
+                            </div>
+                    <div class="x-head3 xx-head-plum">
+                        <a name="Restore"></a>
+                        Restore
+                    </div><div class="x-pictureframe" name="x-pictureframe" style="display:block; "><div style="display:inline-block; overflow:hidden; box-sizing:content-box; "><img class="xx-figure-toolbar" style="border:1px solid #888; margin-left:-60%; " src="../../img/main/contextmenu/crops/restoreDataFilepickerToolbar.jpg" /></div></div><div class="x-pictureframe" name="x-pictureframe" style="display:block; "><div style="display:inline-block; overflow:hidden; box-sizing:content-box; "><img class="xx-figure-toolbar" style="border:1px solid #888; margin-left:-60%; " src="../../img/main/contextmenu/crops/restoreKeysFilepickerToolbar.jpg" /></div></div>
+                    <ul class="x-none">
+
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                Cancel
+                            </div>
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></div>
+                        <div class="x-list-content">
+                            <div>Perform the restore action. The file extension of the backup file determines what to restore. See the backup action description for details.</div><ul class="x-none"><li class="x-list xx-tips"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that keys, events and pdfs are restored/imported as live data. However, data backups are restored to a staging area at /Restore. You can then cherry pick which file or directory to restore by simply copying it to the document directories. The content of the /Restore directory is readonly, but deletable. All data under /Restore are removed when another restore starts.</span></li></ul>
+                        </div>
+                        </li>
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">
+                            <div>
+                                Restore data/events with an another set of master keys provided by a keys backup. The alien keys are used to decrypt the backup file and discarded after the restore action. The restore data is written to storage with the native keys.
+                            </div>
+                        </div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                Restore the master keys. Unlike restoring data, which can be performed any time after
+                                login, restoring the master keys can be performed only after a fresh install, or a
+                                factory reset. The master key backup file password would becomes the login password
+                                after restore.
+                            </div>
+                        </div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Show file operations context menu. The context menu is the same as above in the backup dialog.</span></li>
+
+                        
+                        
+
+                    </ul>
+                    <div class="x-head3 xx-head-plum">
+                        Change password
+                    </div><div><div class="xx-padding-bottom-left" style="clear:none; display:flex; flex-direction:column; float:right;">
+                            <div class="" style="align-self:flex-end; flex:0 0 auto; ">
+                                <a href="../../img/system/changePassword01.jpg?view"><img class="xx-figure-lb" src="../../img/system/changePassword01.jpg" /></a>
+                            </div>
+                            <div class="x-caption" style="flex:0 0 auto; margin-top:5px; padding-top:5px; ">
+                                Change password
+                            </div><div style="align-self:flex-end; border:1px solid rgb( 136, 136, 136); box-sizing:content-box; display:inline-block; flex:0 0 auto; margin-right:0; margin-top:10px; overflow:hidden; padding:0px; " class=""><a href="../../img/system/resetUserSettings.jpg?view"><img class="xx-figure-l x-landscape" style="float:right;" src="../../img/system/resetUserSettings.jpg" /></a></div><div style="box-sizing:border-box; flex:0 0 auto; margin-top:5px; " class="x-caption">Reset user setting</div><div style="align-self:flex-end; border:1px solid rgb( 136, 136, 136); box-sizing:content-box; display:inline-block; flex:0 0 auto; margin-right:0; margin-top:10px; overflow:hidden; padding:0px; " class=""><a href="../../img/system/factoryReset.jpg?view"><img class="xx-figure-l x-landscape" style="float:right;" src="../../img/system/factoryReset.jpg" /></a></div><div style="box-sizing:border-box; flex:0 0 auto; margin-right:0; margin-top:5px; " class="x-caption">Factory reset</div>
+                        </div></div>
+                    <div class="x-para">
+                        Login password must be 4 characters or more. You may change the login password anytime. It does
+                        not affect the master keys. When the master keys are destroyed on factory reset, the login
+                        password is also destroyed.
+                    </div>
+                    <ul class="x-none">
+
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>
+                                Disable password login. This is only available when both password and fingerprint login
+                                are enabled.
+                            </div>
+                        </div>
+                        </li>
+
+                    </ul>
+                    <div class="x-head3 xx-head-plum">
+                        Reset user settings
+                    </div>
+                    <div class="x-para">
+                        
+                        Reset the user settings to default values. All documents, events, login password and master
+                        keys would stay intact.
+                    </div>
+                    <div class="x-head3 xx-head-plum">
+                        Factory reset
+                    </div>
+                    <div class="x-para">
+                        Reset to factory state. This including deleting all private and non-private
+                        documents, destroying the login credentials and master keys, ... etc. However, the <span class="x-color-darkblue">Internal</span>
+                        and <span class="x-color-darkblue">External</span> backup directories would stay intact on factory reset.
+                    </div>
+                    <ul style="margin-top:10px; ">
+                        
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family:FontAwesome; ">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            <div>Note that factory reset <b>require login</b>. If you forget the login password or for any reason unable to login, you would have to <span class="x-error">uninstall the app, which delete everything including the Internal and External backup directories</span>.  Then reinstall the app, copy the backups from secondary storage to the External directory and restore the master keys and data from the backups.<br />
+                            </div>
+                        </div>
+                        </li>
+
+                        
+                        
+                    </ul><div class="x-head3 xx-head-plum"><a name="IncrementalBackup"></a>Incremental data backup</div><div class="x-para">The backup/restore data action works in incremental mode if the backup file has an <span class="x-plum">.ibackup</span> extension. Here is how the incremental backup/restore works:<ul class="x-none"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">All .ibackup files in a directory are considered as part of an incremental backup sequence. The files should be ordered by filename, in alphabetic order. For example, you can use the date string, like 20160123.ibackup, as filenames.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">To create an incremental backup, choose a directory that contains the incremental sequence. Name the backup file with an .ibackup extension and a name that is greater than the last .ibackup file in alphabetic order. The backup action backup only files that are modified since the previous .ibackup file, if there is one. Otherwise, it backup all files as if it is a full backup.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">To restore from an incremental sequence, select an .ibackup file as the source file. The restore action restore all the .ibackup files in the directory before and including the selected file in filename order.</span></li></ul><ul class="x-none xx-tips">
+                            <li class="x-list">
+                            <div class="x-bullet" style="font-family:FontAwesome;"></div>
+                            <div class="x-list-content">
+                                <span>The incremental backup use file size and timestamp to check for modified files.</span></div>
+                            </li><li class="x-list">
+                            <div class="x-bullet" style="font-family:FontAwesome;"></div>
+                            <div class="x-list-content">
+                                <span>Note that you can restore from any .ibackup instead of just the last one. Each sequence up to a particular .ibackup file represent a snapshot at the time that .ibackup file was created.</span></div>
+                            </li>
+                        </ul></div><div class="x-head3 xx-head-plum"><a name="IncrementalBackup"></a>No backup</div><div class="x-para">You can exclude a directory and everything under it from being backed up by creating a marker file in the directory. To create/delete such marker file, use the <div name="x-annotation" class="x-annotation"><span class="x-a-target">Toggle Nobackup</span><div class="x-smokescreen" style="null"><div class="x-a-content" style="background-color: rgba(255, 255, 255, 0);"><a href="../../img/sidepanel/explore/filesPanelContextmenu01.jpg?view"><img class="xx-figure-s" src="../../img/sidepanel/explore/filesPanelContextmenu01.jpg" /></a></div></div></div> action (<span class="x-symbol" style="font-family: FontAwesome;"></span>) in the Explore Files panel contextmenu.</div>
+
+                    <div class="x-head3 xx-head-plum">
+                        System info
+                    </div><div class="x-para" style="overflow: auto; width: 100%; "><img class="xx-figure-toolbar" src="../../img/main/toolbar/crops/audioRecording01.jpg" /></div>
+                    
+                    
+                    <div class="xx-head3-plum">
+                        Audio recording status (<span class="x-symbol" style="font-family: FontAwesome;" alt="microphone"></span>)
+                    </div>
+                    <div class="x-para">
+                        When an audio recording is in progress, a microphone icon would be shown in the Main Toolbar. Click on the microphone icon stops the recording.
+                    </div><div class="xx-head3-plum">
+                        Audio playback status (<span class="x-symbol" style="font-family: FontAwesome;" alt="microphone"></span>)
+                    </div><div class="x-para">
+                        When an audio playing is in progress in background, a speaker icon would be shown in the Main Toolbar. Click on the icon shows the <div class="x-annotation"><span class="x-a-target">Audio Player</span><div class="x-smokescreen"><div class="x-a-content" style="border: none; background-color: rgb(255, 255, 255);"><a href="../../img/main/crops/audioPlayer01.jpg?view"><img class="x-imageholder xx-figure-b x-landscape" src="../../img/main/crops/audioPlayer01.jpg" style="float:left;" /></a></div></div></div> where you can control the playback again.
+                    </div>
+
+                </div>
+                <div class="xx-ruler xx-plum">
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li><li class="xx-toc1"><span><a href="features.html">Features</a></span></li>
+                        <li class="xx-toc1"><a href="systemMenu.html"><span class="xx-inactive">System Toolbar</span></a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html">Drawing Canvas</a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html">Dialogs</a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html">Search</a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html">Files</a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html">Events</a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    
+
+
+
+
+
+</body></html>

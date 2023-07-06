@@ -171,10 +171,11 @@ a.xx-section {
 }
 #x-rightsidepanel div.x-rightsidepanel {
   border: none;
-  width: 4em;
+  width: 3em;
   line-height: 1.5;
-  left: calc(100vw - 4em);
-  padding: 1ex 0 75vh 0;
+  left: calc(100vw - 3em - var(--x-button-size-px));
+  padding: 1ex var(--x-button-size-px) 75vh 0.5em;
+  box-sizing: content-box;
   background-color: rgb(116, 27, 71);
 }
 @media  print {

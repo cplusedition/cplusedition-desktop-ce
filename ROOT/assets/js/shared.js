@@ -1,4 +1,7 @@
-/*!            
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HttpReasonPhrase = exports.HttpStatus = exports.HttpHeader = void 0;
+/*!
     C+edition for Desktop, Community Edition.
     Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
     
@@ -14,13 +17,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpReasonPhrase = exports.HttpStatus = exports.HttpHeader = void 0;
 const botcore_1 = require("./bot/botcore");
 class HttpHeader {
 }
-exports.HttpHeader = HttpHeader;
 HttpHeader.Accept = "Accept";
 HttpHeader.AcceptCharset = "Accept-Charset";
 HttpHeader.AcceptEncoding = "Accept-Encoding";
@@ -81,9 +80,9 @@ HttpHeader.TransferEncoding = "Transfer-Encoding";
 HttpHeader.TrackingStatusValue = "Tracking-Status-Value";
 HttpHeader.Vary = "Vary";
 HttpHeader.WwwAuthenticate = "WWW-Authenticate";
+exports.HttpHeader = HttpHeader;
 class HttpStatus {
 }
-exports.HttpStatus = HttpStatus;
 HttpStatus.Continue = 100;
 HttpStatus.SwitchingProtocols = 101;
 HttpStatus.Processing = 102;
@@ -141,5 +140,6 @@ HttpStatus.InsufficientStorage = 507;
 HttpStatus.LoopDetected = 508;
 HttpStatus.NotExtended = 510;
 HttpStatus.NetworkAuthenticationRequired = 511;
-exports.HttpReasonPhrase = botcore_1.map_([HttpStatus.Continue, "Continue"], [HttpStatus.SwitchingProtocols, "Switching Protocols"], [HttpStatus.Processing, "Processing"], [HttpStatus.Ok, "OK"], [HttpStatus.Created, "Created"], [HttpStatus.Accepted, "Accepted"], [HttpStatus.NonAuthoritativeInformation, "Non Authoritative Information"], [HttpStatus.NoContent, "No Content"], [HttpStatus.ResetContent, "Reset Content"], [HttpStatus.PartialContent, "Partial Content"], [HttpStatus.MultipleChoices, "Multiple Choices"], [HttpStatus.MovedPermanently, "Moved Permanently"], [HttpStatus.Found, "Found"], [HttpStatus.SeeOther, "See Other"], [HttpStatus.NotModified, "Not Modified"], [HttpStatus.UseProxy, "Use Proxy"], [HttpStatus.SwitchProxy, "Switch Proxy"], [HttpStatus.TemporaryRedirect, "Temporary Redirect"], [HttpStatus.PermanentRedirect, "Permanent Redirect"], [HttpStatus.BadRequest, "Bad Request"], [HttpStatus.Unauthorized, "Unauthorized"], [HttpStatus.PaymentRequired, "Payment Required"], [HttpStatus.Forbidden, "Forbidden"], [HttpStatus.NotFound, "Not Found"], [HttpStatus.MethodNotAllowed, "Method Not Allowed"], [HttpStatus.NotAcceptable, "Not Acceptable"], [HttpStatus.ProxyAuthenticationRequired, "Proxy Authentication Required"], [HttpStatus.RequestTimeout, "Request Timeout"], [HttpStatus.Conflict, "Conflict"], [HttpStatus.Gone, "Gone"], [HttpStatus.LengthRequired, "Length Required"], [HttpStatus.PreconditionFailed, "Precondition Failed"], [HttpStatus.RequestEntityTooLarge, "Request Entity Too Large"], [HttpStatus.RequestURITooLong, "Request URI Too Long"], [HttpStatus.UnsupportedMediaType, "Unsupported Media Type"], [HttpStatus.RequestedRangeNotSatisfiable, "Requested Range Not Satisfiable"], [HttpStatus.ExpectationFailed, "Expectation Failed"], [HttpStatus.ImATeapot, "I'm A Teapot"], [HttpStatus.AuthenticationTimeout, "Authentication Timeout"], [HttpStatus.EnhanceYourCalm, "Enhance Your Calm"], [HttpStatus.UnprocessableEntity, "Unprocessable Entity"], [HttpStatus.Locked, "Locked"], [HttpStatus.FailedDependency, "Failed Dependency"], [HttpStatus.PreconditionRequired, "PreconditionR equired"], [HttpStatus.TooManyRequests, "Too Many Requests"], [HttpStatus.RequestHeaderFieldsTooLarge, "Request Header Fields Too Large"], [HttpStatus.InternalServerError, "Internal Server Error"], [HttpStatus.NotImplemented, "Not Implemented"], [HttpStatus.BadGateway, "Bad Gateway"], [HttpStatus.ServiceUnavailable, "Service Unavailable"], [HttpStatus.GatewayTimeout, "Gateway Timeout"], [HttpStatus.HttpVersionNotSupported, "HTTP Version Not Supported"], [HttpStatus.VariantAlsoNegotiates, "Variant Also Negotiates"], [HttpStatus.InsufficientStorage, "Insufficient Storage"], [HttpStatus.LoopDetected, "Loop Detected"], [HttpStatus.NotExtended, "Not Extended"], [HttpStatus.NetworkAuthenticationRequired, "Network Authentication Required"]);
+exports.HttpStatus = HttpStatus;
+exports.HttpReasonPhrase = (0, botcore_1.map_)([HttpStatus.Continue, "Continue"], [HttpStatus.SwitchingProtocols, "Switching Protocols"], [HttpStatus.Processing, "Processing"], [HttpStatus.Ok, "OK"], [HttpStatus.Created, "Created"], [HttpStatus.Accepted, "Accepted"], [HttpStatus.NonAuthoritativeInformation, "Non Authoritative Information"], [HttpStatus.NoContent, "No Content"], [HttpStatus.ResetContent, "Reset Content"], [HttpStatus.PartialContent, "Partial Content"], [HttpStatus.MultipleChoices, "Multiple Choices"], [HttpStatus.MovedPermanently, "Moved Permanently"], [HttpStatus.Found, "Found"], [HttpStatus.SeeOther, "See Other"], [HttpStatus.NotModified, "Not Modified"], [HttpStatus.UseProxy, "Use Proxy"], [HttpStatus.SwitchProxy, "Switch Proxy"], [HttpStatus.TemporaryRedirect, "Temporary Redirect"], [HttpStatus.PermanentRedirect, "Permanent Redirect"], [HttpStatus.BadRequest, "Bad Request"], [HttpStatus.Unauthorized, "Unauthorized"], [HttpStatus.PaymentRequired, "Payment Required"], [HttpStatus.Forbidden, "Forbidden"], [HttpStatus.NotFound, "Not Found"], [HttpStatus.MethodNotAllowed, "Method Not Allowed"], [HttpStatus.NotAcceptable, "Not Acceptable"], [HttpStatus.ProxyAuthenticationRequired, "Proxy Authentication Required"], [HttpStatus.RequestTimeout, "Request Timeout"], [HttpStatus.Conflict, "Conflict"], [HttpStatus.Gone, "Gone"], [HttpStatus.LengthRequired, "Length Required"], [HttpStatus.PreconditionFailed, "Precondition Failed"], [HttpStatus.RequestEntityTooLarge, "Request Entity Too Large"], [HttpStatus.RequestURITooLong, "Request URI Too Long"], [HttpStatus.UnsupportedMediaType, "Unsupported Media Type"], [HttpStatus.RequestedRangeNotSatisfiable, "Requested Range Not Satisfiable"], [HttpStatus.ExpectationFailed, "Expectation Failed"], [HttpStatus.ImATeapot, "I'm A Teapot"], [HttpStatus.AuthenticationTimeout, "Authentication Timeout"], [HttpStatus.EnhanceYourCalm, "Enhance Your Calm"], [HttpStatus.UnprocessableEntity, "Unprocessable Entity"], [HttpStatus.Locked, "Locked"], [HttpStatus.FailedDependency, "Failed Dependency"], [HttpStatus.PreconditionRequired, "PreconditionR equired"], [HttpStatus.TooManyRequests, "Too Many Requests"], [HttpStatus.RequestHeaderFieldsTooLarge, "Request Header Fields Too Large"], [HttpStatus.InternalServerError, "Internal Server Error"], [HttpStatus.NotImplemented, "Not Implemented"], [HttpStatus.BadGateway, "Bad Gateway"], [HttpStatus.ServiceUnavailable, "Service Unavailable"], [HttpStatus.GatewayTimeout, "Gateway Timeout"], [HttpStatus.HttpVersionNotSupported, "HTTP Version Not Supported"], [HttpStatus.VariantAlsoNegotiates, "Variant Also Negotiates"], [HttpStatus.InsufficientStorage, "Insufficient Storage"], [HttpStatus.LoopDetected, "Loop Detected"], [HttpStatus.NotExtended, "Not Extended"], [HttpStatus.NetworkAuthenticationRequired, "Network Authentication Required"]);
 //# sourceMappingURL=shared.js.map

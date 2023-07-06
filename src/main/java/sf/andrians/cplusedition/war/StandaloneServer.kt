@@ -19,21 +19,13 @@ package sf.andrians.cplusedition.war
 import com.cplusedition.anjson.JSONUtil
 import com.cplusedition.anjson.JSONUtil.stringMapOrNull
 import com.cplusedition.anjson.JSONUtil.stringOrNull
-import com.cplusedition.bot.core.BotResult
-import com.cplusedition.bot.core.ByteReader
-import com.cplusedition.bot.core.ByteWriter
-import com.cplusedition.bot.core.FileUt
-import com.cplusedition.bot.core.IBotResult
-import com.cplusedition.bot.core.ProcessUt
-import com.cplusedition.bot.core.WatchDog
-import com.cplusedition.bot.core.WithoutUtil.Companion.Without
-import com.cplusedition.bot.core.deleteOrFail
-import com.cplusedition.bot.core.file
-import com.cplusedition.bot.core.join
-import com.cplusedition.bot.core.mkdirsOrFail
+import com.cplusedition.bot.core.*
+
 import org.json.JSONObject
+import sf.andrians.cplusedition.support.Backend
 import sf.andrians.cplusedition.support.Http.HttpHeader
 import sf.andrians.cplusedition.support.Http.HttpStatus
+import sf.andrians.cplusedition.support.ServerKey
 import sf.andrians.cplusedition.support.handler.ICpluseditionRequest
 import sf.andrians.cplusedition.support.handler.ICpluseditionResponse
 import sf.unixsocket.UnixClientSocket
@@ -41,11 +33,7 @@ import sf.unixsocket.UnixServerSocket
 import sf.unixsocket.UnixSocket
 import sf.unixsocket.UnixSocket.SockType
 import sf.unixsocket.UnixSocket.SockType.STREAM
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.InterruptedIOException
-import java.io.OutputStream
+import java.io.*
 import java.net.URI
 import java.net.URLDecoder
 import java.time.ZonedDateTime
@@ -53,18 +41,9 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.system.exitProcess
 
-open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, private val sockfile: File) {
+open class StandaloneServer(datadir: File, backend: Backend, pass: CharArray, sockdir: File, private val sockfile: File) {
     private val socket: UnixServerSocket
-    private val delegate: ServerDelegate = ServerDelegate(datadir, pass)
-
-    object ServerKey {
-        val statusCode = "statusCode"
-        val headers = "headers"
-        val data = "data"
-        val method = "method"
-        val referrer = "referrer"
-        val url = "url"
-    }
+    private val delegate: ServerDelegate = ServerDelegate(datadir, backend, pass)
 
     companion object {
         const val SERVER = ".server"
@@ -75,8 +54,8 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
         }
         @JvmStatic
         fun main(args: Array<String>) {
-            if (args.size < 1) {
-                System.err.println("Usage: cat passfile | ${this::class.simpleName} datadir")
+            if (args.isEmpty()) {
+                System.err.println("Usage: cat passfile | ${this::class.simpleName} datadir [--db]")
                 exitProcess(1)
             }
             val datadir = File(args[0])
@@ -84,7 +63,10 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
                 System.err.println("Directory not found: ${args[0]}")
                 exitProcess(2)
             }
-            val sockdir = datadir.file("run").mkdirsOrFail() // createTempDir(directory = datadir).mkdirsOrFail()
+            val backend = if (args.size > 1 && args[1] == "--db") Backend.DB
+            else if (args.size > 1 && args[1] == "--aes") Backend.AES
+            else Backend.PLAIN
+            val sockdir = datadir.file("run").mkdirsOrFail()
             val sockfile = sockdir.file(SERVER)
             if (sockfile.exists()) {
                 System.err.println("Server is already running, abort.")
@@ -92,7 +74,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
                 exitProcess(3)
             }
             val pass = System.`in`.reader().readText().trim().toCharArray()
-            sockfile.resolveSibling(SERVER_PID).deleteOrFail().outputStream().writer().use {
+            sockfile.resolveSibling(SERVER_PID).deleteOrFail().outputStream().bufferedWriter().use {
                 try {
                     val pid = ProcessHandle.current().pid()
                     it.append("$pid")
@@ -100,7 +82,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
                     System.err.println("Error writing pid file")
                 }
             }
-            StandaloneServer(datadir, pass, sockdir, sockfile)
+            StandaloneServer(datadir, backend, pass, sockdir, sockfile)
         }
     }
 
@@ -171,8 +153,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
         }
 
         val input = client.inputStream.use {
-            val len = ByteReader(it).i32BE()
-            return@use String(it.readNBytes(len), Charsets.UTF_8)
+            String(ByteReader(it).read32BEBytes())
         }
         val json = JSONUtil.jsonObjectOrNull(input)
         if (json != null) {
@@ -180,9 +161,11 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
             val headers = json.stringMapOrNull(ServerKey.headers) ?: return badrequest(input)
             val data = json.stringOrNull(ServerKey.data) ?: return badrequest(input)
             val uri = Without.exceptionOrNull { URI(url) } ?: return badrequest(input)
-            val request = RequestAdapter(uri, headers, Base64.decode(data, Base64.DEFAULT).inputStream())
+            val isipc = json.getBoolean(ServerKey.ipc)
+            val request = RequestAdapter(uri, headers, Base64.getDecoder().decode(data))
             val response = ResponseAdapter(client, request)
-            delegate.handle1(response, request)
+            if (isipc) delegate.handlea(response, request)
+            else delegate.handle1(response, request)
         }
         return true
     }
@@ -192,9 +175,9 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
     }
 
     private class RequestAdapter(
-            private val url: URI,
-            private val headers: Map<String, String>,
-            private val data: InputStream
+        private val url: URI,
+        private val headers: Map<String, String>,
+        private val data: ByteArray
     ) : ICpluseditionRequest {
         private val queries = run {
             val ret = TreeMap<String, String>()
@@ -206,7 +189,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
         }
 
         private fun decode(value: String): String {
-            return URLDecoder.decode(value, Charsets.UTF_8)
+            return URLDecoder.decode(value, "UTF-8")
         }
 
         override fun getPathInfo(): String {
@@ -223,30 +206,26 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
 
         @Throws(IOException::class)
         override fun getInputStream(): InputStream {
-            return data
+            return data.inputStream()
         }
-
     }
 
     private class ResponseAdapter(
-            private val socket: UnixSocket,
-            private val request: ICpluseditionRequest?
+        private val socket: UnixSocket,
+        private val request: ICpluseditionRequest?
     ) : ICpluseditionResponse {
 
-        //#BEGIN HACK As of Electron 10.1.4, apparently, video response
-        //# may be cancelled without closing the socket or timeout.
         companion object {
-            val TIMEOUT = 60 * 1000L // 60sec.
+            val TIMEOUT = 60 * 1000L
         }
 
         private var watchdog: WatchDog? = null
-        //#END HACK
         private var status = HttpStatus.Ok
         private val headers = mutableMapOf<String, String>(
-                HttpHeader.ContentType to "text/html;charset=UTF-8",
-                HttpHeader.Connection to "keep-alive",
-                HttpHeader.KeepAlive to "timeout=20",
-                HttpHeader.Date to DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now())
+            HttpHeader.ContentType to "text/html;charset=UTF-8",
+            HttpHeader.Connection to "keep-alive",
+            HttpHeader.KeepAlive to "timeout=20",
+            HttpHeader.Date to DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now())
         )
 
         override fun setContentLength(length: Long) {
@@ -259,11 +238,11 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
 
         override fun setData(data: InputStream) {
             Thread {
-                var total = arrayOf(0L)
+                val total = arrayOf(0L)
                 try {
                     socket.outputStream.use { output ->
                         data.use { input ->
-                            watchdog?.cancel()
+                            watchdog?.close()
                             watchdog = WatchDog(TIMEOUT) {
                                 socket.close()
                                 input.close()
@@ -277,7 +256,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
                     socket.close()
                 } finally {
                     
-                    watchdog?.cancel()
+                    watchdog?.close()
                     watchdog = null
                 }
             }.start()
@@ -312,15 +291,17 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
             setHeader(HttpHeader.NoCache, "true")
             setHeader(HttpHeader.CacheControl, "no-cache")
             setContentType("text/html;charset=UTF-8")
-            setHeader("Content-Security-Policy",
-                    "default-src 'self';" +
-                            " script-src 'self' 'unsafe-inline';" + // 'unsafe-eval'
-                            " style-src 'self' 'unsafe-inline';" +
-                            " img-src data: 'self';" +
-                            " object-src 'none';" +
-                            " navigate-to 'self';" +
-                            " form-action 'none';" +
-                            " frame-ancestors 'self';")
+            setHeader(
+                "Content-Security-Policy",
+                "default-src 'self';" +
+                        " script-src 'self' 'unsafe-inline';" +
+                        " style-src 'self' 'unsafe-inline';" +
+                        " img-src data: 'self';" +
+                        " object-src 'none';" +
+                        " navigate-to 'self';" +
+                        " form-action 'none';" +
+                        " frame-ancestors 'self';"
+            )
         }
 
         override fun getStatus(): Int {
@@ -341,9 +322,9 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
             }
 
             val b = JSONObject()
-                    .put(ServerKey.statusCode, status)
-                    .put(ServerKey.headers, jsonheaders())
-                    .toString().toByteArray(Charsets.UTF_8)
+                .put(ServerKey.statusCode, status)
+                .put(ServerKey.headers, jsonheaders())
+                .toString().toByteArray(Charsets.UTF_8)
             ByteWriter(output).write32BE(b.size)
             output.write(b)
             return b.size
@@ -358,7 +339,7 @@ open class StandaloneServer(datadir: File, pass: CharArray, sockdir: File, priva
         private fun writeHttpHeaders(output: OutputStream) {
             val content = headers.map { (k, v) ->
                 "${k}: ${v}\r\n"
-            }.join("") + "\r\n"
+            }.joinToString("") + "\r\n"
             content.byteInputStream().use { FileUt.copy(output, it) }
         }
     }

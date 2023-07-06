@@ -37,6 +37,9 @@ li.xx-media {
   flex-direction: column;
   box-sizing: border-box;
   width: min-content;
+  max-width: 95vw;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
   padding: 5px;
   margin: 5px;
   background-color: #fff;
@@ -50,17 +53,28 @@ li.xx-media div.xx-comment {
   overflow: auto;
   padding: 5px;
   width: 180px;
-  height: 240px;
+  height: 8ex;
+}
+div.xx-body.xx-size-large li.xx-media div.xx-comment {
+  width: 320px;
+}
+div.xx-body.xx-size-xlarge li.xx-media div.xx-comment {
+  width: 400px;
+}
+div.xx-body.xx-size-xxlarge li.xx-media div.xx-comment {
+  width: 480px;
 }
 li.xx-media div.xx-audio audio {
   width: -webkit-fill-available;
-  padding-top: 10px;
 }
 li.xx-media div.x-media-photo img, li.xx-media div.xx-photo img, li.xx-media div.xx-audio img, li.xx-media div.xx-photo picture, li.xx-media div.xx-video video, li.xx-media div.xx-audio audio, li.xx-media div.xx-comment {
   display: block;
   margin: 0 auto;
   max-width: 240px;
   max-height: 240px;
+}
+li.xx-media div.xx-audio img {
+  margin-bottom: 5px;
 }
 div.xx-body.xx-size-large li.xx-media div.x-media-photo img, div.xx-body.xx-size-large li.xx-media div.xx-photo img, div.xx-body.xx-size-large li.xx-media div.xx-audio img, div.xx-body.xx-size-large li.xx-media div.xx-photo picture, div.xx-body.xx-size-large li.xx-media div.xx-video video, div.xx-body.xx-size-large li.xx-media div.xx-audio audio, div.xx-body.xx-size-large li.xx-media div.xx-comment {
   max-width: 320px;
@@ -74,18 +88,6 @@ div.xx-body.xx-size-xxlarge li.xx-media div.x-media-photo img, div.xx-body.xx-si
   max-width: 480px;
   max-height: 480px;
 }
-div.xx-body.xx-size-large li.xx-media div.xx-comment {
-  width: 320px;
-  height: 320px;
-}
-div.xx-body.xx-size-xlarge li.xx-media div.xx-comment {
-  width: 400px;
-  height: 400px;
-}
-div.xx-body.xx-size-xxlarge li.xx-media div.xx-comment {
-  width: 480px;
-  height: 480px;
-}
 div.xx-body.xx-size-xlarge li.xx-media div.x-media-caption, div.xx-body.xx-size-xxlarge li.xx-media div.x-media-caption {
   font-size: 90%;
 }
@@ -93,7 +95,7 @@ li.xx-media div.x-media-caption {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 5px;
   padding: 0 5px;
   font-size: 85%;
   overflow: hidden;
@@ -103,6 +105,56 @@ li.xx-media div.x-media-caption span.xx-datetime {
 }
 .xx-body.xx-hide li.xx-media .x-media-caption {
   display: none;
+}
+div.xx-body li.xx-media.xx-scroll-v div.x-media-photo, div.xx-body li.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 240px;
+  width: 180px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+div.xx-body.xx-size-large li.xx-media.xx-scroll-v div.x-media-photo, div.xx-body.xx-size-large li.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 320px;
+  width: 240px;
+}
+div.xx-body.xx-size-xlarge li.xx-media.xx-scroll-v div.x-media-photo, div.xx-body.xx-size-xlarge li.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 400px;
+  width: 300px;
+}
+div.xx-body.xx-size-xxlarge li.xx-media.xx-scroll-v div.x-media-photo, div.xx-body.xx-size-xxlarge li.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 480px;
+  width: 360px;
+}
+div.xx-body li.xx-media.xx-scroll-v div.x-media-photo img, div.xx-body li.xx-media.xx-scroll-v div.xx-photo img, div.xx-body li.xx-media.xx-scroll-v div.xx-photo picture {
+  width: unset !important;
+  height: unset !important;
+  max-width: -webkit-fill-available !important;
+  max-height: unset !important;
+  display: flex;
+}
+div.xx-body li.xx-media.xx-scroll-h div.x-media-photo, div.xx-body li.xx-media.xx-scroll-h div.xx-photo {
+  height: 180px;
+  max-width: 240px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+div.xx-body.xx-size-large li.xx-media.xx-scroll-h div.x-media-photo, div.xx-body.xx-size-large li.xx-media.xx-scroll-h div.xx-photo {
+  height: 240px;
+  max-width: 320px;
+}
+div.xx-body.xx-size-xlarge li.xx-media.xx-scroll-h div.x-media-photo, div.xx-body.xx-size-xlarge li.xx-media.xx-scroll-h div.xx-photo {
+  height: 300px;
+  max-width: 400px;
+}
+div.xx-body.xx-size-xxlarge li.xx-media.xx-scroll-h div.x-media-photo, div.xx-body.xx-size-xxlarge li.xx-media.xx-scroll-h div.xx-photo {
+  height: 360px;
+  max-width: 480px;
+}
+div.xx-body li.xx-media.xx-scroll-h div.x-media-photo img, div.xx-body li.xx-media.xx-scroll-h div.xx-photo img, div.xx-body li.xx-media.xx-scroll-h div.xx-photo picture {
+  width: unset !important;
+  height: unset !important;
+  max-height: -webkit-fill-available !important;
+  max-width: unset !important;
+  display: flex;
 }
 @media  print {
   div.xx-top {

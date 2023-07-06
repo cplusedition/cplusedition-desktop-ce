@@ -16,7 +16,6 @@
 */
 package com.cplusedition.bot.core
 
-import com.cplusedition.bot.core.WithoutUtil.Companion.Without
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -40,7 +39,7 @@ open class ReflectUtil {
                 name == it.name
             } ?: return@X null
             if (member.parameters.size > 1) return@X null
-            return@X member.call(o)
+            return@X if (member.isConst) member.call() else member.call(o)
         }
     }
 
@@ -99,7 +98,7 @@ open class ReflectUtil {
             if (m.parameters.size > 1) return@X null
             val c = m.returnType.classifier ?: return@X null
             if (c !is KClass<*> || !superclass.isSuperclassOf(c)) return@X null
-            return@X m.call(o) as T
+            return@X (if (m.isConst) m.call() else m.call(o)) as T
         }
     }
 
@@ -132,7 +131,7 @@ open class ReflectUtil {
     @Throws(Exception::class)
     fun objectProperties(o: Any, callback: (Property, KClass<*>, Any?) -> Unit) {
         objectProperties(o) { property, type ->
-            val value = property.call(o)
+            val value = if (property.isConst) property.call() else property.call(o)
             callback(property, type, value)
         }
     }

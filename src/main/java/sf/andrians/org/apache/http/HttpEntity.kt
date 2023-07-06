@@ -186,7 +186,7 @@ interface HttpEntity {
      *
      * @return  `true` if the entity content is streamed,
      * `false` otherwise
-     */ // don't expect an exception here
+     */ 
     val isStreaming: Boolean
 
     /**

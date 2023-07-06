@@ -48,7 +48,7 @@ open class XMLUtil {
      * @return The trimmed text content of the first child element with the given tag, null if not found.
      */
     fun textContent1(elm: Element, tag: String): String? {
-        for (c in elm.childNodes.nodes()) {
+        for (c in elm.childNodes.bot.nodes()) {
             if (c !is Element || tag != c.tagName) {
                 continue
             }
@@ -78,11 +78,40 @@ open class XMLUtil {
         return ret
     }
 
+    fun escText(value: CharSequence): CharSequence {
+        return escText(StringBuilder(), value)
+    }
+
+    /// Allow ' and " in text.
+    fun escText(ret: StringBuilder, value: CharSequence): CharSequence {
+        val len = value.length
+        var i = 0
+        while (i < len) {
+            when (val c = value[i]) {
+                '&' -> ret.append("&amp;")
+                '<' -> ret.append("&lt;")
+                '>' -> ret.append("&gt;")
+                else -> ret.append(c)
+            }
+            i++
+        }
+        return ret
+    }
+
     fun unesc(value: String): String {
         return value.replace("&#39;", "'")
-                .replace("&quot;", "\"")
-                .replace("&gt;", ">")
-                .replace("&lt;", "<")
-                .replace("&amp;", "&")
+            .replace("&quot;", "\"")
+            .replace("&gt;", ">")
+            .replace("&lt;", "<")
+            .replace("&amp;", "&")
     }
+
+    fun quoteAttr(value: CharSequence): String {
+        val buf = StringBuilder()
+        buf.append('"')
+        esc(buf, value)
+        buf.append('"')
+        return buf.toString()
+    }
+
 }

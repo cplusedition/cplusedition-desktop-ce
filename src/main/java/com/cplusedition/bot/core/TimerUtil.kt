@@ -17,6 +17,7 @@
 package com.cplusedition.bot.core
 
 import com.cplusedition.bot.core.IStepWatch.Companion.fmt
+import com.cplusedition.bot.core.IStepWatch.Companion.rate
 import java.io.Closeable
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -48,8 +49,21 @@ interface IStepWatch {
     fun toStringf(format: String, vararg args: Any): String
 
     companion object {
-        fun fmt(value: Float): String {
-            return if (value >= 1000) TextUt.format("%6d", value.toInt()) else TextUt.format("%6.2f", value)
+        const val TIMER_RESOLUTION = 1e-6f
+
+        fun fmt(value: Float?): String {
+            return if (value == null) "   ---"
+            else if (value >= 1000) TextUt.format("%6d", value.toInt()) else TextUt.format("%6.2f", value)
+        }
+
+        fun fmt(value: Double?): String {
+            return if (value == null) "   ---"
+            else if (value >= 1000) TextUt.format("%6d", value.toInt()) else TextUt.format("%6.2f", value)
+        }
+
+        fun rate(count: Float, time: Float): Float {
+            val elapsed = if (time < TIMER_RESOLUTION) TIMER_RESOLUTION else time
+            return count / elapsed
         }
     }
 }
@@ -133,12 +147,12 @@ open class StepWatch : IStepWatch {
         val delta = deltaSec()
         val rate = rate(count.toFloat(), delta)
         return TextUt.format(
-                "%s/%s s %10d $unit %10.2f $unit/s: %s",
-                fmt(delta),
-                fmt(stepStartTime / 1000f),
-                count,
-                rate,
-                msg
+            "%s/%s s %10d $unit %10.2f $unit/s: %s",
+            fmt(delta),
+            fmt(stepStartTime / 1000f),
+            count,
+            rate,
+            msg
         )
     }
 
@@ -146,90 +160,311 @@ open class StepWatch : IStepWatch {
         val delta = deltaSec()
         val rate = rate(count, delta)
         return TextUt.format(
-                "%s/%s s %10.2f $unit %10.2f $unit/s: %s", fmt(delta), fmt(stepStartTime / 1000f), count, rate, msg
+            "%s/%s s %10.2f $unit %10.2f $unit/s: %s", fmt(delta),
+            fmt(stepStartTime / 1000f), count, rate, msg
         )
-    }
-
-    companion object {
-
-        const val TIMER_RESOLUTION = 1e-6f
-
-        fun rate(count: Float, time: Float): Float {
-            val elapsed = if (time < TIMER_RESOLUTION) TIMER_RESOLUTION else time
-            return count / elapsed
-        }
     }
 }
 
 open class PerformanceWatch : StepWatch() {
-    private val matrix = TreeMap<String, MutableList<Long>>()
 
-    fun duration(cat: String, elapsed: Long): Long {
-        (matrix[cat] ?: ArrayList<Long>().also { matrix.put(cat, it) }).add(elapsed)
-        return elapsed
+    val durations = Durations()
+    var rates = Rates()
+
+    ////////////////////////////////////////////////////////////////////////
+
+    fun <R> duration(cat: String, callback: Fun01<R>): R {
+        return durations.duration(cat, callback)
     }
 
-    fun <T> duration(cat: String, callback: Fun01<T>): Pair<T, Long> {
-        deltaMs()
-        val ret = callback()
-        val ms = duration(cat, deltaMs())
-        return Pair(ret, ms)
+    fun <R> rate(cat: String, count: Number, callback: Fun01<R>): R {
+        return rates.rate(cat, count.toDouble(), callback)
     }
 
-    fun max(cat: String): Long? {
-        return matrix[cat]?.maxOrNull()
+    /** Remove the max n values. */
+    fun <T : Comparable<T>> trimMax(n: Int, list: List<T>): List<T> {
+        if (list.size < n) return listOf()
+        return trim(list, list.sortedDescending().subList(0, n))
     }
 
-    fun min(cat: String): Long? {
-        return matrix[cat]?.minOrNull()
+    /** Remove the min n values. */
+    fun <T : Comparable<T>> trimMin(n: Int, list: List<T>): List<T> {
+        if (list.size < n) return listOf()
+        return trim(list, list.sorted().subList(0, n))
     }
 
-    fun average(cat: String): Double? {
-        return matrix[cat]?.average()
+    /** Remove first occurence of each value in the toremove list. */
+    fun <T : Comparable<T>> trim(list: List<T>, toremove: List<T>): List<T> {
+        val a = toremove.toMutableList()
+        return list.filter { !(a.remove(it)) }
+    }
+    ////////////////////////////////////////////////////////////////////////
+
+    class Durations {
+        private val lock = ReentrantLock()
+        private val durations = TreeMap<String, MutableList<Long>>()
+
+        fun cats(): Set<String> {
+            lock.withLock {
+                return durations.keys.toSet()
+            }
+        }
+
+        fun average(cat: String): Double {
+            lock.withLock {
+                return durations[cat]?.average() ?: throw AssertionError()
+            }
+        }
+
+        fun <R> duration(cat: String, callback: Fun01<R>): R {
+            val start = System.currentTimeMillis()
+            val ret = callback()
+            add(cat, System.currentTimeMillis() - start)
+            return ret
+        }
+
+        fun <R> enter(cat: String, callback: Fun11<Fun00, R>): R {
+            val start = System.currentTimeMillis()
+            return callback {
+                add(cat, System.currentTimeMillis() - start)
+            }
+        }
+
+        fun of(cat: String): Sequence<Long> {
+            lock.withLock {
+                return sequence {
+                    val list = durations.get(cat) ?: return@sequence
+                    list.forEach { yield(it) }
+                }
+            }
+        }
+
+        /**
+         * Note spaces around cat is allowed for proper alignment at text output.
+         */
+        fun stat(cat: String, label: String = cat, scale: Double = 1.0, unit: String = "ms"): String {
+            lock.withLock {
+                return durationstat(cat, label, scale, unit)
+            }
+        }
+
+        fun stats(regex: String, scale: Double = 1.0, unit: String = "ms"): String {
+            lock.withLock {
+                val re = Regex(regex)
+                return durationstats(durations.keys.filter { re.matches(it) }, scale, unit)
+            }
+        }
+
+        fun stats(scale: Double = 1.0, unit: String = "ms"): String {
+            lock.withLock {
+                return durationstats(durations.keys, scale, unit)
+            }
+        }
+
+        /// @param callback(values): newvalues
+        fun filter(cat: String, callback: Fun11<List<Long>, List<Long>>): Durations {
+            lock.withLock {
+                durations.put(cat, callback(durations.get(cat)!!).toMutableList())
+            }
+            return this
+        }
+
+        /// @param callback(cat, values): newvalues
+        fun filter(callback: Fun21<String, List<Long>, List<Long>>): Durations {
+            lock.withLock {
+                for (cat in cats()) {
+                    durations.put(cat, callback(cat, durations.get(cat)!!).toMutableList())
+                }
+            }
+            return this
+        }
+
+        private fun durationstat(cat: String, label: String = cat, scale: Double = 1.0, unit: String = "ms"): String {
+            val c = cat.trim()
+            val max = durations[c]?.maxOrNull()?.let { it / scale }
+            val min = durations[c]?.minOrNull()?.let { it / scale }
+            val average = durations[c]?.average()?.let { it / scale }
+            return TextUt.format(
+                "%s: max: %s, min: %s, average: %s %s",
+                label, fmt(max), fmt(min), fmt(average), unit
+            )
+        }
+
+        private fun durationstats(cats: Collection<String>, scale: Double = 1.0, unit: String = "ms"): String {
+            val w = StringPrintWriter()
+            val width = durations.keys.maxOfOrNull { it.length } ?: 8
+            for (cat in cats) {
+                w.println(durationstat(cat, cat.padEnd(width), scale, unit))
+            }
+            return w.toString()
+        }
+
+        private fun add(cat: String, elapsed: Long) {
+            lock.withLock {
+                (durations[cat] ?: ArrayList<Long>().also {
+                    durations.put(cat, it)
+                }).add(elapsed)
+            }
+        }
     }
 
-    /** Note spaces around cat is allowed for proper alignment at text output. */
-    fun durationStat(cat: String): String {
-        val c = cat.trim()
-        val max = "${max(c) ?: 0}".padStart(6)
-        val min = "${min(c) ?: 0}".padStart(6)
-        val average = fmt((average(c) ?: 0.0).toFloat())
-        return "$cat: max: $max, min: $min, average: $average"
+    class Rates {
+        private val lock = ReentrantLock()
+        private val rates = TreeMap<String, MutableList<Double>>()
+
+        ////////////////////////////////////////////////////////////////////////
+
+        fun <R> enter(cat: String, callback: Fun11<Fun10<Double>, R>): R {
+            val start = System.currentTimeMillis()
+            return callback { count ->
+                add(cat, count, System.currentTimeMillis() - start)
+            }
+        }
+
+        fun <R> rate(cat: String, count: Double, callback: Fun01<R>): R {
+            val start = System.currentTimeMillis()
+            val ret = callback()
+            add(cat, count, System.currentTimeMillis() - start)
+            return ret
+        }
+
+        fun of(cat: String): Sequence<Double> {
+            lock.withLock {
+                return sequence {
+                    val list = rates.get(cat) ?: return@sequence
+                    list.forEach { yield(it) }
+                }
+            }
+        }
+
+        fun cats(): Set<String> {
+            lock.withLock {
+                return rates.keys.toSet()
+            }
+        }
+
+        fun average(cat: String): Double {
+            lock.withLock {
+                return rates[cat]?.average() ?: throw AssertionError()
+            }
+        }
+
+        fun stat(cat: String, label: String = cat, scale: Double = 1.0, unit: String = "count/s"): String {
+            lock.withLock {
+                return ratestat(cat, label, scale, unit)
+            }
+        }
+
+        fun stats(regex: String, scale: Double = 1.0, unit: String = "count/s"): String {
+            lock.withLock {
+                val re = Regex(regex)
+                return ratestats(rates.keys.filter { re.matches(it) }, scale, unit)
+            }
+        }
+
+        fun stats(scale: Double = 1.0, unit: String = "count/s"): String {
+            lock.withLock {
+                return ratestats(rates.keys, scale, unit)
+            }
+        }
+
+        /// @param callback(cat, values): newvalues
+        fun filter(callback: Fun21<String, List<Double>, List<Double>>): Rates {
+            lock.withLock {
+                for (cat in cats()) {
+                    rates.put(cat, callback(cat, rates.get(cat)!!).toMutableList())
+                }
+            }
+            return this
+        }
+
+        /// @param callback(values): newvalues
+        fun filter(cat: String, callback: Fun11<List<Double>, List<Double>>): Rates {
+            lock.withLock {
+                rates.put(cat, callback(rates.get(cat)!!).toMutableList())
+            }
+            return this
+        }
+
+        private fun ratestat(cat: String, label: String = cat, scale: Double = 1.0, unit: String = "count/s"): String {
+            val c = cat.trim()
+            val max = rates[c]?.maxOrNull()?.let { it / scale }
+            val min = rates[c]?.minOrNull()?.let { it / scale }
+            val average = rates[c]?.average()?.let { it / scale }
+            return TextUt.format(
+                "%s: max: %s, min: %s, average: %s %s",
+                label, fmt(max), fmt(min), fmt(average), unit
+            )
+        }
+
+        private fun ratestats(cats: Collection<String>, scale: Double = 1.0, unit: String = "ms"): String {
+            val w = StringPrintWriter()
+            val width = rates.keys.maxOfOrNull { it.length } ?: 8
+            for (cat in cats) {
+                w.println(ratestat(cat, cat.padEnd(width), scale, unit))
+            }
+            return w.toString()
+        }
+
+        private fun add(cat: String, count: Number, elapsed: Long) {
+            lock.withLock {
+                if (elapsed == 0L) return
+                (rates[cat] ?: ArrayList<Double>().also {
+                    rates.put(cat, it)
+                }).add(count.toDouble() * 1000.0 / elapsed.toDouble())
+            }
+        }
     }
 }
 
 class WatchDog(
-        private val timeout: Long,
-        private val callback: Fun00
-) : Timer(), Closeable {
+    private val timeout: Long,
+    private val callback: Fun00
+) : Closeable {
+    private var timer: Timer? = null
     private val start = DateUt.ms
-    private var cancelled = true
+    private var closed = false
     private val lock = ReentrantLock()
 
     init {
-        schedule(timeout) { close() }
-    }
-
-    fun watch(threshold: Long = timeout / 10) {
-        lock.withLock {
-            val ms = DateUt.ms
-            if (ms - start < threshold) return
-            if (!cancelled) this.cancel()
-            this.schedule(timeout) { close() }
+        Timer().also { timer = it }.schedule(timeout) {
+            timeout()
         }
     }
 
-    override fun cancel() {
+    fun watch(threshold: Long = timeout / 5) {
         lock.withLock {
-            super.cancel()
-            cancelled = true
+            if (closed) return
+            val ms = DateUt.ms
+            if (ms - start < threshold) return
+            timer?.cancel()
+            Timer().also { timer = it }.schedule(timeout) {
+                timeout()
+            }
         }
     }
 
     override fun close() {
         lock.withLock {
-            callback()
+            closing()
         }
     }
 
+    private fun timeout() {
+        lock.lock()
+        if (!closing()) {
+            lock.unlock()
+            return
+        }
+        lock.unlock()
+        callback()
+    }
+
+    private fun closing(): Boolean {
+        if (closed) return false
+        closed = true
+        timer?.cancel()
+        timer = null
+        return true
+    }
 }

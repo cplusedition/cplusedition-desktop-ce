@@ -38,25 +38,27 @@ export class EtUt {
         session
             .setPermissionRequestHandler((webContents, permission, callback) => {
                 const url = webContents.getURL();
-                log?.d_(`# WARN: Deny permssion: ${permission} for ${url}`);
+                log?.d_(`# Session: Deny permssion: ${permission} for ${url}`);
                 callback(false);
             });
         session.on('will-download', (event, item, _webContents) => {
             const url = item.getURL();
             const mime = item.getMimeType();
-            log?.d_(`# WARN: Deny download: ${url}, ${mime}`);
+            log?.d_(`# Session: Deny download: ${url}, ${mime}`);
             event.preventDefault();
             item.cancel();
         });
         session.on('spellcheck-dictionary-download-begin', (event, langcode) => {
-            log?.d_(`# WARN: Deny download dictionary for: ${langcode}`);
+            log?.d_(`# Session: Deny download dictionary for: ${langcode}`);
             event.preventDefault();
         });
         session.enableNetworkEmulation({ offline: true });
-        session.clearHostResolverCache();
-        session.clearAuthCache({ type: "password" });
-        session.clearCache();
-        session.clearStorageData();
+        Promise.all([
+            session.clearHostResolverCache(),
+            session.clearAuthCache({ type: "password" }),
+            session.clearCache(),
+            session.clearStorageData(),
+        ]);
     }
 
     static copyProperties_(to: Object, from: Object) {
@@ -73,4 +75,3 @@ export class EtUt {
         return url.protocol != docurl.protocol || url.hostname != docurl.hostname || url.port != docurl.port;
     }
 }
-

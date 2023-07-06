@@ -50,10 +50,10 @@ import sf.andrians.org.apache.http.Consts
  * @since 4.0
  */
 object HTTP {
-    const val CR = 13 // <US-ASCII CR, carriage return (13)>
-    const val LF = 10 // <US-ASCII LF, linefeed (10)>
-    const val SP = 32 // <US-ASCII SP, space (32)>
-    const val HT = 9 // <US-ASCII HT, horizontal-tab (9)>
+    const val CR = 13
+    const val LF = 10
+    const val SP = 32
+    const val HT = 9
 
     /** HTTP header definitions  */
     const val TRANSFER_ENCODING = "Transfer-Encoding"
@@ -113,6 +113,6 @@ object HTTP {
     @Deprecated("(4.2)")
     val DEFAULT_CONTENT_TYPE = OCTET_STREAM_TYPE
     fun isWhitespace(ch: Char): Boolean {
-        return ch.toInt() == SP || ch.toInt() == HT || ch.toInt() == CR || ch.toInt() == LF
+        return ch.code == SP || ch.code == HT || ch.code == CR || ch.code == LF
     }
 }

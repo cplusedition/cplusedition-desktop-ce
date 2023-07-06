@@ -16,908 +16,897 @@
 */
 package sf.andrians.cplusedition.support
 
-//#BEGIN An.Generated
-    public abstract class An {
-        object ATTR {
-            //#BEGIN SHUFFLE
-            val AnAction = "x-xon"
-            val AnIndex = "x-xo9"
-            val AnInfo = "x-xlo"
-            val AnNoClick = "x-xm1"
-            val AnOptions = "x-xra"
-            val AnRedoing = "x-xe5"
-            val AnSaved = "x-x6q"
-            val AnToggleGroup = "x-xv2"
-            val AnUndoing = "x-xe2"
-            val autocapitalize = "autocapitalize"
-            val autocomplete = "autocomplete"
-            val autocorrect = "autocorrect"
-            val classes = "class"
-            val contenteditable = "contenteditable"
-            val href = "href"
-            val id = "id"
-            val name = "name"
-            val placeholder = "placeholder"
-            val spellcheck = "spellcheck"
-            val src = "src"
-            val style = "style"
-            val tabindex = "tabindex"
-            val xAction = "x-action"
-            val xAnnotation = "x-a"
-            val xButton = "x-bt"
-            val xFormat = "x-f"
-            val xInfo = "x-i"
-            val xPageTemplate = "x-pt"
-            val xPlaceholder = "x-ph"
-            val xRole = "x-role"
-            val xTemplate = "x-tp"
-            val xTemplatePlaceholder = "x-th"
-            val xTooltips = "x-t"
-            //#END SHUFFLE
-        }
-        object AVALUE {
-            //#BEGIN SHUFFLE
-            val xStop = "stop"
-            //#END SHUFFLE
-        }
-        object AjaxAction {
-            //#BEGIN SHUFFLE
-            val ajax = "XBc"
-            val audioStatusChanged = "Xch"
-            val backup = "X8g"
-            val browse = "X1x"
-            val export = "XX1"
-            val gesture = "XsQ"
-            val hideCaret = "XbY"
-            val login = "XNA"
-            val loginResult = "XaR"
-            val navigateBack = "XBn"
-            val onCallback = "X7t"
-            val onNotificationResponse = "Xom"
-            val onResizeWindow = "Xte"
-            val pause = "XrB"
-            val refreshEvents = "Xoj"
-            val restore = "XnO"
-            val resume = "XKt"
-            val scanDocumentResult = "Xie"
-            val showSidepanel = "Xb5"
-            val spinner = "XN1"
-            val spinnerHide = "X1G"
-            val spinnerShow = "XmN"
-            val takePhotoResult = "XXo"
-            val testRunner = "testRunner"
-            val toaster = "XYp"
-            val videoRecordingResult = "XCx"
-            //#END SHUFFLE
-        }
-        object CSS {
-            //#BEGIN SHUFFLE
-            val AnButton = "XWC"
-            val AnSmokescreen = "Xc0"
-            val AnSpin = "XmK"
-            val AnSpinner = "XDd"
-            val AnToolbar = "Xvp"
-            val xAudio = "x-audio"
-            val xAudioChannels = "x-audio-channels"
-            val xAudioDatetime = "x-audio-datetime"
-            val xAudioDuration = "x-audio-duration"
-            val xAudioRate = "x-audio-rate"
-            val xBody = "x-body"
-            val xHeader = "x-header"
-            val xMatchA = "x-m-a"
-            val xMatchT = "x-m-t"
-            val xRoot = "x-root"
-            val xVideo = "x-video"
-            val xVideoDatetime = "x-video-datetime"
-            val xVideoDuration = "x-video-duration"
-            val xVideoPoster = "x-video-poster"
-            val xVideoResolution = "x-video-resolution"
-            val xxTop = "xx-top"
-            //#END SHUFFLE
-        }
-        object ClientAction {
-            //#BEGIN SHUFFLE
-            val classes = "classes/"
-            val cycle = "c/"
-            val cycle1 = "C/"
-            val hide = "hide/"
-            val move = "m/"
-            val radio = "r/"
-            val show = "show/"
-            val style = "s/"
-            //#END SHUFFLE
-        }
-        object DEF {
-            //#BEGIN SHUFFLE
-            val CORRECTED = ".~c~"
-            val FontAwesome = "FontAwesome"
-            val NOOP = "NOOP"
-            val System = "System"
-            val alarmMargin = 500
-            val backup = "backup"
-            val backupKeyAlias = "#self"
-            val backupKeyPrefix = "#"
-            val backupSuffix = ".backup"
-            val css = "css"
-            val cssSuffix = ".css"
-            val dailyBackupDir = "~DailyBackup~"
-            val databaseKeyAlias = "#db"
-            val der = "der"
-            val derSuffix = ".der"
-            val dialogBorderWidth = 10
-            val dialogMaxWidthLarge = 12
-            val dialogMaxWidthMedium = 9
-            val dialogMaxWidthSmall = 7
-            val dialogPaddingWidth = 10
-            val dragBorderDivider = 2
-            val events = "events"
-            val eventsSuffix = ".events"
-            val filepickerMaxWidth = 640
-            val galleryItemThreshold = 24
-            val heic = "heic"
-            val heicSuffix = ".heic"
-            val html = "html"
-            val htmlSuffix = ".html"
-            val ibackup = "ibackup"
-            val ibackupSuffix = ".ibackup"
-            val imageDimensionSnap = 128
-            val jpegQuality = 90
-            val jpegQualityHigh = 95
-            val jpegQualityLow = 75
-            val jpegQualityThumbnail = 85
-            val keepLongerDays = 7
-            val keepLongerSizeLimit = 16777216
-            val keepShorterDays = 1
-            val keysSuffix = ".keys"
-            val lightBorder = "1px solid rgba(0, 0, 0, 0.25)"
-            val m4aSuffix = ".m4a"
-            val maxBarcodeScale = 10
-            val maxClientActionClassesLength = 20
-            val maxLongToastLen = 256
-            val maxNodeInfoLen = 128
-            val maxOutputImageArea = 16777216
-            val maxToastLen = 64
-            val nobackup = "~nobackup~"
-            val opacityDisabled = 0.25
-            val opacityEnabled = 1.0
-            val opacityOpaque = 1.0
-            val opacityResizing = 0.1
-            val opacityShowBackground = 0.35
-            val opacitySmoke = 0.5
-            val opacityTransparent = 0.0
-            val pdf = "pdf"
-            val pdfSuffix = ".pdf"
-            val previewPhotoSize = 1024
-            val recentFilePositionCount = 50
-            val recentSymbolCount = 100
-            val sidepanelMarginBottom = 10
-            val sidepanelWidth = 450
-            val symbolFontSizeRatio = 0.45
-            val templateBlank = "/assets/templates/blank/blank.html"
-            val themeBorder = "1px solid rgba(0, 0, 0, 0.5)"
-            val themeBorderRadius = "0.35rem"
-            val themeBorderWidth = 1.0
-            val themeBoxShadow = "2px 2px 10px rgba(0,0,0,0.5)"
-            val thumbnailSize = 512
-            val thumbnailSizeMicro = 96
-            val tmpBackupSuffix = "~tmp~.tmp"
-            val toolbarFontSizeRatio = 0.5
-            val trashAutoCleanupInterval = 86400000
-            val webkitPrefix = "-webkit-"
-            val xmlNameChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
-            val zindexClientAnnotation = 1300
-            val zindexClientSearchResult = 1200
-            val zindexClientShow = 500
-            val zindexClientSidebar = 1800
-            val zindexClientSidepanel = 1100
-            val zindexClientStickerOnDocument = 50
-            val zindexClientStickerOnScreen = 75
-            val zindexConfirm = 4900
-            val zindexContextmenu = 4000
-            val zindexImageAnnotator = 3000
-            val zindexMax = 9999
-            val zindexPrompt = 4100
-            val zindexPromptSave = 2500
-            val zindexResizer = 6000
-            val zindexSidebar = 2000
-            val zindexSidepanel = 2100
-            val zindexToaster = 5000
-            val zindexToasterError = 5200
-            val zindexToasterWarning = 5100
-            val zindexToolbar = 1990
-            val zip = "zip"
-            val zipSuffix = ".zip"
-            val zoomDelta = 5.0
-            val zoomScale = 0.025
-            //#END SHUFFLE
-        }
-        object Effect {
-            //#BEGIN SHUFFLE
-            val GRAY16 = 4
-            val GRAY2 = 1
-            val GRAY256 = 5
-            val GRAY4 = 2
-            val GRAY8 = 3
-            val NONE = 0
-            //#END SHUFFLE
-        }
-        object EventKey {
-            //#BEGIN SHUFFLE
-            val Color = "color"
-            val Description = "desc"
-            val Done = "done"
-            val DoneMs = "donems"
-            val Events = "A"
-            val Exists = "exists"
-            val Id = "id"
-            val Lastms = "lastms"
-            val Ms = "ms"
-            val Pending = "pending"
-            val Private = "private"
-            val Repeat = "repeat"
-            val Serial = "S"
-            val Url = "url"
-            val Version = "V"
-            //#END SHUFFLE
-        }
-        object EventRepeat {
-            //#BEGIN SHUFFLE
-            val Daily = "Daily"
-            val Monthly = "Monthly"
-            val Off = "Off"
-            val Once = "Once"
-            val Weekly = "Weekly"
-            val Workdays = "Workdays"
-            val Yearly = "Yearly"
-            val values = arrayOf("Off", "Once", "Daily", "Workdays", "Weekly", "Monthly", "Yearly")
-            //#END SHUFFLE
-        }
-        object FilepickerCmd {
-            //#BEGIN SHUFFLE
-            val COPY = 9
-            val COPY_INFO = 10
-            val DELETE = 11
-            val DELETE_ALL = 14
-            val DELETE_DIRSUBTREE = 13
-            val DELETE_EMPTY_DIRS = 20
-            val DELETE_INFO = 15
-            val DIRINFO = 23
-            val FILEINFO = 1
-            val FILEINFOS = 22
-            val INVALID = 0
-            val LISTDIR = 4
-            val LIST_RECURSIVE = 21
-            val LOCAL_IMAGE_INFOS = 17
-            val LOCAL_IMAGE_THUMBNAILS = 18
-            val MKDIRS = 7
-            val RENAME = 8
-            //#END SHUFFLE
-        }
-        object FontCategories {
-            //#BEGIN SHUFFLE
-            val All = "All"
-            val Decorative = "Decorative"
-            val Monospace = "Monospace"
-            val Others = "Others"
-            val SansSerif = "Sans Serif"
-            val Serif = "Serif"
-            val System = "System"
-            //#END SHUFFLE
-        }
-        object FontInfoKey {
-            //#BEGIN SHUFFLE
-            val category = "category"
-            val fontfaceformat = "fontfaceformat"
-            val fontname = "fontname"
-            val glyphcount = "glyphcount"
-            val glyphnames = "glyphnames"
-            val glyphs = "glyphs"
-            val license = "license"
-            val size = "size"
-            val styles = "styles"
-            val subsets = "subsets"
-            val url = "url"
-            //#END SHUFFLE
-        }
-        object GestureEvent {
-            //#BEGIN SHUFFLE
-            val leftInward = "li"
-            val leftOutward = "lo"
-            val pinchZoom = "pz"
-            val rightInward = "ri"
-            val rightOutward = "ro"
-            //#END SHUFFLE
-        }
-        object GestureKey {
-            //#BEGIN SHUFFLE
-            val event = "e"
-            val y = "y"
-            //#END SHUFFLE
-        }
-        object ID {
-            //#BEGIN SHUFFLE
-            val accessories = "Xej"
-            val content = "XsS"
-            val contentIFrame = "XdK"
-            val contextmenuSelect = "Xa8"
-            val csseditor = "code"
-            val focusbox = "XDf"
-            val searchResult = "X1S"
-            val sidebar = "X7j"
-            val sidebarDocument = "XRf"
-            val sidebarExplore = "Xzh"
-            val sidebarResize = "X5K"
-            val sidebarTemplates = "XYK"
-            val sidepanel = "Xuq"
-            val splash = "Xeh"
-            val toolbar = "XbH"
-            val xContent = "x-content"
-            val xLeftSidepanel = "x-leftsidepanel"
-            val xLeftSplitpanel = "x-leftsplitpanel"
-            val xMarkers = "x-markers"
-            val xOpenLeftSidepanel = "x-open-leftsidepanel"
-            val xOpenRightSidepanel = "x-open-rightsidepanel"
-            val xRightSidebar = "x-rightsidebar"
-            val xRightSidepanel = "x-rightsidepanel"
-            val xRightSplitpanel = "x-rightsplitpanel"
-            val xViewer = "x-viewer"
-            //#END SHUFFLE
-        }
-        object Key {
-            //#BEGIN SHUFFLE
-            val attrs = "XNZ"
-            val backward = "XxN"
-            val baseurl = "XzJ"
-            val busy = "Xwn"
-            val copying = "XZj"
-            val count = "XS0"
-            val cpath = "XKs"
-            val cssrule = "Xs0"
-            val cut = "Xyy"
-            val data = "Xaw"
-            val deleting = "Xwl"
-            val dimension = "XLa"
-            val dirinfo = "Xk0"
-            val dirpath = "Xnn"
-            val dirtree = "XDt"
-            val dst = "XOC"
-            val element = "XPX"
-            val errors = "XZ7"
-            val expectedfailure = "XgS"
-            val expectedresult = "Xvl"
-            val fails = "X6p"
-            val fileinfo = "Xal"
-            val filename = "XT8"
-            val filestat = "XRp"
-            val filter = "XOT"
-            val filterIgnorecase = "XaZ"
-            val forward = "XYr"
-            val free = "XB9"
-            val height = "Xe4"
-            val hold = "Xsi"
-            val id = "XRl"
-            val imageinfo = "XX2"
-            val infos = "XjB"
-            val isloggedin = "Xv2"
-            val isplaying = "XOE"
-            val isregex = "XzQ"
-            val key = "XYE"
-            val linkinfo = "Xfc"
-            val links = "XhE"
-            val mediainfo = "XUO"
-            val meminfo = "X4z"
-            val mime = "XXG"
-            val notcopying = "XQp"
-            val notdeleting = "X3R"
-            val overwriting = "X2T"
-            val pass = "XhS"
-            val path = "Xv7"
-            val player = "XrC"
-            val poster = "XMf"
-            val recorder = "XN2"
-            val result = "XXc"
-            val rpath = "XNg"
-            val rpaths = "XqL"
-            val searchIgnorecase = "X1Z"
-            val serial = "X8D"
-            val size = "XJ9"
-            val src = "X7G"
-            val stacktrace = "Xom"
-            val status = "XRb"
-            val style = "XAK"
-            val tag = "XjR"
-            val template = "XtE"
-            val text = "XX3"
-            val time = "XbR"
-            val timestamp = "X1J"
-            val tnpath = "XHr"
-            val total = "XXa"
-            val type = "XKA"
-            val url = "X2A"
-            val warns = "XcK"
-            val width = "X9J"
-            //#END SHUFFLE
-        }
-        object LinkInfoKey {
-            //#BEGIN SHUFFLE
-            val BODY = "B"
-            val HEAD = "H"
-            val name = "n"
-            val rel = "r"
-            val status = "s"
-            val tag = "t"
-            val targetpath = "p"
-            val value = "v"
-            //#END SHUFFLE
-        }
-        object LinkInfoStatus {
-            //#BEGIN SHUFFLE
-            val EXISTS = "E"
-            val INVALID = "I"
-            val NOTEXISTS = "N"
-            //#END SHUFFLE
-        }
-        object LinkVerifierCmd {
-            //#BEGIN SHUFFLE
-            val INVALID = 0
-            val LINKINFO = 2
-            val LINKINFOS = 1
-            //#END SHUFFLE
-        }
-        object MediaInfoCmd {
-            //#BEGIN SHUFFLE
-            val INFOS = 1
-            val INVALID = 0
-            val THUMBNAILS = 2
-            //#END SHUFFLE
-        }
-        object MetainfoKey {
-            //#BEGIN SHUFFLE
-            val CreatedBy = "C"
-            val FeatureCalc = "Cc"
-            val Features = "F"
-            val ModifiedBy = "M"
-            val Patches = "P"
-            //#END SHUFFLE
-        }
-        object NAME {
-            //#BEGIN SHUFFLE
-            val contextmenu = "XXB"
-            val contextmenuAssists = "X8g"
-            val contextmenuChar = "XR0"
-            val contextmenuClasses = "XSY"
-            val contextmenuGallery = "X2D"
-            val contextmenuHighlight = "Xe3"
-            val contextmenuImage = "X8t"
-            val contextmenuPage = "XFA"
-            val contextmenuPara = "X5o"
-            val contextmenuSelect = "Xfu"
-            val contextmenuTemplate = "XI3"
-            val contextmenuWidget = "Xhu"
-            val submenuChar = "XnR"
-            val submenuFont = "XfT"
-            val submenuList = "X6w"
-            val submenuMedia = "XUU"
-            val submenuOthers = "Xsc"
-            val submenuPara = "XAz"
-            //#END SHUFFLE
-        }
-        object ObsoletedEventKey {
-            //#BEGIN SHUFFLE
-            val AlarmOff = "disabled"
-            val Filepath = "filepath"
-            val Fragment = "fragment"
-            //#END SHUFFLE
-        }
-        object ObsoletedEventRepeat {
-            //#BEGIN SHUFFLE
-            val EveryDay = "Every day"
-            val EveryMonth = "Every month"
-            val EveryWeek = "Every week"
-            val EveryWeekday = "Every weekday"
-            val EveryWorkday = "Every workday"
-            val EveryYear = "Every year"
-            val Once = "Once"
-            //#END SHUFFLE
-        }
-        object PATH {
-            //#BEGIN SHUFFLE
-            val External = "External"
-            val External_ = "External/"
-            val Home = "Home"
-            val HomeIndexHtml = "Home/index.html"
-            val Home_ = "Home/"
-            val Internal = "Internal"
-            val Internal_ = "Internal/"
-            val _External_ = "/External/"
-            val _Home = "/Home"
-            val _HomeIndexHtml = "/Home/index.html"
-            val _Home_ = "/Home/"
-            val _Internal_ = "/Internal/"
-            val _assetsAudioSample = "/assets/manual/samples/audios/audio-33.m4a"
-            val _assetsCSSEditorCss = "/assets/css/csseditor.css"
-            val _assetsCSSEditorHtml = "/assets/templates/res/csseditor.html"
-            val _assetsCSSEditorJs = "/assets/js/c.js"
-            val _assetsGameMindsCss = "/assets/css/gameminds.css"
-            val _assetsGameMindsHtml = "/assets/templates/res/gameminds.html"
-            val _assetsGameMindsJs = "/assets/js/g.js"
-            val _assetsGameMinesCss = "/assets/css/gamemines.css"
-            val _assetsGameMinesHtml = "/assets/templates/res/gamemines.html"
-            val _assetsGameMinesJs = "/assets/js/g.js"
-            val _assetsGameSudokuCss = "/assets/css/gamesudoku.css"
-            val _assetsGameSudokuHtml = "/assets/templates/res/gamesudoku.html"
-            val _assetsGameSudokuJs = "/assets/js/g.js"
-            val _assetsImagesLandscapeSample = "/assets/images/samples/backlight.jpg"
-            val _assetsImagesPortraitSample = "/assets/images/samples-oilify/pink.jpg"
-            val _assetsImagesSamplesAngels = "/assets/images/samples/angels.jpg"
-            val _assetsImagesSamplesLamp = "/assets/images/samples/lamp.jpg"
-            val _assetsImagesSig01Png = "/assets/images/res/sig01.png"
-            val _assetsReleaseNotesHtml = "/assets/manual/en/release-notes/release-notes.html"
-            val _assetsTemplates404Html = "/assets/templates/res/404.html"
-            val _assetsTemplates500Html = "/assets/templates/res/500.html"
-            val _assetsTemplatesFaviconIco = "/assets/templates/res/favicon.ico"
-            val _assetsTemplatesIndexHtml = "/assets/templates/res/index.html"
-            val _assetsVideoSample = "/assets/manual/samples/videos/BasicEditing.mp4"
-            val _internal = "/Internal"
-            val assetsTemplatesFaviconIco = "assets/templates/res/favicon.ico"
-            val assetsTemplatesIndexHtml = "assets/templates/res/index.html"
-            val HomeBlog = "Home/blog"
-            val HomeDrafts = "Home/drafts"
-            val Inbox_ = "Inbox/"
-            val PrivateBlog = "Private/blog"
-            val PrivateDrafts = "Private/drafts"
-            val Recover = "Recover"
-            val Recover_ = "Recover/"
-            val Restore = "Restore"
-            val Restore_ = "Restore/"
-            val _assets = "/assets"
-            val _assetsAudioCss = "/assets/css/audio.css"
-            val _assetsImageCss = "/assets/css/image.css"
-            val _assetsPDFCss = "/assets/css/pdf.css"
-            val _assetsVideoCss = "/assets/css/video.css"
-            val _assets_ = "/assets/"
-            val assets = "assets"
-            val assetsAudioCss = "assets/css/audio.css"
-            val assetsCSSEditorCss = "assets/css/csseditor.css"
-            val assetsCSSEditorHtml = "assets/templates/res/csseditor.html"
-            val assetsCSSEditorJs = "assets/js/c.js"
-            val assetsClientCss = "assets/css/client-v1.css"
-            val assetsClient_ = "assets/css/client-"
-            val assetsConfig = "assets/config"
-            val assetsConfig_ = "assets/config/"
-            val assetsCoreCss = "assets/css/core-v1.css"
-            val assetsCss_ = "assets/css/"
-            val assetsFonts_ = "assets/fonts/"
-            val assetsGameMindsCss = "assets/css/gameminds.css"
-            val assetsGameMindsHtml = "assets/templates/res/gameminds.html"
-            val assetsGameMindsJs = "assets/js/g.js"
-            val assetsGameMinesCss = "assets/css/gamemines.css"
-            val assetsGameMinesHtml = "assets/templates/res/gamemines.html"
-            val assetsGameMinesJs = "assets/js/g.js"
-            val assetsGameSudokuCss = "assets/css/gamesudoku.css"
-            val assetsGameSudokuHtml = "assets/templates/res/gamesudoku.html"
-            val assetsGameSudokuJs = "assets/js/g.js"
-            val assetsHostCss = "assets/css/host.css"
-            val assetsImageCss = "assets/css/image.css"
-            val assetsImages_ = "assets/images/"
-            val assetsJs_ = "assets/js/"
-            val assetsMainJs = "assets/js/m.js"
-            val assetsNativeJs = "assets/js/n.js"
-            val assetsPDFCss = "assets/css/pdf.css"
-            val assetsResourcesJs = "assets/js/r.js"
-            val assetsTemplates404Html = "assets/templates/res/404.html"
-            val assetsTemplates500Html = "assets/templates/res/500.html"
-            val assetsTemplatesRes_ = "assets/templates/res/"
-            val assetsVideoCss = "assets/css/video.css"
-            val assets_ = "assets/"
-            val blog = "blog"
-            val drafts = "drafts"
-            //#END SHUFFLE
-        }
-        object Param {
-            //#BEGIN SHUFFLE
-            val create = "create"
-            val edit = "edit"
-            val fragment = "fragment"
-            val ignorecase = "ignorecase"
-            val isregex = "isregex"
-            val mime = "mime"
-            val msg = "msg"
-            val path = "path"
-            val poster = "poster"
-            val redirect = "redirect"
-            val save = "save"
-            val searchtext = "searchtext"
-            val seek = "seek"
-            val session = "s"
-            val t = "t"
-            val view = "view"
-            //#END SHUFFLE
-        }
-        object Placeholder {
-            //#BEGIN SHUFFLE
-            val xpAnnotation = "annotation"
-            val xpAnnotationImage = "a-image"
-            val xpAnnotationPhoto = "a-photo"
-            val xpAudio = "audio"
-            val xpAudio2 = "audio2"
-            val xpAudioinfo = "audioinfo"
-            val xpCalendar = "calendar"
-            val xpCanvas = "canvas"
-            val xpCanvasImage = "canvas-image"
-            val xpCanvasPhoto = "canvas-photo"
-            val xpDate = "date"
-            val xpDatetime = "datetime"
-            val xpDraggable = "draggable"
-            val xpImage = "image"
-            val xpImageNoCaption = "image0"
-            val xpPhoto = "photo"
-            val xpShortDate = "short-date"
-            val xpShortDatetime = "short-datetime"
-            val xpShortTime = "short-time"
-            val xpTime = "time"
-            val xpVideo = "video"
-            val xpVideoinfo = "videoinfo"
-            //#END SHUFFLE
-        }
-        object RESULT {
-            //#BEGIN SHUFFLE
-            val CANCELED = 0
-            val FAILED = 1
-            val OK = -1
-            //#END SHUFFLE
-        }
-        object ROLE {
-            //#BEGIN SHUFFLE
-            val Generated = "generated"
-            //#END SHUFFLE
-        }
-        object RecentsCmd {
-            //#BEGIN SHUFFLE
-            val BACK = 4
-            val CLEAN = 2
-            val CLEAR = 1
-            val FORWARD = 6
-            val INFO = 3
-            val INVALID = 0
-            val PEEK = 5
-            //#END SHUFFLE
-        }
-        object SessionKey {
-            //#BEGIN SHUFFLE
-            val loggedin = "loggedin"
-            val preferences = "perferences"
-            val recents = "recents"
-            val videos = "videos"
-            //#END SHUFFLE
-        }
-        object SessionParam {
-            //#BEGIN SHUFFLE
-            val XROOT = "X"
-            val X_ROOT = "x-root"
-            val poster = "p"
-            val type = "t"
-            val x = "x"
-            val y = "y"
-            val z = "z"
-            //#END SHUFFLE
-        }
-        object SessionPreferencesKey {
-            //#BEGIN SHUFFLE
-            val filePositions = "filePositions"
-            val gameMindsCells = "GMDC"
-            val gameMindsDigits = "GMDD"
-            val gameMindsSave = "GMDS"
-            val gameMinesDifficulty = "GMID"
-            val gameMinesMapSize = "GMIM"
-            val gameMinesSave = "GMIS"
-            val gameSudokuAssists = "GSDA"
-            val gameSudokuDifficulty = "GSDD"
-            val gameSudokuSave = "GSDS"
-            val imageDefaultOutputSize = "IDOS"
-            val indentTab = "INDT"
-            val showDoneEvents = "showDoneEvents"
-            val sidepanelWidth = "SPWD"
-            val symbolFamily = "symbolFamily"
-            val symbolRecents = "symbolRecents"
-            val templatesRecents = "TR"
-            val trashAutoCleanupTimestamp = "TACT"
-            //#END SHUFFLE
-        }
-        object SettingsDefs {
-            //#BEGIN SHUFFLE
-            val annotationColor = "#9400d3"
-            val buttonSize = 40
-            val dateFormat = "mm/dd/yyyy"
-            val dpi = 160
-            val fixedFontName = "UbuntuMono"
-            val fixedFontStyle = "Regular"
-            val fontSize = 16
-            val headingColor = "#1e90ff"
-            val highlightColor = "rgba(255,255,128,0.75)"
-            val imageDimension = 1024
-            val linkColor = "#0000ee"
-            val symbolFamily = "FontAwesome"
-            val timeFormat = "hh:mm"
-            val uiFontName = "Ruda"
-            val uiFontStyle = "Regular"
-            val winHeight = 640
-            val winWidth = 360
-            //#END SHUFFLE
-        }
-        object SettingsKey {
-            //#BEGIN SHUFFLE
-            val annotationColor = "annotationColor"
-            val bgImgSamples = "bgImgSamples"
-            val builtinCharStyles = "builtinCharStyles"
-            val builtinParaStyles = "builtinParaStyles"
-            val buttonSize = "buttonSize"
-            val charStyles = "charStyles"
-            val current = "current"
-            val dateFormat = "dateFormat"
-            val defaults = "defaults"
-            val dialogBGColor = "dialogBGColor"
-            val fixedFontName = "fixedFontName"
-            val fixedFontSize = "fixedFontSize"
-            val fixedFontStyle = "fixedFontStyle"
-            val fontCategories = "fontCategories"
-            val fontFamilies = "fontFamilies"
-            val headingColor = "boldColor"
-            val highlightColor = "highlightColor"
-            val highlightStyles = "highlightStyles"
-            val htmlTemplates = "htmlTemplates"
-            val imageDimension = "imageDimension"
-            val linkColor = "linkColor"
-            val paraStyles = "paraStyles"
-            val symbolFamilies = "symbolFamilies"
-            val timeFormat = "timeFormat"
-            val uiFontName = "uiFontName"
-            val uiFontSize = "uiFontSize"
-            val uiFontStyle = "uiFontStyle"
-            //#END SHUFFLE
-        }
-        object SidepanelInfoKey {
-            //#BEGIN SHUFFLE
-            val sidebarHeight = "Xwy"
-            //#END SHUFFLE
-        }
-        object StyleKey {
-            //#BEGIN SHUFFLE
-            val group = "group"
-            val label = "label"
-            val name = "name"
-            //#END SHUFFLE
-        }
-        object THEME {
-            //#BEGIN SHUFFLE
-            val splitPanelBG = "#a2cd5a"
-            //#END SHUFFLE
-        }
-        object TemplateAction {
-            //#BEGIN SHUFFLE
-            val annotation = "a"
-            val blog = "b"
-            val classes = "classes"
-            val cutMarked = "x"
-            val cutNotMarked = "X"
-            val cycle = "c"
-            val cycle1 = "C"
-            val delete = "d"
-            val drag = "g"
-            val form = "form"
-            val hide = "hide"
-            val move = "m"
-            val postAlarm = "alarm"
-            val radio = "r"
-            val save = "save"
-            val show = "show"
-            val style = "s"
-            val template = "t"
-            val widget = "widget"
-            //#END SHUFFLE
-        }
-        object TemplateCat {
-            //#BEGIN SHUFFLE
-            val Audio = "Audio"
-            val Blog = "Blog"
-            val Canvas = "Canvas"
-            val Home = "Home"
-            val Photo = "Photo"
-            //#END SHUFFLE
-        }
-        object TemplateMenuKey {
-            //#BEGIN SHUFFLE
-            val action = "a"
-            val background = "b"
-            val backgroundImage = "i"
-            val backgroundSize = "S"
-            val classes = "c"
-            val cmd = "C"
-            val label = "l"
-            val lcCat = "t"
-            val menu = "m"
-            val name = "n"
-            val path = "p"
-            val symbol = "s"
-            //#END SHUFFLE
-        }
-        object TemplateName {
-            //#BEGIN SHUFFLE
-            val audioV2 = "audio-v2"
-            val blogV2 = "blog-v2"
-            val homeSimpler = "home-simpler"
-            val mediaSticker = "media-sticker"
-            val mediaWall = "media-wall"
-            val photoSticker1 = "photo-sticker1"
-            val photoWall = "photo-wall"
-            //#END SHUFFLE
-        }
-        object VERSIONS {
-            //#BEGIN SHUFFLE
-            val ClientCssVersion = "1"
-            val TemplateVersion = "2"
-            //#END SHUFFLE
-        }
-        object Widget {
-            //#BEGIN SHUFFLE
-            val xAnnotation = "x-annotation"
-            val xFlexbox = "x-flexbox"
-            val xPictureFrame = "x-pictureframe"
-            val xPictureFrameContent = "x-wpf-content"
-            val xSidebarTab = "x-sidebartab"
-            val xSidepanel = "x-sidepanel"
-            val xSlideshow = "x-slideshow"
-            val xSplitpanel = "x-splitpanel"
-            val xSticker = "x-sticker"
-            //#END SHUFFLE
-        }
-        object XAction {
-            //#BEGIN SHUFFLE
-            val view = "view"
-            //#END SHUFFLE
-        }
-        object XInfoKey {
-            //#BEGIN SHUFFLE
-            val seek = "seek"
-            //#END SHUFFLE
-        }
-        object XrefKey {
-            //#BEGIN SHUFFLE
-            val LINKS = "l"
-            val POSITION = "p"
-            //#END SHUFFLE
-        }
-        object XrefKind {
-            //#BEGIN SHUFFLE
-            val ANCHOR = 2
-            val AUDIO = 8
-            val HREF = 256
-            val IMAGE = 4
-            val OTHER = 128
-            val SRC = 512
-            val SRCSET = 1024
-            val STYLESHEET = 1
-            val VIDEO = 16
-            //#END SHUFFLE
-        }
-        object _FirstrunJSONKey {
-            //#BEGIN SHUFFLE
-            val buildVersion = "B"
-            //#END SHUFFLE
-        }
-        object _TemplatesJSONKey {
-            //#BEGIN SHUFFLE
-            val aliases = "aliases"
-            val category = "category"
-            val classes = "classes"
-            val desc = "desc"
-            val emoji = "emoji"
-            val filepath = "filepath"
-            val label = "label"
-            val name = "name"
-            val template = "template"
-            val templates = "templates"
-            //#END SHUFFLE
-        }
+public abstract class An {
+    object ATTR {
+        const val AnAction = "xxx-i5"
+        const val AnIndex = "xxx-as"
+        const val AnInfo = "xxx-h5"
+        const val AnMime = "xxx-j2"
+        const val AnNoClick = "xxx-0p"
+        const val AnOptions = "xxx-8f"
+        const val AnRedoing = "xxx-1l"
+        const val AnSaved = "xxx-lg"
+        const val AnToggleGroup = "xxx-80"
+        const val AnUndoing = "xxx-jk"
+        const val autocapitalize = "autocapitalize"
+        const val autocomplete = "autocomplete"
+        const val autocorrect = "autocorrect"
+        const val classes = "class"
+        const val contenteditable = "contenteditable"
+        const val href = "href"
+        const val id = "id"
+        const val name = "name"
+        const val placeholder = "placeholder"
+        const val spellcheck = "spellcheck"
+        const val src = "src"
+        const val style = "style"
+        const val tabindex = "tabindex"
+        const val xAction = "x-action"
+        const val xAnnotation = "x-a"
+        const val xButton = "x-bt"
+        const val xDateFormat = "x-f"
+        const val xInfo = "x-i"
+        const val xPageTemplate = "x-pt"
+        const val xPlaceholder = "x-ph"
+        const val xRole = "x-role"
+        const val xTemplate = "x-tp"
+        const val xTemplatePlaceholder = "x-th"
+        const val xTooltips = "x-t"
     }
-//#END An.Generated
+
+    object AVALUE {
+        const val xStop = "stop"
+    }
+
+    object AjaxAction {
+        const val ajax = "XxX6e"
+        const val audioStatusChanged = "XxXy9"
+        const val backup = "XxXMs"
+        const val browse = "XxXsa"
+        const val export = "XxX30"
+        const val gesture = "XxXPq"
+        const val hideCaret = "XxXN1"
+        const val login = "XxXDJ"
+        const val loginResult = "XxXFv"
+        const val navigateBack = "XxX8V"
+        const val onCallback = "XxXoO"
+        const val onNotificationResponse = "XxXED"
+        const val onResizeWindow = "XxXxI"
+        const val pause = "XxXGE"
+        const val refreshEvents = "XxX6y"
+        const val restore = "XxX0G"
+        const val resume = "XxXAd"
+        const val scanDocumentResult = "XxXiW"
+        const val showIncoming = "XxXr9"
+        const val showSidepanel = "XxXjH"
+        const val spinner = "XxXww"
+        const val spinnerHide = "XxXZZ"
+        const val spinnerShow = "XxXdH"
+        const val takePhotoResult = "XxXA6"
+        const val testRunner = "testRunner"
+        const val toaster = "XxXcg"
+        const val toasterOnLoad = "XxXtol"
+        const val videoRecordingResult = "XxXpu"
+    }
+
+    object CSS {
+        const val AnButton = "XxXH4"
+        const val AnSmokescreen = "XxXTT"
+        const val AnSpin = "XxXdn"
+        const val AnSpinner = "XxXV9"
+        const val AnToolbar = "XxXoy"
+        const val xAudio = "x-audio"
+        const val xAudioChannels = "x-audio-channels"
+        const val xAudioDatetime = "x-audio-datetime"
+        const val xAudioDuration = "x-audio-duration"
+        const val xAudioRate = "x-audio-rate"
+        const val xBody = "x-body"
+        const val xHeader = "x-header"
+        const val xLandscape = "x-landscape"
+        const val xMatchA = "x-m-a"
+        const val xMatchT = "x-m-t"
+        const val xPortrait = "x-portrait"
+        const val xRoot = "x-root"
+        const val xVideo = "x-video"
+        const val xVideoDatetime = "x-video-datetime"
+        const val xVideoDuration = "x-video-duration"
+        const val xVideoPoster = "x-video-poster"
+        const val xVideoResolution = "x-video-resolution"
+        const val xxTop = "xx-top"
+        const val xxScrollH = "xx-scroll-h"
+        const val xxScrollV = "xx-scroll-v"
+        const val xPlaceholder = "x-placeholder"
+        const val xRightSidebarTab = "x-rsb-tab"
+    }
+
+    object ClientAction {
+        const val bg = "bg/"
+        const val classes = "classes/"
+        const val cycle = "c/"
+        const val cycle1 = "C/"
+        const val hide = "hide/"
+        const val move = "m/"
+        const val radio = "r/"
+        const val show = "show/"
+        const val style = "s/"
+        const val toggle = "T/"
+    }
+
+    object DEF {
+        const val CORRECTED = ".~c~"
+        const val FontAwesome = "FontAwesome"
+        const val NOOP = "NOOP"
+        const val System = "System"
+        const val alarmMargin = 500
+        const val backupKeyAlias = "#self"
+        const val backupKeyPrefix = "#"
+        const val dailyBackupDir = "~DailyBackup~"
+        const val databaseKeyAlias = "#db"
+        const val dialogBorderWidth = 10
+        const val dialogMaxWidthLarge = 12
+        const val dialogMaxWidthMedium = 9
+        const val dialogMaxWidthSmall = 7
+        const val dialogMaxWidthXLarge = 16
+        const val dialogPaddingWidth = 10
+        const val dragBorderDivider = 2
+        const val filepickerHistorySize = 16
+        const val filepickerMaxWidth = 640
+        const val galleryItemThreshold = 24
+        const val imageDimensionSnap = 128
+        const val jpegQualityHigh = 95
+        const val jpegQuality = 90
+        const val jpegQualityThumbnail = 85
+        const val jpegQualityLow = 75
+        const val jpegQualityVeryLow = 60
+        const val keepLongerDays = 7
+        const val keepLongerSizeLimit = 16777216
+        const val keepShorterDays = 1
+        const val lightBorder = "1px solid rgba(0, 0, 0, 0.25)"
+        const val maxBarcodeScale = 10
+        const val maxClientActionClassesLength = 20
+        const val maxLongToastLen = 256
+        const val maxNodeInfoLen = 128
+        const val maxOutputImageArea = 67108864
+        const val maxToastLen = 64
+        const val nobackup = "~nobackup~"
+        const val opacityDisabled = 0.25
+        const val opacityEnabled = 1.0
+        const val opacityOpaque = 1.0
+        const val opacityResizing = 0.1
+        const val opacityShowBackground = 0.35
+        const val opacitySmoke = 0.5
+        const val opacitySpinner = 0.75
+        const val opacityTransparent = 0.0
+        const val pdfPosterSize = 1024
+        const val pdfDpi = 300
+        const val pdfScale = 4.1666
+        const val previewPhotoSize = 1024
+        const val recentFilePositionCount = 50
+        const val recentSymbolCount = 100
+        const val scrollableThumbnailSize = 512
+        const val sidepanelMarginBottom = 10
+        const val sidepanelWidth = 450
+        const val symbolFontSizeRatio = 0.45
+        const val templateBlank = "/assets/templates/blank/blank.html"
+        const val themeBorder = "1px solid rgba(0, 0, 0, 0.5)"
+        const val themeBorderRadius = "0.35rem"
+        const val themeBorderWidth = 1.0
+        const val themeBoxShadow = "2px 2px 10px rgba(0,0,0,0.5)"
+        const val thumbnailSize = 512
+        const val thumbnailSizeMicro = 96
+        const val thumbnailThreshold = 524288
+        const val thumbnailUsePool = 10
+        const val tmpBackupSuffix = "~tmp~.tmp"
+        const val toolbarFontSizeRatio = 0.5
+        const val trashAutoCleanupInterval = 86400000
+        const val webkitPrefix = "-webkit-"
+        const val xmlNameChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
+        const val zindexClientAnnotation = 1300
+        const val zindexClientSearchResult = 1200
+        const val zindexClientShow = 500
+        const val zindexClientSidebar = 1800
+        const val zindexClientSidepanel = 1100
+        const val zindexClientStickerOnDocument = 50
+        const val zindexClientStickerOnScreen = 75
+        const val zindexConfirm = 4900
+        const val zindexContextmenu = 4000
+        const val zindexImageAnnotator = 3000
+        const val zindexMax = 9999
+        const val zindexPrompt = 4100
+        const val zindexPromptSave = 2500
+        const val zindexResizer = 6000
+        const val zindexSidebar = 2000
+        const val zindexSidepanel = 2100
+        const val zindexToaster = 5000
+        const val zindexToasterError = 5200
+        const val zindexToasterWarning = 5100
+        const val zindexToolbar = 1990
+        const val zoomDelta = 2.0
+        const val zoomScale = 0.01
+    }
+
+    object Effect {
+        const val GRAY16 = 4
+        const val GRAY2 = 1
+        const val GRAY256 = 5
+        const val GRAY4 = 2
+        const val GRAY8 = 3
+        const val NONE = 0
+    }
+
+    object EventKey {
+        const val Color = "color"
+        const val Description = "desc"
+        const val Done = "done"
+        const val DoneMs = "donems"
+        const val DoneDesc = "donedesc"
+        const val Events = "A"
+        const val Exists = "exists"
+        const val Id = "id"
+        const val Lastms = "lastms"
+        const val Ms = "ms"
+        const val Pending = "pending"
+        const val Private = "private"
+        const val Repeat = "repeat"
+        const val Serial = "S"
+        const val Url = "url"
+        const val Version = "V"
+    }
+
+    object EventRepeat {
+        const val Daily = "Daily"
+        const val Monthly = "Monthly"
+        const val Off = "Off"
+        const val Once = "Once"
+        const val Weekly = "Weekly"
+        const val Workdays = "Workdays"
+        const val Yearly = "Yearly"
+        val values = arrayOf("Off", "Once", "Daily", "Workdays", "Weekly", "Monthly", "Yearly")
+    }
+
+    object FilepickerCmd {
+        const val COPY = 9
+        const val COPY_INFO = 10
+        const val DELETE = 11
+        const val DELETE_ALL = 14
+        const val DELETE_DIRSUBTREE = 13
+        const val DELETE_EMPTY_DIRS = 20
+        const val DELETE_INFO = 15
+        const val DIRINFO = 23
+        const val FILEINFO = 1
+        const val FILEINFOS = 22
+        const val INVALID = 0
+        const val LISTDIR = 4
+        const val LIST_RECURSIVE = 21
+        const val LOCAL_IMAGE_INFOS = 17
+        const val LOCAL_IMAGE_THUMBNAILS = 18
+        const val MKDIRS = 7
+        const val RENAME = 8
+        const val SHRED = 24
+    }
+
+    object FontCategories {
+        const val All = "All"
+        const val Decorative = "Decorative"
+        const val Monospace = "Monospace"
+        const val Others = "Others"
+        const val SansSerif = "Sans Serif"
+        const val Serif = "Serif"
+        const val System = "System"
+    }
+
+    object FontInfoKey {
+        const val category = "category"
+        const val fontfaceformat = "fontfaceformat"
+        const val fontname = "fontname"
+        const val glyphcount = "glyphcount"
+        const val glyphnames = "glyphnames"
+        const val glyphs = "glyphs"
+        const val license = "license"
+        const val size = "size"
+        const val styles = "styles"
+        const val subsets = "subsets"
+        const val url = "url"
+    }
+
+    object GestureEvent {
+        const val leftInward = "li"
+        const val leftOutward = "lo"
+        const val pinchZoom = "pz"
+        const val rightInward = "ri"
+        const val rightOutward = "ro"
+    }
+
+    object GestureKey {
+        const val event = "e"
+        const val y = "y"
+    }
+
+    object ID {
+        const val accessories = "XxXs5"
+        const val content = "XxXFP"
+        const val contentIFrame = "XxXci"
+        const val contextmenuSelect = "XxXhL"
+        const val csseditor = "code"
+        const val focusbox = "XxXqS"
+        const val searchResult = "XxXhK"
+        const val sidebar = "XxX16"
+        const val sidebarDocument = "XxXdW"
+        const val sidebarExplore = "XxXgA"
+        const val sidebarResize = "XxXGz"
+        const val sidebarTemplates = "XxXT1"
+        const val sidepanel = "XxXO1"
+        const val splash = "XxXk4"
+        const val toolbar = "XxX0V"
+        const val xContent = "x-content"
+        const val xLeftSidepanel = "x-leftsidepanel"
+        const val xLeftSplitpanel = "x-leftsplitpanel"
+        const val xMarkers = "x-markers"
+        const val xOpenLeftSidepanel = "x-open-leftsidepanel"
+        const val xOpenRightSidepanel = "x-open-rightsidepanel"
+        const val xRightSidebar = "x-rightsidebar"
+        const val xRightSidepanel = "x-rightsidepanel"
+        const val xRightSplitpanel = "x-rightsplitpanel"
+        const val xViewer = "x-viewer"
+    }
+
+    object Key {
+        const val quality = "XxXqty"
+        const val attrs = "XxXet"
+        const val backward = "XxXSG"
+        const val baseurl = "XxX5h"
+        const val busy = "XxXq4"
+        const val checksum = "XxXmq"
+        const val copying = "XxXEI"
+        const val count = "XxXiI"
+        const val cpath = "XxXCa"
+        const val css = "XxXcss"
+        const val cssrule = "XxXJ8"
+        const val cut = "XxXS4"
+        const val data = "XxXXD"
+        const val deleting = "XxXU0"
+        const val dimension = "XxXdb"
+        const val dirinfo = "XxXnr"
+        const val dirpath = "XxXtB"
+        const val dirtree = "XxXi5"
+        const val dst = "XxXkZ"
+        const val element = "XxXqh"
+        const val errors = "XxXox"
+        const val expectedfailure = "XxXNT"
+        const val expectedresult = "XxXIS"
+        const val expire = "XxX5i"
+        const val fails = "XxX6v"
+        const val fileinfo = "XxXML"
+        const val filename = "XxXdN"
+        const val filestat = "XxXWQ"
+        const val filter = "XxXOC"
+        const val filterIgnorecase = "XxXT5"
+        const val forward = "XxXhP"
+        const val free = "XxXSM"
+        const val height = "XxXiE"
+        const val hold = "XxXx2"
+        const val id = "XxXYP"
+        const val imageinfo = "XxXKK"
+        const val infos = "XxX4y"
+        const val ignores = "XxXigs"
+        const val isplaying = "XxXqe"
+        const val isregex = "XxXqo"
+        const val key = "XxXMG"
+        const val level = "XxX1n"
+        const val linkinfo = "XxXoW"
+        const val links = "XxXmu"
+        const val mediainfo = "XxXKv"
+        const val meminfo = "XxXVd"
+        const val mime = "XxXG2"
+        const val notcopying = "XxXMA"
+        const val notdeleting = "XxXxo"
+        const val orientation = "XxX0m"
+        const val overwriting = "XxXaA"
+        const val pass = "XxXes"
+        const val path = "XxXQm"
+        const val paths = "XxXQms"
+        const val player = "XxXjE"
+        const val poster = "XxXLq"
+        const val recorder = "XxX4q"
+        const val result = "XxXJL"
+        const val rpath = "XxXhk"
+        const val rpaths = "XxXPB"
+        const val searchIgnorecase = "XxXVc"
+        const val serial = "XxXG9"
+        const val size = "XxXpl"
+        const val src = "XxXPm"
+        const val stacktrace = "XxXBq"
+        const val status = "XxXGT"
+        const val style = "XxXEa"
+        const val tag = "XxX2b"
+        const val template = "XxX1I"
+        const val text = "XxXOd"
+        const val time = "XxXNn"
+        const val timestamp = "XxXOS"
+        const val tnpath = "XxXoz"
+        const val total = "XxXcL"
+        const val type = "XxXCl"
+        const val url = "XxX9D"
+        const val version = "XxXL9"
+        const val warns = "XxX2P"
+        const val width = "XxXUQ"
+        const val supportwebp = "XxXhgm"
+        const val xrefs = "XxXxrs"
+    }
+
+    object LinkInfoKey {
+        const val BODY = "B"
+        const val HEAD = "H"
+        const val name = "n"
+        const val rel = "r"
+        const val status = "s"
+        const val tag = "t"
+        const val targetpath = "p"
+        const val value = "v"
+    }
+
+    object LinkInfoStatus {
+        const val EXISTS = "E"
+        const val INVALID = "I"
+        const val NOTEXISTS = "N"
+    }
+
+    object LinkVerifierCmd {
+        const val INVALID = 0
+        const val LINKINFO = 2
+        const val LINKINFOS = 1
+    }
+
+    object MediaInfoCmd {
+        const val INFOS = 1
+        const val INVALID = 0
+        const val THUMBNAILS = 2
+    }
+
+    object MetainfoKey {
+        const val CreatedBy = "C"
+        const val FeatureCalc = "Cc"
+        const val Features = "F"
+        const val ModifiedBy = "M"
+        const val Patches = "P"
+    }
+
+    object NAME {
+        const val browsingContextmenu = "XxXbE"
+        const val contextmenu = "XxXJW"
+        const val contextmenuAssists = "XxX3a"
+        const val contextmenuChar = "XxXHD"
+        const val contextmenuClasses = "XxXIV"
+        const val contextmenuGallery = "XxXU0"
+        const val contextmenuHighlight = "XxXKR"
+        const val contextmenuImage = "XxXPz"
+        const val contextmenuPage = "XxXYA"
+        const val contextmenuPara = "XxXW1"
+        const val contextmenuSelect = "XxX9x"
+        const val contextmenuTemplate = "XxXrA"
+        const val contextmenuWidget = "XxX3q"
+        const val submenuChar = "XxXHE"
+        const val submenuFont = "XxXIG"
+        const val submenuList = "XxXVU"
+        const val submenuMedia = "XxXAB"
+        const val submenuOthers = "XxXS4"
+        const val submenuPara = "XxXiJ"
+    }
+
+    object ObsoletedEventKey {
+        const val AlarmOff = "disabled"
+        const val Filepath = "filepath"
+        const val Fragment = "fragment"
+    }
+
+    object ObsoletedEventRepeat {
+        const val EveryDay = "Every day"
+        const val EveryMonth = "Every month"
+        const val EveryWeek = "Every week"
+        const val EveryWeekday = "Every weekday"
+        const val EveryWorkday = "Every workday"
+        const val EveryYear = "Every year"
+        const val Once = "Once"
+    }
+
+    object PATH {
+        const val External = "External"
+        const val External_ = "External/"
+        const val Home = "Home"
+        const val HomeIndexHtml = "Home/index.html"
+        const val Home_ = "Home/"
+        const val Internal = "Internal"
+        const val Internal_ = "Internal/"
+        const val _External_ = "/External/"
+        const val _Home = "/Home"
+        const val _HomeIncoming = "/Home/incoming"
+        const val _HomeIndexHtml = "/Home/index.html"
+        const val _Home_ = "/Home/"
+        const val _InternalIncoming = "/Internal/incoming"
+        const val _Internal_ = "/Internal/"
+        const val _assetsAudioSample = "/assets/manual/samples/audios/audio-33.m4a"
+        const val _assetsCSSEditorCss = "/assets/css/csseditor.css"
+        const val _assetsCSSEditorHtml = "/assets/templates/res/csseditor.html"
+        const val _assetsCSSEditorJs = "/assets/js/c.js"
+        const val _assetsGameMindsCss = "/assets/css/gameminds.css"
+        const val _assetsGameMindsHtml = "/assets/templates/res/gameminds.html"
+        const val _assetsGameMindsJs = "/assets/js/g.js"
+        const val _assetsGameMinesCss = "/assets/css/gamemines.css"
+        const val _assetsGameMinesHtml = "/assets/templates/res/gamemines.html"
+        const val _assetsGameMinesJs = "/assets/js/g.js"
+        const val _assetsGameSudokuCss = "/assets/css/gamesudoku.css"
+        const val _assetsGameSudokuHtml = "/assets/templates/res/gamesudoku.html"
+        const val _assetsGameSudokuJs = "/assets/js/g.js"
+        const val _assetsImagesLandscapeSample = "/assets/images/samples/backlight.jpg"
+        const val _assetsImagesPortraitSample = "/assets/images/samples-oilify/pink.jpg"
+        const val _assetsImagesSamplesAngels = "/assets/images/samples/angels.jpg"
+        const val _assetsImagesSamplesLamp = "/assets/images/samples/lamp.jpg"
+        const val _assetsImagesSig01Png = "/assets/images/res/sig01.png"
+        const val _assetsReleaseNotesHtml = "/assets/manual/en/release-notes/release-notes.html"
+        const val _assetsTemplates404Html = "/assets/templates/res/404.html"
+        const val _assetsTemplates500Html = "/assets/templates/res/500.html"
+        const val _assetsTemplatesFaviconIco = "/assets/templates/res/favicon.ico"
+        const val _assetsTemplatesIndexHtml = "/assets/templates/res/index.html"
+        const val _assetsVideoSample = "/assets/manual/samples/videos/BasicEditing.mp4"
+        const val _internal = "/Internal"
+        const val _pdfPoster = "/assets/templates/res/pdf.png"
+        const val _videoPoster = "/assets/images/res/cloud1024c.png"
+        const val _pdfSample = "/assets/manual/samples/pdf/release-notes.pdf"
+        const val assetsTemplatesFaviconIco = "assets/templates/res/favicon.ico"
+        const val assetsTemplatesIndexHtml = "assets/templates/res/index.html"
+        const val HomeBlog = "Home/blog"
+        const val HomeDrafts = "Home/drafts"
+        const val Inbox_ = "Inbox/"
+        const val PrivateBlog = "Private/blog"
+        const val PrivateDrafts = "Private/drafts"
+        const val Recover = "Recover"
+        const val Recover_ = "Recover/"
+        const val Restore = "Restore"
+        const val Restore_ = "Restore/"
+        const val _assets = "/assets"
+        const val _assetsImageCss = "/assets/css/image.css"
+        const val _assets_ = "/assets/"
+        const val assets = "assets"
+        const val assetsCSSEditorCss = "assets/css/csseditor.css"
+        const val assetsCSSEditorHtml = "assets/templates/res/csseditor.html"
+        const val assetsCSSEditorJs = "assets/js/c.js"
+        const val assetsClientCss = "assets/css/client-v1.css"
+        const val assetsClient_ = "assets/css/client-"
+        const val assetsConfig = "assets/config"
+        const val assetsConfig_ = "assets/config/"
+        const val assetsCoreCss = "assets/css/core-v1.css"
+        const val assetsCss_ = "assets/css/"
+        const val assetsFonts_ = "assets/fonts/"
+        const val assetsGameMindsCss = "assets/css/gameminds.css"
+        const val assetsGameMindsHtml = "assets/templates/res/gameminds.html"
+        const val assetsGameMindsJs = "assets/js/g.js"
+        const val assetsGameMinesCss = "assets/css/gamemines.css"
+        const val assetsGameMinesHtml = "assets/templates/res/gamemines.html"
+        const val assetsGameMinesJs = "assets/js/g.js"
+        const val assetsGameSudokuCss = "assets/css/gamesudoku.css"
+        const val assetsGameSudokuHtml = "assets/templates/res/gamesudoku.html"
+        const val assetsGameSudokuJs = "assets/js/g.js"
+        const val assetsHostCss = "assets/css/host.css"
+        const val assetsImageCss = "assets/css/image.css"
+        const val assetsImages_ = "assets/images/"
+        const val assetsJs_ = "assets/js/"
+        const val assetsMainJs = "assets/js/m.js"
+        const val assetsNativeJs = "assets/js/n.js"
+        const val assetsResourcesJs = "assets/js/r.js"
+        const val assetsTemplates404Html = "assets/templates/res/404.html"
+        const val assetsTemplates500Html = "assets/templates/res/500.html"
+        const val assetsTemplatesRes_ = "assets/templates/res/"
+        const val assets_ = "assets/"
+        const val blog = "blog"
+        const val drafts = "drafts"
+    }
+
+    object Param {
+        const val create = "create"
+        const val edit = "edit"
+        const val fragment = "fragment"
+        const val ignorecase = "ignorecase"
+        const val isregex = "isregex"
+        const val mime = "mime"
+        const val msg = "msg"
+        const val path = "path"
+        const val poster = "poster"
+        const val redirect = "redirect"
+        const val save = "save"
+        const val searchtext = "searchtext"
+        const val seek = "seek"
+        const val session = "s"
+        const val t = "t"
+        const val view = "view"
+    }
+
+    object Placeholder {
+        const val xpAnnotation = "annotation"
+        const val xpAnnotationImage = "a-image"
+        const val xpAnnotationPhoto = "a-photo"
+        const val xpAnnotationPhotoNoCaption = "a-photo0"
+        const val xpAudio = "audio"
+        const val xpAudio2 = "audio2"
+        const val xpAudioinfo = "audioinfo"
+        const val xpCalendar = "calendar"
+        const val xpCanvas = "canvas"
+        const val xpCanvasImage = "canvas-image"
+        const val xpCanvasPhoto = "canvas-photo"
+        const val xpDate = "date"
+        const val xpDateAuto = "date-auto"
+        const val xpDateShort = "date-short"
+        const val xpDatetime = "datetime"
+        const val xpDatetimeShort = "datetime-short"
+        const val xpDraggable = "draggable"
+        const val xpImage = "image"
+        const val xpImageNoCaption = "image0"
+        const val xpPhoto = "photo"
+        const val xpShortDate = "short-date"
+        const val xpShortDatetime = "short-datetime"
+        const val xpShortTime = "short-time"
+        const val xpTime = "time"
+        const val xpTimeShort = "time-short"
+        const val xpVideo = "video"
+        const val xpVideoinfo = "videoinfo"
+    }
+
+    object RESULT {
+        const val CANCELED = 0
+        const val FAILED = 1
+        const val OK = -1
+    }
+
+    object ROLE {
+        const val Generated = "generated"
+    }
+
+    object RecentsCmd {
+        const val BACK = 4
+        const val CLEAN = 2
+        const val CLEAR = 1
+        const val FORWARD = 6
+        const val INFO = 3
+        const val INVALID = 0
+        const val PEEK = 5
+        const val SORTED = 7
+    }
+
+    object SessionKey {
+        const val loggedin = "loggedin"
+        const val preferences = "perferences"
+        const val recents = "recents"
+        const val recentsByTime = "recentsByTime"
+        const val videos = "videos"
+        const val version = "version"
+    }
+
+    object SessionParam {
+        const val XROOT = "X"
+        const val X_ROOT = "x-root"
+        const val poster = "p"
+        const val type = "t"
+        const val x = "x"
+        const val y = "y"
+        const val z = "z"
+    }
+
+    object SessionPreferencesKey {
+        const val gameMindsCells = "GMDC"
+        const val gameMindsDigits = "GMDD"
+        const val gameMindsSave = "GMDS"
+        const val gameSudokuDifficulty = "GSDD"
+        const val gameSudokuAssists = "GSDA"
+        const val gameSudokuSave = "GSDS"
+        const val gameSudokuAutofill = "GSDF"
+        const val gameMinesMapSize = "GMIM"
+        const val gameMinesDifficulty = "GMID"
+        const val gameMinesSave = "GMIS"
+        const val symbolFamily = "SYBF"
+        const val symbolRecents = "SYBR"
+        const val showDoneEvents = "SDEV"
+        const val templatesRecents = "TPLR"
+        const val trashAutoCleanupTimestamp = "TACT"
+        const val dirHistory = "DIRH"
+        const val imageDefaultOutputSize = "IDOS"
+        const val indentTab = "INDT"
+        const val sidepanelWidth = "SPWD"
+        const val filePositions = "FPOS"
+        const val imageDefaultOutputQuality = "IDOQ"
+        const val imageDefaultOutputFormat = "IDOF"
+        const val photoDefaultOutputFormat = "PDOF"
+        const val photoDefaultOutputSize = "PDOS"
+        const val photoDefaultOutputQuality = "PDOQ"
+    }
+
+    object SettingsDefs {
+        const val annotationColor = "#9400d3"
+        const val buttonSize = 40
+        const val dateFormat = "mm/dd/yyyy"
+        const val dpi = 160
+        const val fixedFontName = "UbuntuMono"
+        const val fixedFontStyle = "Regular"
+        const val fontSize = 16
+        const val headingColor = "#1e90ff"
+        const val highlightColor = "rgba(255,255,128,0.75)"
+        const val imageDimension = 1024
+        const val linkColor = "#0000ee"
+        const val symbolFamily = "FontAwesome"
+        const val timeFormat = "hh:mm"
+        const val uiFontName = "Ruda"
+        const val uiFontStyle = "Regular"
+        const val winHeight = 640
+        const val winWidth = 360
+    }
+
+    object SettingsKey {
+        const val annotationColor = "annotationColor"
+        const val bgImgSamples = "bgImgSamples"
+        const val builtinCharStyles = "builtinCharStyles"
+        const val builtinParaStyles = "builtinParaStyles"
+        const val buttonSize = "buttonSize"
+        const val charStyles = "charStyles"
+        const val current = "current"
+        const val dateFormat = "dateFormat"
+        const val defaults = "defaults"
+        const val dialogBGColor = "dialogBGColor"
+        const val fixedFontName = "fixedFontName"
+        const val fixedFontSize = "fixedFontSize"
+        const val fixedFontStyle = "fixedFontStyle"
+        const val fontCategories = "fontCategories"
+        const val fontFamilies = "fontFamilies"
+        const val headingColor = "boldColor"
+        const val highlightColor = "highlightColor"
+        const val highlightStyles = "highlightStyles"
+        const val htmlTemplates = "htmlTemplates"
+        const val imageDimension = "imageDimension"
+        const val linkColor = "linkColor"
+        const val paraStyles = "paraStyles"
+        const val symbolFamilies = "symbolFamilies"
+        const val timeFormat = "timeFormat"
+        const val timeZone = "timeZone"
+        const val uiFontName = "uiFontName"
+        const val uiFontSize = "uiFontSize"
+        const val uiFontStyle = "uiFontStyle"
+    }
+
+    object SidepanelInfoKey {
+        const val sidebarHeight = "XxXEE"
+    }
+
+    object StyleKey {
+        const val group = "group"
+        const val label = "label"
+        const val name = "name"
+    }
+
+    object THEME {
+        const val splitPanelBG = "#a2cd5a"
+    }
+
+    object TemplateAction {
+        const val annotation = "a"
+        const val bg = "bg"
+        const val blog = "b"
+        const val classes = "classes"
+        const val cutMarked = "x"
+        const val cutNotMarked = "X"
+        const val cycle = "c"
+        const val cycle1 = "C"
+        const val delete = "d"
+        const val drag = "g"
+        const val hide = "hide"
+        const val move = "m"
+        const val playall = "playall"
+        const val postAlarm = "alarm"
+        const val radio = "r"
+        const val save = "save"
+        const val show = "show"
+        const val style = "s"
+        const val template = "t"
+        const val toggle = "T"
+        const val widget = "widget"
+    }
+
+    object TemplateCat {
+        const val Audio = "Audio"
+        const val Blog = "Blog"
+        const val Canvas = "Canvas"
+        const val Home = "Home"
+        const val Photo = "Photo"
+    }
+
+    object TemplateMenuKey {
+        const val action = "a"
+        const val background = "b"
+        const val backgroundImage = "i"
+        const val backgroundSize = "S"
+        const val classes = "c"
+        const val cmd = "C"
+        const val label = "l"
+        const val lcCat = "t"
+        const val menu = "m"
+        const val name = "n"
+        const val path = "p"
+        const val symbol = "s"
+    }
+
+    object TemplateName {
+        const val audioV2 = "audio-v2"
+        const val blogV2 = "blog-v2"
+        const val homeSimpler = "home-simpler"
+        const val mediaSticker = "media-sticker"
+        const val mediaWall = "media-wall"
+        const val photoSticker1 = "photo-sticker1"
+        const val photoWall = "photo-wall"
+    }
+
+    object VERSIONS {
+        const val ClientCssVersion = "1"
+        const val TemplateVersion = "2"
+    }
+
+    object Widget {
+        const val xAnnotation = "x-annotation"
+        const val xFlexbox = "x-flexbox"
+        const val xPictureFrame = "x-pictureframe"
+        const val xPictureFrameContent = "x-wpf-content"
+        const val xSidebarTab = "x-sidebartab"
+        const val xSidepanel = "x-sidepanel"
+        const val xSlideshow = "x-slideshow"
+        const val xSplitpanel = "x-splitpanel"
+        const val xSticker = "x-sticker"
+    }
+
+    object XAction {
+        const val view = "view"
+    }
+
+    object XInfoKey {
+        const val seek = "seek"
+    }
+
+    object XrefKey {
+        const val LINKS = "l"
+        const val POSITION = "p"
+    }
+
+    object XrefKind {
+        const val ANCHOR = 2
+        const val AUDIO = 8
+        const val HREF = 256
+        const val IMAGE = 4
+        const val OTHER = 128
+        const val SRC = 512
+        const val SRCSET = 1024
+        const val STYLESHEET = 1
+        const val VIDEO = 16
+    }
+
+    object _FirstrunJSONKey {
+        const val buildVersion = "B"
+    }
+
+    object _TemplatesJSONKey {
+        const val aliases = "aliases"
+        const val category = "category"
+        const val classes = "classes"
+        const val desc = "desc"
+        const val emoji = "emoji"
+        const val filepath = "filepath"
+        const val label = "label"
+        const val name = "name"
+        const val template = "template"
+        const val templates = "templates"
+    }
+}
+
+object ServerKey {
+    const val data = "XxXm0"
+    const val headers = "XxXwd"
+    const val ipc = "XxXr7"
+    const val method = "XxXef"
+    const val referrer = "XxXYI"
+    const val serial = "XxXds"
+    const val statusCode = "XxXgb"
+    const val url = "XxXGV"
+}

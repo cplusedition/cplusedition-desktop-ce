@@ -45,12 +45,15 @@ tr.xx-section>td, tr.xx-section>th {
   margin: 0;
   padding: 0;
 }
+table.xx-todos tr > td:first-child, table.xx-todos tr>th:first-child, tr.xx-total > td:first-child {
+  padding-left: 0.5em;
+}
 tr.xx-total {
   background-color: #ddd;
 }
 tr.xx-total td {
   font-weight: bold;
-  padding: 0.75ex 0.25em 0.5ex 0.25em;
+  padding: 0.75ex 0.5em 0.5ex 0;
   border-top: 3px solid #555;
 }
 td.xx-subtitle {
@@ -64,7 +67,7 @@ table.xx-todos {
   width: 100%;
 }
 table.xx-todos td, table.xx-todos th {
-  padding: 0.75ex 0.25em 0.5ex 0.25em;
+  padding: 0.75ex 0.5em 0.5ex 0;
   vertical-align: middle;
 }
 table.xx-todos td.xx-status {
@@ -84,13 +87,11 @@ th.xx-desc, td.xx-desc {
   text-align: left;
 }
 th.xx-quantity, td.x-calc-quantity {
-  padding-left: 10px !important;
   text-align: right;
   word-break: break-all;
   min-width: 2em;
 }
 th.xx-price, td.x-calc-price {
-  padding-left: 10px !important;
   text-align: right;
   word-break: break-all;
   min-width: 3em;
@@ -109,15 +110,19 @@ td.x-calc-total:before, th.xx-quantity:before {
 }
 tr.xx-header th {
   font-weight: bold;
-  padding: 0.75ex 0.25em 0.5ex 0.25em;
   border-top: 3px solid #555;
   border-bottom: var(--x-dark-border);
 }
 tr.xx-subtotal td {
-  padding: 0.75ex 0.25em 0.5ex 0.25em;
   font-weight: bold;
 }
 table.xx-body.xx-hide tr.xx-done {
+  display: none;
+}
+table.xx-body.xx-hide-quantity th.xx-quantity, table.xx-body.xx-hide-quantity td.x-calc-quantity, tr.xx-section.xx-hide-quantity th.xx-quantity, tr.xx-section.xx-hide-quantity td.x-calc-quantity {
+  display: none;
+}
+table.xx-body.xx-hide-price th.xx-price, table.xx-body.xx-hide-price td.x-calc-price, tr.xx-section.xx-hide-price th.xx-price, tr.xx-section.xx-hide-price td.x-calc-price {
   display: none;
 }
 .xx-date {
@@ -129,6 +134,9 @@ table.xx-body.xx-hide tr.xx-done {
 }
 th.xx-quantity, td.x-calc-quantity {
   width: 4em;
+}
+th.xx-price, td.x-calc-price {
+  width: 5em;
 }
 th.xx-price, td.x-calc-price {
   width: 5em;
@@ -273,12 +281,6 @@ tr.xx-todo.xx-status11 td.xx-status:before {
   border-radius: 5px;
   border: 1px solid #555;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
-}
-.xx-style06 tr.xx-header > th.xx-desc, .xx-style07 tr.xx-header > th.xx-desc, .xx-style06 td.x-calc-total, .xx-style07 td.x-calc-total, .xx-style06 tr.xx-total > td:first-child, .xx-style07 tr.xx-total > td:first-child {
-  padding-left: 0.5em;
-}
-.xx-style06 tr.xx-header > th.xx-price, .xx-style07 tr.xx-header > th.xx-price, .xx-style06 td.x-calc-price, .xx-style07 td.x-calc-price, .xx-style06 td.x-calc-total, .xx-style07 td.x-calc-total {
-  padding-right: 0.5em;
 }
 .xx-style06 tr.xx-header > th, .xx-style07 tr.xx-header > th {
   padding-top: 1.25ex;

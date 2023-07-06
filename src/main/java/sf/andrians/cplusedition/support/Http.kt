@@ -16,7 +16,7 @@
 */
 package sf.andrians.cplusedition.support
 
-import com.cplusedition.bot.core.WithoutUtil.Companion.Without
+import com.cplusedition.bot.core.Without
 
 object Http {
     object HttpHeader {
@@ -237,7 +237,7 @@ object Http {
                 if (last < 0) last += contentlength
                 if (last >= contentlength) last = contentlength - 1
                 if (first > last) return null
-                if (first >= contentlength) return null // Not specified in spec.
+                if (first >= contentlength) return null
                 if (last - first + 1 > max) last = first + max - 1
                 return HttpRange(first, last, contentlength)
             }
@@ -256,4 +256,3 @@ object Http {
         }
     }
 }
-

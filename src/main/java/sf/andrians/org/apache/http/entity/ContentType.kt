@@ -165,7 +165,7 @@ class ContentType : Serializable {
          */
 
         fun create(mimeType: String, charset: Charset? = null): ContentType {
-            val normalizedMimeType = Args.notBlank(mimeType, "MIME type").toLowerCase(Locale.ROOT)
+            val normalizedMimeType = Args.notBlank(mimeType, "MIME type").lowercase(Locale.ROOT)
             Args.check(valid(normalizedMimeType), "MIME type may not contain reserved characters")
             return ContentType(normalizedMimeType, charset)
         }
@@ -224,8 +224,9 @@ class ContentType : Serializable {
          */
         @Throws(UnsupportedCharsetException::class)
         fun create(
-                mimeType: String, vararg params: NameValuePair): ContentType {
-            val type = Args.notBlank(mimeType, "MIME type").toLowerCase(Locale.ROOT)
+            mimeType: String, vararg params: NameValuePair
+        ): ContentType {
+            val type = Args.notBlank(mimeType, "MIME type").lowercase(Locale.ROOT)
             Args.check(valid(type), "MIME type may not contain reserved characters")
             return create(mimeType, Arrays.copyOf(params, params.size), true)
         }

@@ -1,0 +1,124 @@
+.xx-root {
+  background-image: linear-gradient(rgba(217, 234, 211, 0.75), rgba(217, 234, 211, 0.75)), url(/assets/images/wallpapers/cloth01.png);
+}
+div.xx-top {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  overflow: visible;
+  margin: 0 auto;
+  padding: 20px 20px 100vh 20px;
+}
+div.xx-body {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+div.xx-photo {
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 10px;
+  overflow: visible;
+  padding: 10px;
+  margin: 10px;
+  border: var(--x-theme-border);
+  box-sizing: content-box;
+  width: min-content;
+  background-color: #fff;
+}
+div.xx-comment {
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 10px;
+  overflow: visible;
+  padding: 10px;
+  margin: 10px;
+  border: var(--x-theme-border);
+  box-sizing: content-box;
+  width: 240px;
+  transform: rotate(0deg);
+  background-color: #fe5;
+}
+div.xx-photo:nth-child(even) {
+  transform: rotate(-2.5deg);
+}
+div.xx-photo:nth-child(odd) {
+  transform: rotate(2.5deg);
+}
+div.x-photo {
+  justify-content: center;
+}
+div.x-photo img {
+  display: block;
+  max-height: 320px;
+  max-width: 180px;
+}
+div.x-photo img.x-landscape {
+  max-width: 320px;
+  max-height: 180px;
+}
+.xx-size-large div.x-photo img {
+  max-height: 400;
+  max-width: 225px;
+}
+.xx-size-large div.x-photo img.x-landscape {
+  max-width: 400px;
+  max-height: 225px;
+}
+.xx-size-large div.xx-comment {
+  width: 270px;
+}
+.xx-size-xlarge div.x-photo img {
+  max-height: 480px;
+  max-width: 270px;
+}
+.xx-size-xlarge div.x-photo img.x-landscape {
+  max-width: 480px;
+  max-height: 270px;
+}
+.xx-size-xlarge div.xx-comment {
+  width: 315px;
+}
+.xx-size-xxlarge div.x-photo img {
+  max-height: 640px;
+  max-width: 360px;
+}
+.xx-size-xxlarge div.x-photo img.x-landscape {
+  max-width: 640px;
+  max-height: 360px;
+}
+.xx-size-xxlarge div.xx-comment {
+  width: 420px;
+}
+div.xx-photo > div.x-subject, div.xx-comment > div.x-subject {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+div.xx-photo > div.x-subject > span, div.xx-comment > div.x-subject > span {
+  display: inline-block;
+  padding-bottom: 10px;
+}
+div.xx-photo > div.x-subject span[x-bt], div.xx-comment > div.x-subject span[x-bt] {
+  display: none;
+}
+[contenteditable] div.xx-photo > div.x-subject span[x-bt], [contenteditable] div.xx-comment > div.x-subject span[x-bt] {
+  display: unset;
+}
+div.xx-photo span.x-datetime, div.xx-photo span.x-date {
+  color: #666;
+}
+div.xx-subject span.x-datetime, div.xx-subject span.x-date {
+  color: #000;
+}
+div.xx-photo div.x-photo ~ div.xx-caption {
+  font-size: 90%;
+  margin: 10px 0 0 0;
+}
+.xx-top.xx-hide .xx-caption {
+  display: none;
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

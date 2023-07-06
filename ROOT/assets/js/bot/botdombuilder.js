@@ -1,4 +1,19 @@
-/*!            
+"use strict";
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _DomBuilder_stack, _DomBuilder_cursor;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DomBuilder = void 0;
+/*!
     C+edition for Desktop, Community Edition.
     Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
     
@@ -14,31 +29,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-"use strict";
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-};
-var _stack, _cursor;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DomBuilder = void 0;
 const botcore_1 = require("./botcore");
 class DomBuilder {
-    /// Use the given element as root of the tree. 
-    constructor(cursor, attrs = null) {
-        _stack.set(this, new botcore_1.Stack());
-        _cursor.set(this, void 0);
-        __classPrivateFieldSet(this, _cursor, DomBuilder.attrs1_(cursor, attrs));
-    }
     static attr1_(elm, key, value) {
         if (value == null) {
             elm.removeAttribute(key);
@@ -67,6 +59,12 @@ class DomBuilder {
     static offline_(doc, tag, attrs = null) {
         return new DomBuilder(doc.createElement(tag), attrs);
     }
+    /// Use the given element as root of the tree. 
+    constructor(cursor, attrs = null) {
+        _DomBuilder_stack.set(this, new botcore_1.Stack());
+        _DomBuilder_cursor.set(this, void 0);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, DomBuilder.attrs1_(cursor, attrs), "f");
+    }
     /// This is basically a noop. However, it is useful for grouping statements in
     /// the same level and visualize nesting levels in typescript code. Typically,
     /// a group contains a matching push() and pop().
@@ -80,11 +78,11 @@ class DomBuilder {
     }
     /// Add attributes to the cursor element.
     attr_(key, value) {
-        DomBuilder.attr1_(__classPrivateFieldGet(this, _cursor), key, value);
+        DomBuilder.attr1_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"), key, value);
         return this;
     }
     attrs_(keyvalues) {
-        DomBuilder.attrs1_(__classPrivateFieldGet(this, _cursor), keyvalues);
+        DomBuilder.attrs1_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"), keyvalues);
         return this;
     }
     attrx_(attrs) {
@@ -100,45 +98,45 @@ class DomBuilder {
     }
     addClass_(c) {
         if (c.length > 0)
-            __classPrivateFieldGet(this, _cursor).classList.add(c);
+            __classPrivateFieldGet(this, _DomBuilder_cursor, "f").classList.add(c);
         return this;
     }
     addClasses_(c) {
         for (const cc of c) {
             if (cc.length > 0)
-                __classPrivateFieldGet(this, _cursor).classList.add(cc);
+                __classPrivateFieldGet(this, _DomBuilder_cursor, "f").classList.add(cc);
         }
         return this;
     }
     addStyle_(key, value) {
-        const style = __classPrivateFieldGet(this, _cursor).style;
+        const style = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").style;
         style.setProperty(key, value);
         return this;
     }
     addStyles_(styles) {
-        const style = __classPrivateFieldGet(this, _cursor).style;
+        const style = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").style;
         for (const [key, value] of Object.entries(styles)) {
             style.setProperty(key, value);
         }
         return this;
     }
     append_(child, attrs = null) {
-        __classPrivateFieldGet(this, _cursor).appendChild(typeof (child) === "string"
+        __classPrivateFieldGet(this, _DomBuilder_cursor, "f").appendChild(typeof (child) === "string"
             ? this.createElement_(child, attrs)
             : DomBuilder.attrs1_(child, attrs));
         return this;
     }
     appendNodes_(...child) {
         for (const n of child) {
-            this, __classPrivateFieldGet(this, _cursor).appendChild(n);
+            this, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").appendChild(n);
         }
         return this;
     }
     append1_(child, ...classes) {
-        return this.append_(child, botcore_1.smapOf_("class", classes.join(" ")));
+        return this.append_(child, (0, botcore_1.smapOf_)("class", classes.join(" ")));
     }
     append2_(child, name, value) {
-        return this.append_(child, botcore_1.smapOf_(name, value));
+        return this.append_(child, (0, botcore_1.smapOf_)(name, value));
     }
     /// Insert node/nodes before the next node as children to the cursor element.
     /// Overloads:
@@ -149,11 +147,11 @@ class DomBuilder {
     insertBefore_(next, child, attrs = null) {
         if (child instanceof Array) {
             for (const n of child) {
-                __classPrivateFieldGet(this, _cursor).insertBefore(n, next);
+                __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore(n, next);
             }
         }
         else {
-            __classPrivateFieldGet(this, _cursor).insertBefore(typeof (child) === "string"
+            __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore(typeof (child) === "string"
                 ? this.createElement_(child, attrs)
                 : (child.nodeType == Node.ELEMENT_NODE)
                     ? DomBuilder.attrs1_(child, attrs)
@@ -162,29 +160,29 @@ class DomBuilder {
         return this;
     }
     prepend_(child, attrs = null) {
-        return this.insertBefore_(__classPrivateFieldGet(this, _cursor).firstChild, child, attrs);
+        return this.insertBefore_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild, child, attrs);
     }
     prependNodes_(...child) {
-        const next = __classPrivateFieldGet(this, _cursor).firstChild;
+        const next = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild;
         for (const n of child) {
             this.insertBefore_(next, n);
         }
         return this;
     }
     prepend1_(child, ...classes) {
-        return this.prepend_(child, botcore_1.smapOf_("class", classes.join(" ")));
+        return this.prepend_(child, (0, botcore_1.smapOf_)("class", classes.join(" ")));
     }
     prepend2_(child, name, value) {
-        return this.prepend_(child, botcore_1.smapOf_(name, value));
+        return this.prepend_(child, (0, botcore_1.smapOf_)(name, value));
     }
     /// Append a child and use it as cursor.
     /// Overloads:
     /// (String, [StringMap<String> attrs])
     /// (HTMLElement)
     child_(child, attrs = null) {
-        __classPrivateFieldSet(this, _cursor, __classPrivateFieldGet(this, _cursor).appendChild((typeof (child) === "string")
+        __classPrivateFieldSet(this, _DomBuilder_cursor, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").appendChild((typeof (child) === "string")
             ? this.createElement_(child, attrs)
-            : DomBuilder.attrs1_(child, attrs)));
+            : DomBuilder.attrs1_(child, attrs)), "f");
         return this;
     }
     /// Append a child and use it as cursor.
@@ -200,9 +198,9 @@ class DomBuilder {
     /// (Node next, String tag, [StringMap<String> attrs])
     /// (Node next, HTMLElement child)
     childBefore_(next, child, attrs = null) {
-        __classPrivateFieldSet(this, _cursor, __classPrivateFieldGet(this, _cursor).insertBefore((typeof (child) === "string"
+        __classPrivateFieldSet(this, _DomBuilder_cursor, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore((typeof (child) === "string"
             ? this.createElement_(child, attrs)
-            : DomBuilder.attrs1_(child, attrs)), next));
+            : DomBuilder.attrs1_(child, attrs)), next), "f");
         return this;
     }
     childBefore1_(next, tag, ...classes) {
@@ -212,22 +210,22 @@ class DomBuilder {
         return this.childBefore_(next, tag).attr_(name, value);
     }
     childBeforeFirst_(child, attrs = null) {
-        return this.childBefore_(__classPrivateFieldGet(this, _cursor).firstChild, child, attrs);
+        return this.childBefore_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild, child, attrs);
     }
     childBeforeFirst1_(tag, ...classes) {
-        return this.childBefore_(__classPrivateFieldGet(this, _cursor).firstChild, tag).addClasses_(classes);
+        return this.childBefore_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild, tag).addClasses_(classes);
     }
     childBeforeFirst2_(tag, name, value) {
-        return this.childBefore_(__classPrivateFieldGet(this, _cursor).firstChild, tag).attr_(name, value);
+        return this.childBefore_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild, tag).attr_(name, value);
     }
     /// Insert a sibling before the cursor and use it as new cursor.
     /// Overloads:
     /// (String tag, [StringMap<String> attrs])
     /// (HTMLElement elm)
     siblingBefore_(child, attrs = null) {
-        __classPrivateFieldSet(this, _cursor, __classPrivateFieldGet(this, _cursor).parentNode.insertBefore((typeof (child) === "string"
+        __classPrivateFieldSet(this, _DomBuilder_cursor, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").parentNode.insertBefore((typeof (child) === "string"
             ? this.createElement_(child, attrs)
-            : DomBuilder.attrs1_(child, attrs)), __classPrivateFieldGet(this, _cursor)));
+            : DomBuilder.attrs1_(child, attrs)), __classPrivateFieldGet(this, _DomBuilder_cursor, "f")), "f");
         return this;
     }
     /// Insert a sibling after the cursor and use it as new cursor.
@@ -235,25 +233,25 @@ class DomBuilder {
     /// (String tag, [StringMap<String> attrs])
     /// (HTMLElement elm)
     siblingAfter_(child, attrs = null) {
-        __classPrivateFieldSet(this, _cursor, __classPrivateFieldGet(this, _cursor).parentNode.insertBefore((typeof (child) === "string"
+        __classPrivateFieldSet(this, _DomBuilder_cursor, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").parentNode.insertBefore((typeof (child) === "string"
             ? this.createElement_(child, attrs)
-            : DomBuilder.attrs1_(child, attrs)), __classPrivateFieldGet(this, _cursor).nextSibling));
+            : DomBuilder.attrs1_(child, attrs)), __classPrivateFieldGet(this, _DomBuilder_cursor, "f").nextSibling), "f");
         return this;
     }
     /// Append text as child to cursor. 
     text_(text) {
-        __classPrivateFieldGet(this, _cursor).appendChild(DomBuilder.createText_(text));
+        __classPrivateFieldGet(this, _DomBuilder_cursor, "f").appendChild(DomBuilder.createText_(text));
         return this;
     }
     /// Append text as child to cursor. 
     textBefore_(next, text) {
-        __classPrivateFieldGet(this, _cursor).insertBefore(DomBuilder.createText_(text), next);
+        __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore(DomBuilder.createText_(text), next);
         return this;
     }
     /// Create a text node and insert as a sibling after the cursor. 
     textSiblingAfter_(text) {
         const textnode = DomBuilder.createText_(text);
-        __classPrivateFieldGet(this, _cursor).parentNode.insertBefore(textnode, __classPrivateFieldGet(this, _cursor).nextSibling);
+        __classPrivateFieldGet(this, _DomBuilder_cursor, "f").parentNode.insertBefore(textnode, __classPrivateFieldGet(this, _DomBuilder_cursor, "f").nextSibling);
         return textnode;
     }
     /// Remove the given child from the current cursor element. 
@@ -272,7 +270,7 @@ class DomBuilder {
     /// Replace the given child with the given bynode from the current cursor element. 
     replaceChild_(child, bynode) {
         var _a;
-        __classPrivateFieldGet(this, _cursor).insertBefore(bynode, child);
+        __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore(bynode, child);
         (_a = child.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(child);
         return this;
     }
@@ -284,7 +282,7 @@ class DomBuilder {
         while (c != null && c != end) {
             const n = c.nextSibling;
             (_a = c.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(c);
-            __classPrivateFieldGet(this, _cursor).append(c);
+            __classPrivateFieldGet(this, _DomBuilder_cursor, "f").append(c);
             c = n;
         }
         return this;
@@ -297,7 +295,7 @@ class DomBuilder {
         while (c != null && c != end) {
             const n = c.nextSibling;
             (_a = c.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(c);
-            __classPrivateFieldGet(this, _cursor).insertBefore(c, next);
+            __classPrivateFieldGet(this, _DomBuilder_cursor, "f").insertBefore(c, next);
             c = n;
         }
         return this;
@@ -317,7 +315,7 @@ class DomBuilder {
     }
     /// Remove all children of the cursor.
     empty_() {
-        for (let c = __classPrivateFieldGet(this, _cursor).firstChild; c != null;) {
+        for (let c = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild; c != null;) {
             const n = c.nextSibling;
             c.remove();
             c = n;
@@ -326,84 +324,84 @@ class DomBuilder {
     }
     /// Push cursor onto stack.
     push_() {
-        __classPrivateFieldGet(this, _stack).push_(__classPrivateFieldGet(this, _cursor));
+        __classPrivateFieldGet(this, _DomBuilder_stack, "f").push_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"));
         return this;
     }
     /// Pop the element from the cursor stack and use it as the cursor element.
     pop_(n = 1) {
         while (--n >= 0) {
-            const e = __classPrivateFieldGet(this, _stack).pop_();
+            const e = __classPrivateFieldGet(this, _DomBuilder_stack, "f").pop_();
             if (e === undefined)
                 throw new Error();
-            __classPrivateFieldSet(this, _cursor, e);
+            __classPrivateFieldSet(this, _DomBuilder_cursor, e, "f");
         }
         return this;
     }
     /// Restore but do not remove the cursor element from top of the cursor stack.
     peek_() {
-        __classPrivateFieldSet(this, _cursor, __classPrivateFieldGet(this, _stack).peek_());
+        __classPrivateFieldSet(this, _DomBuilder_cursor, __classPrivateFieldGet(this, _DomBuilder_stack, "f").peek_(), "f");
         return this;
     }
     /// Swap cursor with top of stack. 
     swap_() {
-        const cursor = __classPrivateFieldGet(this, _stack).pop_();
-        __classPrivateFieldGet(this, _stack).push_(__classPrivateFieldGet(this, _cursor));
-        __classPrivateFieldSet(this, _cursor, cursor);
+        const cursor = __classPrivateFieldGet(this, _DomBuilder_stack, "f").pop_();
+        __classPrivateFieldGet(this, _DomBuilder_stack, "f").push_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"));
+        __classPrivateFieldSet(this, _DomBuilder_cursor, cursor, "f");
         return this;
     }
     /// Use parent element of the cursor element.
     /// If it is null, throw an Error.
     up_() {
-        const parent = __classPrivateFieldGet(this, _cursor).parentElement;
+        const parent = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").parentElement;
         if (parent == null) {
             throw new Error();
         }
-        __classPrivateFieldSet(this, _cursor, parent);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, parent, "f");
         return this;
     }
     /// Use the next sibling element of the cursor element.
     /// If it is null, throw an Error.
     right_() {
-        const sibling = __classPrivateFieldGet(this, _cursor).nextElementSibling;
+        const sibling = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").nextElementSibling;
         if (sibling == null) {
             throw new Error();
         }
-        __classPrivateFieldSet(this, _cursor, sibling);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, sibling, "f");
         return this;
     }
     /// Use the previous sibling element of the cursor element.
     /// If it is null, throw an Error.
     left_() {
-        const sibling = __classPrivateFieldGet(this, _cursor).previousElementSibling;
+        const sibling = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").previousElementSibling;
         if (sibling == null) {
             throw new Error();
         }
-        __classPrivateFieldSet(this, _cursor, sibling);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, sibling, "f");
         return this;
     }
     /// Use the first child element of the cursor element.
     /// If it is null, throw an Error.
     first_() {
-        const child = __classPrivateFieldGet(this, _cursor).firstElementChild;
+        const child = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstElementChild;
         if (child == null) {
             throw new Error();
         }
-        __classPrivateFieldSet(this, _cursor, child);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, child, "f");
         return this;
     }
     setCursor_(elm) {
-        __classPrivateFieldSet(this, _cursor, elm);
+        __classPrivateFieldSet(this, _DomBuilder_cursor, elm, "f");
         return this;
     }
     cursor_() {
-        return __classPrivateFieldGet(this, _cursor);
+        return __classPrivateFieldGet(this, _DomBuilder_cursor, "f");
     }
     classList_() {
-        return __classPrivateFieldGet(this, _cursor).classList;
+        return __classPrivateFieldGet(this, _DomBuilder_cursor, "f").classList;
     }
     /// @return The document of the cursor. 
     doc_() {
-        return __classPrivateFieldGet(this, _cursor).ownerDocument;
+        return __classPrivateFieldGet(this, _DomBuilder_cursor, "f").ownerDocument;
     }
     /// Create a selection in the document.defaultView.
     /// Overloads:
@@ -440,13 +438,13 @@ class DomBuilder {
     }
     /// Execute the given function as fn(cursor()) and return this builder.
     exec_(fn) {
-        fn(__classPrivateFieldGet(this, _cursor));
+        fn(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"));
         return this;
     }
     /// Execute the given function on each child of the cursor, break if fn() return false.
     children_(fn) {
-        for (let c = __classPrivateFieldGet(this, _cursor).firstChild; c != null; c = c.nextSibling) {
-            if (!fn(c, __classPrivateFieldGet(this, _cursor)))
+        for (let c = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild; c != null; c = c.nextSibling) {
+            if (!fn(c, __classPrivateFieldGet(this, _DomBuilder_cursor, "f")))
                 break;
         }
         return this;
@@ -455,7 +453,7 @@ class DomBuilder {
     each_(start, end, fn) {
         for (let c = start; c != null && c != end;) {
             const n = c.nextSibling;
-            if (!fn(c, __classPrivateFieldGet(this, _cursor)))
+            if (!fn(c, __classPrivateFieldGet(this, _DomBuilder_cursor, "f")))
                 break;
             c = n;
         }
@@ -463,12 +461,12 @@ class DomBuilder {
     }
     /// Create an element with given tag and attributes.
     createElement_(tag, attrs = null) {
-        return DomBuilder.attrs1_(__classPrivateFieldGet(this, _cursor).ownerDocument.createElement(tag), attrs);
+        return DomBuilder.attrs1_(__classPrivateFieldGet(this, _DomBuilder_cursor, "f").ownerDocument.createElement(tag), attrs);
     }
     /// @return Index of the given child node of the cursor.
     indexOf_(child) {
         let i = 0;
-        for (let c = __classPrivateFieldGet(this, _cursor).firstChild; c != null; c = c.nextSibling, ++i) {
+        for (let c = __classPrivateFieldGet(this, _DomBuilder_cursor, "f").firstChild; c != null; c = c.nextSibling, ++i) {
             if (c === child) {
                 return i;
             }
@@ -482,17 +480,17 @@ class DomBuilder {
         var _a;
         const ret = this.createRange_();
         if (start == null) {
-            ret.selectNode(__classPrivateFieldGet(this, _cursor));
+            ret.selectNode(__classPrivateFieldGet(this, _DomBuilder_cursor, "f"));
         }
         else {
             ret.setStartBefore(start);
-            ret.setEndAfter((_a = end !== null && end !== void 0 ? end : __classPrivateFieldGet(this, _cursor).lastChild) !== null && _a !== void 0 ? _a : start);
+            ret.setEndAfter((_a = end !== null && end !== void 0 ? end : __classPrivateFieldGet(this, _DomBuilder_cursor, "f").lastChild) !== null && _a !== void 0 ? _a : start);
         }
         return ret;
     }
     /// @return An empty range.
     createRange_() {
-        return __classPrivateFieldGet(this, _cursor).ownerDocument.createRange();
+        return __classPrivateFieldGet(this, _DomBuilder_cursor, "f").ownerDocument.createRange();
     }
     /// Return the current cursor, but pop n element after it.
     cursorPop_(n = 1) {
@@ -688,5 +686,5 @@ class DomBuilder {
     }
 }
 exports.DomBuilder = DomBuilder;
-_stack = new WeakMap(), _cursor = new WeakMap();
+_DomBuilder_stack = new WeakMap(), _DomBuilder_cursor = new WeakMap();
 //# sourceMappingURL=botdombuilder.js.map

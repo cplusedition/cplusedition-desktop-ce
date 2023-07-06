@@ -1,33 +1,13 @@
-/*!            
-    C+edition for Desktop, Community Edition.
-    Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
-    
-    The author licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-    
-        http://www.apache.org/licenses/LICENSE-2.0
-    
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Servlet = void 0;
+const stream_1 = require("stream");
 const botcore_1 = require("./bot/botcore");
 const botnode_1 = require("./bot/botnode");
+const shared_1 = require("./shared");
+const consts_1 = require("./common/consts");
 const net = require("net");
-class ServerKey {
-}
-ServerKey.statusCode = "statusCode";
-ServerKey.headers = "headers";
-ServerKey.data = "data";
-ServerKey.method = "method";
-ServerKey.referrer = "referrer";
-ServerKey.url = "url";
+const child_process = require("child_process");
 class KK {
 }
 KK.SERVER = ".server";
@@ -107,7 +87,7 @@ class Reader {
         while (remaining > 0) {
             const b = this._buffers.shift();
             if (b === undefined)
-                throw new Error(); // Should not happen.
+                throw new Error();
             if (b.length <= remaining) {
                 ret.push(b);
                 remaining -= b.length;
@@ -145,27 +125,32 @@ class Servlet {
             if (buf != null) {
                 const json = botcore_1.JSONUt.jsonObjectOrNull_(buf.toString(botnode_1.Encoding.utf8$));
                 if (json != null) {
-                    const status = json[ServerKey.statusCode];
-                    const headers = json[ServerKey.headers];
+                    const status = json[consts_1.ServerKey.statusCode];
+                    const headers = json[consts_1.ServerKey.headers];
                     callback(status, headers);
                     return;
                 }
             }
-            callback(500, botcore_1.json_());
+            callback(500, (0, botcore_1.json_)());
             return;
         });
         r.resume_();
     }
-    handle(request, response) {
+    handle(request, response, fromipc = false) {
         var _a, _b, _c;
-        const req = botcore_1.json_([ServerKey.url, request.url], [ServerKey.headers, request.headers], [ServerKey.referrer, request.referrer], [ServerKey.method, request.method], [ServerKey.data, ((_c = (_b = (_a = request.uploadData) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.bytes) !== null && _c !== void 0 ? _c : Buffer.alloc(0)).toString(botnode_1.Encoding.base64$)]);
+        const req = (0, botcore_1.json_)([consts_1.ServerKey.url, request.url], [consts_1.ServerKey.headers, request.headers], [consts_1.ServerKey.referrer, request.referrer], [consts_1.ServerKey.method, request.method], [consts_1.ServerKey.data, ((_c = (_b = (_a = request.uploadData) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.bytes) !== null && _c !== void 0 ? _c : Buffer.alloc(0)).toString(botnode_1.Encoding.base64$)], [consts_1.ServerKey.ipc, fromipc]);
         const client = net.createConnection({
             path: this.sockdir$.file_(KK.SERVER).path$,
             allowHalfOpen: true,
+            family: 4,
         }).on("connect", () => {
             this._readheader(client, (status, headers) => {
                 client.removeAllListeners("data");
-                response(botcore_1.json_([ServerKey.statusCode, status], [ServerKey.headers, headers], [ServerKey.data, client]));
+                if (status >= 200 && status < 300 && headers[shared_1.HttpHeader.ContentType] == "application/pdf") {
+                    response((0, botcore_1.json_)(["statusCode", status], ["headers", headers], ["data", client]));
+                    return;
+                }
+                response((0, botcore_1.json_)(["statusCode", status], ["headers", headers], ["data", client]));
             });
             setTimeout(() => {
                 const b = Buffer.from(JSON.stringify(req), "utf8");
@@ -177,6 +162,42 @@ class Servlet {
         }).on("close", (_haserr) => {
         });
         return client;
+    }
+    pdfViewer(url, width, height, data, debuggable) {
+        try {
+            const index = botnode_1.Filepath.pwd_().file_("pdfviewer").path$;
+            const electron = process.execPath;
+            const args = ["--host-rules='MAP * 127.0.0.1'"];
+            if (debuggable)
+                args.push("-d");
+            args.push(`-u=${url}`, index);
+            if (width != null)
+                args.push(`--w=${width}`);
+            if (height != null)
+                args.push(`--h=${height}`);
+            data.pipe(child_process.spawn(electron, args, {}).stdin);
+        }
+        catch (e) {
+        }
+    }
+    static makeRequest(url, data = []) {
+        return {
+            "url": url,
+            "headers": (0, botcore_1.json_)(),
+            "referrer": "http://localhost:8080",
+            "method": "GET",
+            "uploadData": data,
+        };
+    }
+    static redirectPdf(response, url) {
+        response((0, botcore_1.json_)(["statusCode", 302], ["headers", (0, botcore_1.json_)([shared_1.HttpHeader.Location, url])], ["data", stream_1.Readable.from("")]));
+    }
+    static pdfResponse(response, res) {
+        try {
+            response((0, botcore_1.json_)(["statusCode", 200], ["headers", (0, botcore_1.json_)([shared_1.HttpHeader.ContentType, "application/pdf"])], ["data", res]));
+        }
+        catch (e) {
+        }
     }
 }
 exports.Servlet = Servlet;

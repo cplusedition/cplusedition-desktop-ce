@@ -16,120 +16,219 @@
 */
 package sf.andrians.cplusedition.support.media
 
+import com.cplusedition.anjson.JSONUtil.foreach
+import com.cplusedition.anjson.JSONUtil.jsonObjectOrNull
 import com.cplusedition.anjson.JSONUtil.putJSONArrayOrFail
+import com.cplusedition.anjson.JSONUtil.putJSONObject
 import com.cplusedition.anjson.JSONUtil.putJSONObjectOrFail
 import com.cplusedition.anjson.JSONUtil.stringOrNull
-import com.cplusedition.bot.core.Basepath
-import com.cplusedition.bot.core.ILog
-import com.cplusedition.bot.core.TextUt
+import com.cplusedition.bot.core.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import sf.andrians.ancoreutil.util.struct.IntList
 import sf.andrians.cplusedition.R
-import sf.andrians.cplusedition.support.An
-import sf.andrians.cplusedition.support.IFileInfo
-import sf.andrians.cplusedition.support.Support
-import sf.andrians.cplusedition.support.handler.HandlerUtil
+import sf.andrians.cplusedition.support.*
+import sf.andrians.cplusedition.support.An.DEF
+import sf.andrians.cplusedition.support.An.Key
 import sf.andrians.cplusedition.support.handler.IFilepickerHandler.IThumbnailCallback
 import sf.andrians.cplusedition.support.handler.IFilepickerHandler.ThumbnailResult
 import sf.andrians.cplusedition.support.handler.IResUtil
-import sf.andrians.cplusedition.support.handler.ResUtil
-import java.io.File
+import sf.andrians.cplusedition.support.media.MimeUtil.Mime
 import java.io.IOException
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentSkipListMap
+import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
+
+interface IBarcodeUtil {
+    val defaultScale: Int
+
+    /// @return PNG image.
+    fun generateQRCode(text: String, mime: String = Mime.PNG, scale: Int = this.defaultScale): ByteArray?
+
+    /// @return { Key.result: String, Key.type: String, Key.timestamp: Long }.
+    fun detectQRCode(input: InputStream, mime: String, cropinfo: ImageCropInfo?): JSONObject?
+
+    /// @return { Key.result: String, Key.type: String, Key.timestamp: Long }.
+    fun detectBarcode(input: InputStream, mime: String, cropinfo: ImageCropInfo?): JSONObject?
+}
 
 object ImageUtil {
+
+    data class Dim(var x: Int, var y: Int)
+
+    fun limitImageArea(width: Int, height: Int): Dim {
+        val maxarea = DEF.maxOutputImageArea
+        val area = width * height
+        if (area <= maxarea)
+            return Dim(width, height)
+        val scale = sqrt(maxarea.toDouble() / area)
+        return Dim((width * scale).roundToInt(), (height * scale).roundToInt())
+    }
+
     /**
      * Fit rectangle srcwidth x srcheight into a dstwidth x dstheight rectangle, taking aspect ratios into account.
+     * If both dstwidth and dstheight <= 0, return the source dimension.
+     * If any of dstwidth or dstheight <= 0, it would be derived from the source aspect ratio.
      */
     fun fit(srcwidth: Int, srcheight: Int, dstwidth: Int, dstheight: Int): Dim {
-        val width: Int
-        val height: Int
-        val srcratio = srcwidth * 1.0 / srcheight
-        val dstratio = dstwidth * 1.0 / dstheight
-        if (srcratio >= dstratio) {
-            width = dstwidth
-            height = Math.floor(srcheight * 1.0 * dstwidth / srcwidth).toInt()
-        } else {
-            height = dstheight
-            width = Math.floor(srcwidth * 1.0 * dstheight / srcheight).toInt()
-        }
-        return Dim(width, height)
+        if (dstwidth <= 0 && dstheight <= 0)
+            return limitImageArea(srcwidth, srcheight)
+        val srcratio = srcwidth.toDouble() / srcheight
+        val dw = if (dstwidth <= 0) (dstheight.toDouble() * srcratio) else dstwidth.toDouble()
+        val dh = if (dstheight <= 0) (dstwidth.toDouble() / srcratio) else dstheight.toDouble()
+        val dstratio = dw / dh
+        val w = if (srcratio >= dstratio) dw else (srcwidth.toDouble() * dh / srcheight)
+        val h = if (srcratio >= dstratio) (srcheight.toDouble() * dw / srcwidth) else dh
+        return limitImageArea(w.toInt(), h.toInt())
     }
 
     /**
      * Unlike fit(), this only shrink to fit, never expanded.
      */
     fun shrink(srcwidth: Int, srcheight: Int, dstwidth: Int, dstheight: Int): Dim {
-        if (srcwidth <= dstwidth && srcheight <= dstheight) {
-            return Dim(srcwidth, srcheight)
-        }
-        val width: Int
-        val height: Int
-        val srcratio = srcwidth * 1.0 / srcheight
-        val dstratio = dstwidth * 1.0 / dstheight
-        if (srcratio >= dstratio) {
-            width = dstwidth
-            height = Math.floor(srcheight * 1.0 * dstwidth / srcwidth).toInt()
-        } else {
-            height = dstheight
-            width = Math.floor(srcwidth * 1.0 * dstheight / srcheight).toInt()
-        }
-        return Dim(width, height)
+        if (srcwidth <= dstwidth && srcheight <= dstheight)
+            return limitImageArea(srcwidth, srcheight)
+        val srcratio = srcwidth.toDouble() / srcheight
+        val dstratio = dstwidth.toDouble() / dstheight
+        val w = if (srcratio >= dstratio) dstwidth else (srcwidth.toDouble() * dstheight / srcheight).roundToInt()
+        val h = if (srcratio >= dstratio) (srcheight.toDouble() * dstwidth / srcwidth).roundToInt() else dstheight
+        return limitImageArea(w, h)
     }
 
-    fun toDataUrl(mime: String?, base64: String): String {
+    fun toDataUrl(mime: String, base64: String): String {
         return "data:$mime;base64,$base64"
     }
 
+    fun toDataUrl(mime: String, data: ByteArray): String {
+        return toDataUrl(mime, Base64.getEncoder().encodeToString(data).toString())
+    }
+
+    fun toDataUrl(mime: String, data: ByteBuffer): String {
+        return toDataUrl(mime, Charsets.ISO_8859_1.decode(Base64.getEncoder().encode(data)).toString())
+    }
+
+    fun toJpegDataUrl(data: ByteArray): String {
+        return toDataUrl(Mime.JPEG, data)
+    }
+
+    fun toJpegDataUrl(data: ByteBuffer): String {
+        return toDataUrl(Mime.JPEG, data)
+    }
+
     fun toJpegDataUrl(base64: String): String {
-        return "data:image/jpeg;base64,$base64"
+        return toDataUrl(Mime.JPEG, base64)
+    }
+
+    fun toPngDataUrl(data: ByteArray): String {
+        return toDataUrl(Mime.PNG, data)
+    }
+
+    fun toPngDataUrl(data: ByteBuffer): String {
+        return toDataUrl(Mime.PNG, data)
+    }
+
+    fun toPngDataUrl(base64: String): String {
+        return toDataUrl(Mime.PNG, base64)
+    }
+
+    @JvmStatic
+    fun mimeOfDataUrl(data: String): String? {
+        if (!data.startsWith("data:")) return null
+        val index = data.indexOf(';')
+        if (index <= 5) return null
+        return data.substring(5, index).lowercase(Locale.ROOT)
+    }
+
+    fun blobFromDataUrl(data: String, expectedmime: String? = null): Pair<ByteArray, String>? {
+        var base64 = data
+        if (!base64.startsWith("data:")) {
+            return null
+        }
+        var index = base64.indexOf(';')
+        if (index <= 5) {
+            return null
+        }
+        val mime = base64.substring(5, index)
+        if (expectedmime != null && mime != expectedmime) {
+            return null
+        }
+        index = base64.indexOf(',')
+        if (index >= 0) {
+            base64 = base64.substring(index + 1)
+        }
+        return Pair(Base64.getDecoder().decode(base64), mime)
     }
 
     /**
      * @return { An.Key.result: dataurl, An.Key.errors: errors }
      */
-    fun actionImageThumbnail(callback: IThumbnailCallback, resutil: ResUtil, info: JSONObject?, tsize: Int): String? {
-        if (info == null) return resutil.jsonError(R.string.PleaseSpecifyAnImageId)
+    fun actionImageThumbnail(rsrc: IResUtil, info: JSONObject?, tsize: Int, callback: IThumbnailCallback): JSONObject {
+        if (info == null) return rsrc.jsonObjectError(R.string.PleaseSpecifyAnImageId)
         val id = info.stringOrNull(MediaInfo.Id)
-                ?: return resutil.jsonError(R.string.PleaseSpecifyAnImageId)
+            ?: return rsrc.jsonObjectError(R.string.PleaseSpecifyAnImageId)
         val date = info.optLong(MediaInfo.FileDate, Long.MAX_VALUE)
         try {
             val tinfo = callback.getThumbnail(id, date, tsize)
             val dataurl = tinfo.dataUrl
             if (dataurl != null) {
-                return HandlerUtil.jsonResult(toDataUrl(MimeUtil.JPEG, dataurl))
+                return rsrc.jsonObjectResult(toDataUrl(Mime.JPEG, dataurl))
             }
         } catch (e: Throwable) {
             
         }
-        return resutil.jsonError(R.string.ErrorCreatingThumbnail_, id)
+        return rsrc.jsonObjectError(R.string.CreateThumbnailFailed_, id)
     }
 
-    fun actionImageThumbnails(callback: IThumbnailCallback, res: IResUtil, infos: JSONArray, tsize: Int): JSONObject {
+    fun actionImageThumbnails(storage: IStorage, infos: JSONArray, tsize: Int, callback: IThumbnailCallback): JSONObject {
+        val rsrc = storage.rsrc
+        val usepool = infos.length() > DEF.thumbnailUsePool
+        
         val ret = JSONObject()
-        val result = ret.putJSONArrayOrFail(An.Key.result)
-        for (i in 0 until infos.length()) {
-            val info = infos.optJSONObject(i)
-            if (info == null) {
-                result.put(null)
-                continue
-            }
-            val retinfo = JSONObject()
-            result.put(retinfo)
-            val id = info.stringOrNull(MediaInfo.Id)
-            val date = info.optLong(MediaInfo.FileDate, Long.MAX_VALUE)
-            if (id == null) {
-                res.jsonObjectError(retinfo, R.string.PleaseSpecifyAnImageId)
-                continue
-            }
+        val result = ret.putJSONArrayOrFail(Key.result)
+        val group = CountedTaskGroup(infos.length())
+
+        fun unpooled(mediainfo: JSONObject, cpath: String, date: Long) {
+            val tid = group.enter()
             try {
-                val tinfo = callback.getThumbnail(id, date, tsize)
-                thumbnailInfo(retinfo, tinfo)
+                val tinfo = callback.getThumbnail(cpath, date, tsize)
+                thumbnailInfo(mediainfo, tinfo)
             } catch (e: Throwable) {
-                res.jsonObjectError(retinfo, R.string.UnexpectedException)
+                rsrc.jsonObjectError(mediainfo, R.string.UnexpectedException)
+            } finally {
+                group.leave(tid)
             }
         }
+
+        fun pooled(mediainfo: JSONObject, id: String, date: Long) {
+            workerThreadPool.submit {
+                unpooled(mediainfo, id, date)
+            }
+        }
+
+        infos.foreach X@{
+            val info = infos.jsonObjectOrNull(it)
+            if (info == null) {
+                result.put(JSONObject.NULL)
+                group.leave(group.enter())
+                return@X
+            }
+            val mediainfo = result.putJSONObject()
+            val cpath = MediaInfo.cpath(info)
+            val date = info.optLong(MediaInfo.FileDate, Long.MAX_VALUE)
+            if (cpath == null) {
+                rsrc.jsonObjectError(mediainfo, R.string.PleaseSpecifyAnImageId)
+                group.leave(group.enter())
+                return@X
+            }
+            if (usepool) pooled(mediainfo, cpath, date)
+            else unpooled(mediainfo, cpath, date)
+        }
+        group.awaitDone(1, TimeUnit.HOURS)
         return ret
     }
 
@@ -145,16 +244,36 @@ object ImageUtil {
         ret.put(MediaInfo.DataUrl, tinfo.dataUrl)
     }
 
+    fun localImageInfo(
+        file: IFileInfo,
+        width: Int,
+        height: Int,
+        mime: String?,
+        tndataurl: String?
+    ): JSONObject {
+        val stat = file.stat()
+        return localImageInfo(
+            file.cpath,
+            file.name,
+            width,
+            height,
+            mime,
+            (stat?.lastModified ?: 0L),
+            (stat?.length ?: 0L),
+            tndataurl
+        )
+    }
+
     @Throws(JSONException::class)
     fun localImageInfo(
-            cpath: String?,
-            name: String?,
-            width: Int,
-            height: Int,
-            mime: String?,
-            modified: Long,
-            size: Long,
-            dataurl: String?
+        cpath: String,
+        name: String,
+        width: Int,
+        height: Int,
+        mime: String?,
+        modified: Long,
+        size: Long,
+        tndataurl: String?
     ): JSONObject {
         val ret = JSONObject()
         ret.put(MediaInfo.Id, cpath)
@@ -166,27 +285,24 @@ object ImageUtil {
         ret.put(MediaInfo.FileSize, size)
         ret.put(MediaInfo.FileDate, modified)
         ret.put(MediaInfo.Uri, cpath)
-        if (dataurl != null) {
-            ret.putJSONObjectOrFail(MediaInfo.TnInfo).put(MediaInfo.DataUrl, dataurl)
+        if (tndataurl != null) {
+            ret.putJSONObjectOrFail(MediaInfo.TnInfo).put(MediaInfo.DataUrl, tndataurl)
         }
         return ret
     }
 
     @Throws(IOException::class)
-    fun getTempImageFile(res: IResUtil, tmpdir: IFileInfo, info: JSONObject): IFileInfo {
-        val id = info.optLong(MediaInfo.Id)
-        val mime = info.stringOrNull(MediaInfo.Mime)
-                ?: throw IOException(res.get(R.string.MissingImageMimeTypeParameter))
-        val ext = MimeUtil.imageExtFromMime(mime) ?: throw IOException(res.get(R.string.UnsupportedImageFormat_) + mime)
-        var outfile: File? = null
+    fun getDstImageFile(res: IResUtil, dstdir: IFileInfo, filename: String): IFileInfo {
+        dstdir.fileInfo(filename).let { if (!it.exists) return it }
+        val basepath = Basepath.from(filename)
         for (serial in 0 until 100) {
-            val name = TextUt.format("%08d%02d%s.%s", id, serial, "", ext)
-            val file = tmpdir.fileInfo(name)
+            val name = TextUt.format("%s%02d%s%s", basepath.stem, serial, "", basepath.suffix)
+            val file = dstdir.fileInfo(name)
             if (!file.exists) {
                 return file
             }
         }
-        throw IOException(res.get(R.string.ErrorCreatingCacheFile))
+        throw IOException(res.get(R.string.DestinationExistsNotOverwriting))
     }
 
     fun getRotatedDimension(width: Int, height: Int, rotation: Int): IntArray {
@@ -199,7 +315,7 @@ object ImageUtil {
     fun getThumbnailPath(imagepath: String, width: Int, height: Int, rotation: Int): String {
         val bn = Basepath.from(imagepath)
         val dim = getRotatedDimension(width, height, rotation)
-        return bn.changeNameWithoutSuffix(bn.nameWithoutSuffix + "-tn" + dim[0] + 'x' + dim[1]).toString()
+        return bn.changeStem(bn.stem + "-tn" + dim[0] + 'x' + dim[1]).toString()
     }
 
     fun <T : Comparable<T>> clamp(adjust: T, min: T, max: T): T {
@@ -216,49 +332,9 @@ object ImageUtil {
         fun quantize(color: Int): Int
     }
 
-    class Dim(var x: Int, var y: Int)
+    class MyBlackOnWhitePosterizer(adjust: Double) : IPosterizer {
 
-    class MyBlackOnWhitePosterizer(pixels: IntArray, adjust: Double) : IPosterizer {
-
-        private var level: Int
-
-        init {
-            val adjust1 = clamp(adjust, 0.0, 100.0)
-            val populations = IntArray(256)
-            for (pixel in pixels) {
-                val y = pixel and 0xff
-                ++populations[y]
-            }
-            var pop = 0
-            level = 127
-            val t = pixels.size.toLong()
-            val target = (t * adjust1).toInt() / 100
-            for (i in 0..255) {
-                val p = populations[i]
-                pop += p
-                if (pop >= target) {
-                    level = findthreshold(populations, i)
-                    break
-                }
-            }
-        }
-
-        private fun findthreshold(populations: IntArray, t: Int): Int {
-            var min = Int.MAX_VALUE
-            var ret = t
-            val tp = populations[t] / 2
-            var i = Math.max(0, t - 3)
-            val end = Math.min(populations.size, t + 4)
-            while (i < end) {
-                val pop = populations[i]
-                if (pop < tp && pop < min) {
-                    min = pop
-                    ret = i
-                }
-                ++i
-            }
-            return ret
-        }
+        private var level: Int = clamp(adjust * 255.0 / 100.0, 0.0, 255.0).toInt()
 
         fun threshold(): Int {
             return level
@@ -271,7 +347,7 @@ object ImageUtil {
         }
     }
 
-    class MyGrayPosterizer(pixels: IntArray, maxcolors: Int, adjust: Double, log: ILog?) : IPosterizer {
+    class MyGrayPosterizer constructor(pixels: IntArray, maxcolors: Int, adjust: Double, log: ILog?) : IPosterizer {
         private val levels: IntArray
         private val thresholds: IntArray
         private val tCount: Int
@@ -319,26 +395,26 @@ object ImageUtil {
         }
 
         private fun partitionByPopulation(
-                populations: IntArray, totalpopulation: Long, maxcolors: Int, adjust: Double
+            populations: IntArray, totalpopulation: Long, maxcolors: Int, adjust: Double
         ): IntArray {
             var offset = 0
             val len = populations.size
-            val cuts = IntList()
-            val subtotals = IntList()
+            val cuts = mutableListOf<Int>()
+            val subtotals = mutableListOf<Int>()
             var total = 0
             var subtotal = 0
             run {
-                var i = 0
+                var i = 0f
                 while (i < maxcolors - 1 && offset < len) {
                     val t = (totalpopulation * adjust * (i + 1) / 100).toInt()
                     while (offset < len) {
-                        if (total >= t) {
+                        val p = populations[offset++]
+                        if (total >= t || subtotal > 0 && p >= t) {
                             cuts.add(offset)
                             subtotals.add(subtotal)
                             subtotal = 0
                             break
                         }
-                        val p = populations[offset++]
                         total += p
                         subtotal += p
                     }
@@ -350,9 +426,9 @@ object ImageUtil {
             }
             cuts.add(len)
             subtotals.add(subtotal)
-            Support.assertion(cuts.size() <= maxcolors, "cuts=" + cuts.size())
-            Support.assertion(subtotals.size() <= maxcolors, "subtotals=" + subtotals.size())
-            val nlevels = cuts.size()
+            Support.assertion(cuts.size <= maxcolors, "cuts=" + cuts.size)
+            Support.assertion(subtotals.size <= maxcolors, "subtotals=" + subtotals.size)
+            val nlevels = cuts.size
             val levels = IntArray(nlevels)
             var start = 0
             for (i in 0 until nlevels) {
@@ -395,5 +471,194 @@ object ImageUtil {
             }
             return a or levels[tCount]
         }
+    }
+}
+
+interface IPdfPageConverter {
+    fun genOutputPath(page: Int): String
+    fun convertPage(
+        storage: IStorage,
+        dst: IFileInfo,
+        src: IFileInfo,
+        page: Int,
+    ): IBotResult<Unit, String>
+}
+
+class ImageOrPdfConverter constructor(
+    val storage: IStorage,
+    val mediautil: IMediaUtil,
+    val outinfo: ImageOutputInfo,
+    val srcdir: IFileInfo,
+    val rpaths: Collection<String>,
+    val cut: Boolean,
+) {
+    val rsrc = storage.rsrc
+    fun run(): JSONObject {
+        val imgconverter = mediautil.getImgConverter()
+        val pdfconverter = mediautil.getPdfConverter()
+
+        val fails = ConcurrentSkipListMap<String, String>()
+        val warns = ConcurrentLinkedDeque<String>()
+        val oks = ConcurrentLinkedDeque<String>()
+
+        TaskUt.forkJoinTasks {
+            val pool = it
+
+            fun prepareWrite(dstdir: IFileInfo, dstsuffix: String, rpath: String): IBotResult<IFileInfo, Collection<String>> {
+                val dstinfo = dstdir.fileInfo(Basepath.changeSuffix(rpath, dstsuffix))
+                return if (dstinfo.mkparent()) BotResult.ok(dstinfo)
+                else BotResult.fail(listOf(storage.rsrc.get(R.string.CreateParentDirectoryFailed_, dstinfo.cpath)))
+            }
+
+            fun convertpdf(dst: IFileInfo, src: IFileInfo, rpath: String) {
+                pdfconverter?.convert(storage, Support, dst, outinfo, src) { result ->
+                    result.onResult({
+                        
+                        fails[rpath] = it
+                    }, { results ->
+                        var ok = true
+                        for ((label, msg) in results.entries) {
+                            if (msg != "OK") {
+                                fails[label] = msg
+                                ok = false
+                            }
+                        }
+                        if (ok) {
+                            oks.add(rpath)
+                            if (cut)
+                                src.delete()
+                        } else fails[rpath] = rsrc.get(R.string.ActionConvertFailed_, rpath)
+                    })
+                }
+            }
+
+            fun convertimg(dstinfo: IFileInfo, src: IFileInfo, rpath: String) {
+                
+                pool.submit {
+                    imgconverter.convert(storage, dstinfo, outinfo, src) {
+                        if (it == "OK") {
+                            oks.add(rpath)
+                            if (cut)
+                                src.delete()
+                        } else fails[rpath] = it
+                    }
+                }
+            }
+
+            fun convert(dstdir: IFileInfo, dstsuffix: String, src: IFileInfo, rpath: String) {
+                try {
+                    prepareWrite(dstdir, dstsuffix, rpath).onResult({
+                        val msg = it.bot.joinln()
+                        
+                        fails.put(rpath, msg)
+                    }, { dstinfo ->
+                        val lcsuffix = Basepath.lcSuffix(src.name)
+                        if (lcsuffix == MimeUtil.Suffix.PDF) {
+                            convertpdf(dstinfo, src, rpath)
+                        } else if (MimeUtil.isImageLcSuffix(lcsuffix)) {
+                            convertimg(dstinfo, src, rpath)
+                        } else {
+                            fails[rpath] = rsrc.get(R.string.UnsupportedInputFormat_, lcsuffix)
+                        }
+                    })
+                } catch (e: Throwable) {
+                    
+                    fails[rpath] = e.message ?: "ERROR"
+                }
+            }
+
+            val dstinfo = storage.fileInfoAt(outinfo.path).result()
+            val dstdir = dstinfo?.parent
+            if (dstinfo == null || dstdir == null) {
+                val msg = rsrc.get(R.string.DestinationNotValid_, outinfo.path)
+                
+                return@forkJoinTasks msg
+            }
+            val dstsuffix = dstinfo.suffix
+            for (rpath in rpaths) {
+                val srcinfo = srcdir.fileInfo(rpath)
+                val stat = srcinfo.stat()
+                if (stat == null) {
+                    
+                    fails[rpath] = rsrc.get(R.string.InvalidInputPath_, rpath)
+                    continue
+                }
+                if (stat.isFile) {
+                    convert(dstdir, dstsuffix, srcinfo, rpath)
+                } else if (stat.isDir) {
+                    srcinfo.walk3 { src, path, st ->
+                        if (!st.isFile) return@walk3
+                        if (!MimeUtil.isImageLcSuffix(Basepath.lcSuffix(src.name))) return@walk3
+                        convert(dstdir, dstsuffix, src, Basepath.joinRpath(rpath, path))
+                    }
+                }
+            }
+            null
+        }?.let {
+            return rsrc.jsonObjectError(it)
+        }
+        return JSONObject()
+            .put(Key.result, JSONArray(oks))
+            .put(Key.fails, JSONObject(fails as Map<*, *>))
+            .put(Key.warns, JSONArray(warns))
+    }
+}
+
+abstract class PdfConverterBase : IPdfConverter {
+
+    override fun convert(
+        storage: IStorage,
+        log: ITraceLogger,
+        dstinfo: IFileInfo,
+        outinfo: ImageOutputInfo,
+        srcinfo: IFileInfo,
+        done: Fun10<IBotResult<Map<String, String>, String>>
+    ) {
+        val results = ConcurrentSkipListMap<String, String>()
+        val msg = run {
+            val rsrc = storage.rsrc
+            val srcname = srcinfo.name
+            try {
+                val dstdir = dstinfo.parent
+                    ?: return@run rsrc.get(R.string.DestinationNotValid_, dstinfo.cpath)
+                val pagecount = getPageCount(storage, srcinfo)
+                    ?: return@run rsrc.get(R.string.ReadFailed_, srcname)
+                val stem = Basepath.stem(srcname)
+                TaskUt.forkJoinTasks { it ->
+                    val pool = it
+                    log.enter("# Converting $pagecount pages ...");
+                    for (page in 0 until pagecount) {
+                        val pagestr = (page + 1).toString().padStart(4, '0')
+                        val label = "$srcname#$pagestr"
+                        val dstname = getoutname(stem, pagestr, dstinfo.lcSuffix)
+                        val dst = dstdir.fileInfo(dstname)
+                        if (!dst.mkparent()) {
+                            val msg = rsrc.get(R.string.CreateParentDirectoryFailed_, dst.cpath)
+                            log.d("# $msg")
+                            results[label] = msg
+                            continue
+                        }
+                        log.enter("# $label start");
+                        pool.submit {
+                            convert(storage, dst, outinfo, srcinfo, page) {
+                                results[pagestr] = it
+                                log.leave("# $label end: $it");
+                            }
+                        }
+                    }
+                    log.leave("# Done");
+                }
+                return@run "OK"
+            } catch (e: Throwable) {
+                
+                return@run rsrc.get(R.string.ReadFailed_, srcname)
+            }
+        }
+        done(if (msg == "OK") BotResult.ok(results) else BotResult.fail(msg))
+    }
+
+    /// @return Destination in form: srcrpath/{srcpath.stem}-{page+1}{output.lcsuffix}
+    private fun getoutname(stem: String, pagestr: String, outsuffix: String): String {
+        return TextUt.format("%s-%s%s", stem, pagestr, outsuffix)
     }
 }

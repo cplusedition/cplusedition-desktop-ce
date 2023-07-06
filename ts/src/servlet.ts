@@ -14,23 +14,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-import { Request, StreamProtocolResponse } from "electron";
+import { Request, StreamProtocolResponse, UploadData } from "electron";
+import { Readable } from "stream";
 import { Fun10, Fun20, Int, JSONObject, JSONUt, json_ } from "./bot/botcore";
 import { Encoding, Filepath } from "./bot/botnode";
+import { HttpHeader } from "./shared";
+import { ServerKey } from "./common/consts";
 import net = require("net");
+import child_process = require("child_process");
 
 //////////////////////////////////////////////////////////////////////
 
 type ElectronResponse = (stream?: (NodeJS.ReadableStream) | (StreamProtocolResponse)) => void;
-
-abstract class ServerKey {
-    static readonly statusCode = "statusCode";
-    static readonly headers = "headers";
-    static readonly data = "data";
-    static readonly method = "method";
-    static readonly referrer = "referrer";
-    static readonly url = "url";
-}
 
 class KK {
     static readonly SERVER = ".server";
@@ -69,7 +64,7 @@ class Reader {
             this._length = 0;
             this._state = Reader.IDLE;
         } catch (e) {
-            
+
             this._end();
         }
     }
@@ -114,7 +109,7 @@ class Reader {
         let remaining = size;
         while (remaining > 0) {
             const b = this._buffers.shift();
-            if (b === undefined) throw new Error(); // Should not happen.
+            if (b === undefined) throw new Error();
             if (b.length <= remaining) {
                 ret.push(b);
                 remaining -= b.length;
@@ -144,7 +139,7 @@ export class Servlet {
 
     private _onerror(_msg: string, err?: Error) {
         if (!err) return;
-        
+
     }
 
     private _readheader(client: net.Socket, callback: Fun20<number, JSONObject>): void {
@@ -166,24 +161,35 @@ export class Servlet {
         r.resume_();
     }
 
-    handle(request: Request, response: ElectronResponse): net.Socket {
+    handle(request: Request, response: ElectronResponse, fromipc: boolean = false): net.Socket {
         const req = json_(
             [ServerKey.url, request.url],
             [ServerKey.headers, request.headers],
             [ServerKey.referrer, request.referrer],
             [ServerKey.method, request.method],
             [ServerKey.data, (request.uploadData?.[0]?.bytes ?? Buffer.alloc(0)).toString(Encoding.base64$)],
+            [ServerKey.ipc, fromipc],
         );
         const client = net.createConnection({
             path: this.sockdir$.file_(KK.SERVER).path$,
             allowHalfOpen: true,
+            family: 4,
         }).on("connect", () => {
             this._readheader(client, (status, headers) => {
                 client.removeAllListeners("data");
+                if (status >= 200 && status < 300 && headers[HttpHeader.ContentType] == "application/pdf") {
+
+                    response(json_(
+                        ["statusCode", status],
+                        ["headers", headers],
+                        ["data", client]
+                    ) as StreamProtocolResponse);
+                    return;
+                }
                 response(json_(
-                    [ServerKey.statusCode, status],
-                    [ServerKey.headers, headers],
-                    [ServerKey.data, client],
+                    ["statusCode", status],
+                    ["headers", headers],
+                    ["data", client],
                 ) as StreamProtocolResponse);
             });
             setTimeout(() => {
@@ -193,10 +199,59 @@ export class Servlet {
                 client.end();
             }, 10);
         }).on("error", (_err) => {
-            
+
         }).on("close", (_haserr) => {
         });
         return client;
     }
-}
 
+    pdfViewer(url: string, width: Int | null, height: Int | null, data: NodeJS.ReadableStream, debuggable: boolean) {
+        try {
+            const index = Filepath.pwd_().file_("pdfviewer").path$;
+            const electron = process.execPath;
+
+            const args = ["--host-rules='MAP * 127.0.0.1'"];
+            if (debuggable) args.push("-d");
+            args.push(`-u=${url}`, index);
+            if (width != null) args.push(`--w=${width}`);
+            if (height != null) args.push(`--h=${height}`);
+            data.pipe(child_process.spawn(electron, args, {
+            }).stdin);
+        } catch (e) {
+
+        }
+    }
+
+    public static makeRequest(url: string, data: UploadData[] = []): Request {
+        return {
+            "url": url,
+            "headers": json_(),
+            "referrer": "http://localhost:8080",
+            "method": "GET",
+            "uploadData": data,
+        };
+    }
+
+    public static redirectPdf(response: Fun10<StreamProtocolResponse>, url: string) {
+        response(json_(
+            ["statusCode", 302],
+            ["headers", json_(
+                [HttpHeader.Location, url],
+            )],
+            ["data", Readable.from("")],
+        ) as StreamProtocolResponse);
+    }
+
+    public static pdfResponse(response: Fun10<StreamProtocolResponse>, res: NodeJS.ReadableStream) {
+        try {
+            response(json_(
+                ["statusCode", 200],
+                ["headers", json_(
+                    [HttpHeader.ContentType, "application/pdf"],
+                )],
+                ["data", res],
+            ) as StreamProtocolResponse);
+        } catch (e) {
+        }
+    }
+}

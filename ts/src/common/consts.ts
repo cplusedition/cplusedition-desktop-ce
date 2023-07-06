@@ -21,34 +21,54 @@ export const SCHEME_HOSTPORT = "http://localhost:8080";
 export type TestResult = string | string[] | StringMap<any> | null;
 
 export abstract class IPC {
-    //#BEGIN IPC
-    static readonly HOST = "XrM";
-    static readonly FROM_RENDERER = "X7W";
-    static readonly FROM_RENDERER_INVOKE = "XVr";
-    static readonly FROM_MAIN = "Xyt";
-    static readonly CMD = "Xde";
-    static readonly SERIAL = "XmQ";
-    static readonly ARGS = "XwH";
+    static readonly HOST = "XxXZl";
+    static readonly FROM_RENDERER = "XxXgb";
+    static readonly FROM_RENDERER_INVOKE = "XxXGt";
+    static readonly FROM_MAIN = "XxX2L";
+    static readonly CMD = "XxXle";
+    static readonly SERIAL = "XxX5k";
+    static readonly ARGS = "XxXSr";
 
-    static readonly hello = "XOy";
-    static readonly result = "XEJ";
-    static readonly progress = "XOr";
-    static readonly hi = "XL6";
-    static readonly test = "X0t";
-    static readonly quit = "XqN";
-    static readonly showDeveloperTools = "XXO";
-    //#END IPC
+    static readonly ON_RECEIVE = "XxXior";
+    static readonly SEND = "XxXisd";
+    static readonly INVOKE = "XxXiiv";
+    static readonly REMOVE_ALL = "XxXira";
+
+    static readonly hello = "XxXBM";
+    static readonly result = "XxX2j";
+    static readonly progress = "XxXI2";
+    static readonly hi = "XxXY5";
+    static readonly test = "XxXr3";
+    static readonly quit = "XxXp6";
+    static readonly showDeveloperTools = "XxXUh";
+    static readonly showPdf = "XxXN2";
+    static readonly jof = "XxXMy";
+    static readonly screenshot = "XxXhm";
 }
 
 export declare class IpcRenderer {
-    ipcOnReceive(channel: string, callback: (e: Electron.IpcRendererEvent, ...args: any[]) => void): void;
-    ipcSend(channel: string, ...args: any[]): void;
-    ipcInvoke(channel: string, ...args: any[]): Promise<any>;
-    ipcRemoveAllListeners(channel: string): void;
+XxXior
+        (channel: string, callback: (e: Electron.IpcRendererEvent, ...args: any[]) => void): void;
+XxXisd
+        (channel: string, ...args: any[]): void;
+XxXiiv
+        (channel: string, ...args: any[]): Promise<any>;
+XxXira
+        (channel: string): void;
+}
+
+export abstract class ServerKey {
+    static readonly statusCode = "XxXgb";
+    static readonly headers = "XxXwd";
+    static readonly data = "XxXm0";
+    static readonly method = "XxXef";
+    static readonly referrer = "XxXYI";
+    static readonly url = "XxXGV";
+    static readonly ipc = "XxXr7";
+    static readonly serial = "XxXds";
 }
 
 export abstract class DebugKey {
-    //#BEGIN DebugKey
     static readonly id = "id";
     static readonly testpath = "testpath";
     static readonly testclass = "testclass";
@@ -65,15 +85,15 @@ export abstract class DebugKey {
     static readonly outdir = "outdir";
     static readonly zipfile = "zipfile";
     static readonly data = "data";
-    //#END DebugKey
-    //#BEGIN An.Key
-    static readonly path = "Xv7";
-    static readonly result = "XXc";
-    static readonly errors = "XZ7";
-    static readonly stacktrace = "Xom";
-    static readonly expectedfailure = "XgS";
-    static readonly expectedresult = "Xvl";
-    //#END An.Key
+}
+
+export abstract class Key {
+    static readonly path = "XxXQm";
+    static readonly result = "XxXJL";
+    static readonly errors = "XxXox";
+    static readonly stacktrace = "XxXBq";
+    static readonly expectedfailure = "XxXNT";
+    static readonly expectedresult = "XxXIS";
 }
 
 export interface ITest {
@@ -108,7 +128,7 @@ export interface IResult {
 export type Test = (done: Fun00) => void;
 
 export class CommonK {
-    static readonly TEST_TIMEOUT = 60; // sec.
+    static readonly TEST_TIMEOUT = 180;
     static readonly PAUSE = 2000;
     static readonly TO02 = 2000;
     static readonly TO05 = 5000;
@@ -154,18 +174,18 @@ export class Result implements IResult {
     constructor(private json: StringMap<any>) {
     }
     get result(): TestResult {
-        return this.json[DebugKey.result] ?? null;
+        return this.json[Key.result] ?? null;
     }
     get errors(): TestResult {
-        return this.json[DebugKey.errors] ?? null;
+        return this.json[Key.errors] ?? null;
     }
     get stacktrace(): string {
-        return this.json[DebugKey.stacktrace] ?? "";
+        return this.json[Key.stacktrace] ?? "";
     }
     get isExpectedFailure(): boolean {
-        return this.json[DebugKey.expectedfailure] === true;
+        return this.json[Key.expectedfailure] === true;
     }
     get isExpectedResult(): boolean {
-        return this.json[DebugKey.expectedresult] === true;
+        return this.json[Key.expectedresult] === true;
     }
 }

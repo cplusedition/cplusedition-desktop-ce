@@ -1,0 +1,126 @@
+body {
+	background-color: rgb(255, 255, 240);
+	font-family: Ruda-Regular;
+}
+div {
+	margin: 0px;
+	padding: 0px;
+	border: none;
+}
+ul {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+li {
+	list-style-position: outside;
+	margin: 5px 0px 5px 1.5em;
+}
+div.xx-top {
+	margin: auto;
+	width: 80%;
+	padding-bottom: 75vh;
+}
+div.xx-narrow {
+	max-width: 480px;
+	margin: 0px auto;
+}
+div.x-rightsidepanel {
+	width: 60vw;
+	max-width: 320px;
+	margin: 0px;
+	padding: 0px;
+	font-family: PermanentMarker;
+	background-image: url("/assets/images/wallpapers/cloud01.png");
+	background-color: rgb(137, 185, 25);
+}
+div.x-rightsidepanel > div {
+	padding: 2ex 1em 75vh;
+}
+div.x-rightsidepanel div.xx-toc {
+	margin: 0px 0px 10px;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+div.x-rightsidepanel ul.xx-toc {
+	color: rgb(17, 17, 17);
+}
+div.x-rightsidepanel span {
+	color: rgb(0, 0, 0);
+}
+div.x-rightsidepanel a {
+	color: rgb(255, 255, 255);
+}
+div.x-rightsidepanel span.xx-inactive {
+	color: rgb(255, 217, 102);
+}
+div.x-rightsidepanel ul.xx-toc > li {
+	line-height: 1.75;
+	font-size: 1rem;
+}
+ul.xx-toc > li {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	line-height: 1.5;
+}
+span.xx-inactive {
+	color: rgb(221, 221, 221);
+}
+img.xx-figure {
+	width: 12rem;
+	max-width: 25vw;
+}
+img.xx-figure-b {
+	width: 12rem;
+	max-width: 25vw;
+	border: 1px solid rgb(136, 136, 136);
+	float: right;
+}
+img.xx-figure-toolbar {
+	height: 2rem;
+}
+img.xx-figure-vertical-toolbar {
+	width: 2rem;
+}
+.xx-head {
+	margin: 10px auto 0px;
+	border-left-width: 10px;
+	border-left-style: solid;
+	border-left-color: rgb(118, 165, 175);
+	padding: 10vh 0px 5vh 20px;
+	font-size: 1.75rem;
+	line-height: normal;
+}
+.xx-content {
+	line-height: 1.5;
+	padding: 10px 0px;
+	margin: 0px auto;
+	background-color: rgb(255, 255, 240);
+}
+.xx-getting-started a {
+	color: teal;
+}
+.xx-caption {
+	clear: both;
+	padding-top: 0.5ex;
+	margin-bottom: 1ex;
+	color: rgb(68, 68, 68);
+	font-family: Antonio-Light;
+}
+.xx-navibar-bottom {
+	padding-top: 1ex;
+	clear: both;
+}
+.xx-slideshow {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	margin-top: 10px;
+}
+@media print {
+	body, .xx-content {
+		background-color: #fff !important;
+	}
+	div.xx-top, div.x-rightsidepanel > div {
+		padding-bottom: 0 !important;
+	}
+}

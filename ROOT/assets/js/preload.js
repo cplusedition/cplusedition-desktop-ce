@@ -1,4 +1,6 @@
-/*!            
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/*!
     C+edition for Desktop, Community Edition.
     Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
     
@@ -14,25 +16,19 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 console.log("# Loading preload.js ...");
-electron_1.contextBridge.exposeInMainWorld(
-//#BEGIN IPC_HOST
-"XrM"
-//#END IPC_HOST
-, {
-    ipcOnReceive: (channel, callback) => {
+electron_1.contextBridge.exposeInMainWorld("XxXZl", {
+    XxXior: (channel, callback) => {
         electron_1.ipcRenderer.on(channel, callback);
     },
-    ipcSend: (channel, ...args) => {
+    XxXisd: (channel, ...args) => {
         electron_1.ipcRenderer.send(channel, ...args);
     },
-    ipcInvoke: (channel, ...args) => {
+    XxXiiv: (channel, ...args) => {
         return electron_1.ipcRenderer.invoke(channel, ...args);
     },
-    ipcRemoveAllListeners: (channel) => {
+    XxXira: (channel) => {
         electron_1.ipcRenderer.removeAllListeners(channel);
     }
 });

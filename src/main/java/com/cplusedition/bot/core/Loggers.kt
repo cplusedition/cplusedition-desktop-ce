@@ -25,74 +25,146 @@ interface ILog {
     fun e(msg: String, e: Throwable? = null)
 }
 
-object SystemLogger : PrintStreamLogger(true, System.out, System.err), ILog
+interface ITraceLogger : ILog {
+    val debugging: Boolean
+    fun d(e: Throwable? = null, message: Fun11<Throwable?, String>)
+    fun i(e: Throwable? = null, message: Fun11<Throwable?, String>)
+    fun w(e: Throwable? = null, message: Fun11<Throwable?, String>)
+    fun e(e: Throwable? = null, message: Fun11<Throwable?, String>)
+
+    /**
+     * Enter a new scope.
+     * It debug mode, it log a message with timestamp.
+     */
+    fun enter(msg: String = "")
+
+    /**
+     * Leave a scope.
+     * In debug mode, it log a message with delta and timestamp.
+     * The delta time is time elapsed since start of the scope.
+     */
+    fun leave(msg: String = "")
+
+    fun <R> quiet(code: Fun01<R>): R
+
+    /**
+     * Enter a new scope, execute the code, leave the scope and return the result.
+     * It debug mode, it log a message on enter and leave with timestamp.
+     * The delta time in the leave message is the time elapsed since start of the scope.
+     */
+    fun <R> enter(msg: String = "", code: Fun01<R>): R {
+        enter(msg)
+        try {
+            return code()
+        } finally {
+            leave(msg)
+        }
+    }
+}
+
+object SystemLogger : PrintStreamLogger(true, System.out, System.err), ITraceLogger
 
 open class PrintStreamLogger(
-    private val debugging: Boolean = true,
-    private val out: PrintStream,
-    private val err: PrintStream
-) : ILog {
+    override val debugging: Boolean = true,
+    protected val out: PrintStream,
+    protected val err: PrintStream = out
+) : ITraceLogger {
+
+    private var quiet = false
 
     override fun d(msg: String, e: Throwable?) {
-        if (debugging) {
+        if (debugging && !quiet) {
             out.println(msg)
             e?.printStackTrace(out)
         }
     }
 
     override fun i(msg: String, e: Throwable?) {
-        out.println(msg)
-        if (debugging && e != null) {
-            e.printStackTrace(out)
+        if (!quiet) {
+            out.println(msg)
+            if (debugging) {
+                e?.printStackTrace(out)
+            }
         }
     }
 
     override fun w(msg: String, e: Throwable?) {
-        out.println(msg)
-        if (debugging && e != null) {
-            e.printStackTrace(out)
+        if (!quiet) {
+            out.println(msg)
+            if (debugging) {
+                e?.printStackTrace(out)
+            }
         }
     }
 
     override fun e(msg: String, e: Throwable?) {
-        err.println(msg)
-        e?.printStackTrace(err)
+        if (!quiet) {
+            err.println(msg)
+            e?.printStackTrace(err)
+        }
+    }
+
+    override fun d(e: Throwable?, message: Fun11<Throwable?, String>) {
+        if (debugging && !quiet) {
+            out.println(message(e))
+            e?.printStackTrace(out)
+        }
+    }
+
+    override fun i(e: Throwable?, message: Fun11<Throwable?, String>) {
+        if (!quiet) {
+            out.println(message(e))
+            if (debugging) {
+                e?.printStackTrace(out)
+            }
+        }
+    }
+
+    override fun w(e: Throwable?, message: Fun11<Throwable?, String>) {
+        if (!quiet) {
+            out.println(message(e))
+            if (debugging) {
+                e?.printStackTrace(out)
+            }
+        }
+    }
+
+    override fun e(e: Throwable?, message: Fun11<Throwable?, String>) {
+        if (!quiet) {
+            out.println(message(e))
+            e?.printStackTrace(err)
+        }
+    }
+
+    override fun enter(msg: String) {
+        if (!quiet) {
+            d("# +++ $msg")
+        }
+    }
+
+    override fun leave(msg: String) {
+        if (!quiet) {
+            d("# --- $msg")
+        }
+    }
+
+    override fun <R> quiet(code: Fun01<R>): R {
+        quiet = true
+        try {
+            return code()
+        } finally {
+            quiet = false
+        }
     }
 }
 
 open class StringLogger(
-    private val debugging: Boolean = true
-) : ILog {
-
-    private var out = StringPrintWriter()
-
-    override fun d(msg: String, e: Throwable?) {
-        if (this.debugging) {
-            out.println(msg)
-            e?.printStackTrace(out)
-        }
-    }
-
-    override fun i(msg: String, e: Throwable?) {
-        out.println(msg)
-        if (this.debugging && e != null) {
-            e.printStackTrace(out)
-        }
-    }
-
-    override fun w(msg: String, e: Throwable?) {
-        out.println(msg)
-        if (this.debugging && e != null) {
-            e.printStackTrace(out)
-        }
-    }
-
-    override fun e(msg: String, e: Throwable?) {
-        out.println(msg)
-        e?.printStackTrace(out)
-    }
+    debugging: Boolean = true,
+) : PrintStreamLogger(debugging, StringPrintStream()) {
 
     override fun toString(): String {
+        out.flush()
+        err.flush()
         return out.toString()
     }
 }

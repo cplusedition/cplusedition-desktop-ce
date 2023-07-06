@@ -16,48 +16,47 @@
 */
 package sf.andrians.cplusedition.support.handler
 
-import com.cplusedition.anjson.JSONUtil
 import com.cplusedition.anjson.JSONUtil.jsonArrayOrNull
+import com.cplusedition.anjson.JSONUtil.mapsJSONObjectNotNull
 import com.cplusedition.anjson.JSONUtil.putJSONArrayOrFail
 import com.cplusedition.anjson.JSONUtil.stringOrNull
-import com.cplusedition.anjson.JSONUtil.toJSONObjectOrNullList
 import com.cplusedition.bot.core.Basepath
-import com.cplusedition.bot.core.WithoutUtil.Companion.Without
+import com.cplusedition.bot.core.FS
+import com.cplusedition.bot.core.Fun10
+import com.cplusedition.bot.core.TextUt
+import com.cplusedition.bot.core.Without
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import sf.andrians.cplusedition.R
-import sf.andrians.cplusedition.support.An
-import sf.andrians.cplusedition.support.FileInfoUtil
-import sf.andrians.cplusedition.support.IDeletedFileStat
-import sf.andrians.cplusedition.support.IFileInfo
-import sf.andrians.cplusedition.support.IStorage
-import sf.andrians.cplusedition.support.Support
+import sf.andrians.cplusedition.support.*
+import sf.andrians.cplusedition.support.An.Key
 import sf.andrians.cplusedition.support.handler.IFilepickerHandler.IThumbnailCallback
-import java.io.File
+import java.util.*
 
 class HistoryFilepickerHandler(
-        private val storage: IStorage,
-        private val ajax: IAjax?,
-        private val thumbnailCallback: IThumbnailCallback
+    private val storage: IStorage,
+    private val ajax: IAjax?,
+    private val thumbnailCallback: IThumbnailCallback
 ) : IFilepickerHandler {
 
     private val rsrc = storage.rsrc
 
-    override fun handle(cmd: Int, params: JSONObject): String {
+    override fun handle(cmd: Int, params: JSONObject): JSONObject {
         val serial = params.optLong(An.Key.serial, -1L)
         if (ajax == null || serial < 0) {
-            return handle1(cmd, params).toString()
+            return handle1(cmd, params)
         }
         storage.submit {
             try {
                 val result = handle1(cmd, params)
                 result.put(An.Key.serial, serial)
-                ajax.result(result.toString())
+                ajax.response(result.toString())
             } catch (e: Exception) {
                 ajax.error(serial, R.string.CommandFailed)
             }
         }
-        return "{}"
+        return JSONObject()
     }
 
     @Throws(Exception::class)
@@ -65,158 +64,180 @@ class HistoryFilepickerHandler(
         return when (cmd) {
             An.FilepickerCmd.FILEINFO -> actionFileInfo(params)
             An.FilepickerCmd.LISTDIR -> actionListDir(params)
-            An.FilepickerCmd.MKDIRS -> actionMkdirs(params)
             An.FilepickerCmd.DELETE -> actionDelete(params)
             An.FilepickerCmd.RENAME -> actionRename(params)
-            An.FilepickerCmd.COPY_INFO -> actionCopyInfo(params)
-            An.FilepickerCmd.COPY -> actionCopy(params)
             An.FilepickerCmd.DELETE_DIRSUBTREE -> actionDeleteDirSubtree(params)
-            An.FilepickerCmd.DELETE_ALL -> actionDeleteAll(params)
-            An.FilepickerCmd.DELETE_INFO -> actionDeleteInfo(params)
-            An.FilepickerCmd.DELETE_EMPTY_DIRS -> actionDeleteEmptyDirs(params)
-            An.FilepickerCmd.LOCAL_IMAGE_INFOS -> actionLocalImageInfos(params)
-            An.FilepickerCmd.LOCAL_IMAGE_THUMBNAILS -> actionLocalImageThumbnails(params, thumbnailCallback)
             An.FilepickerCmd.LIST_RECURSIVE -> actionListRecursive(params)
+            An.FilepickerCmd.DIRINFO -> actionDirInfo(params)
+            An.FilepickerCmd.MKDIRS,
+            An.FilepickerCmd.COPY_INFO,
+            An.FilepickerCmd.COPY,
+            An.FilepickerCmd.DELETE_ALL,
+            An.FilepickerCmd.DELETE_INFO,
+            An.FilepickerCmd.DELETE_EMPTY_DIRS,
+            An.FilepickerCmd.LOCAL_IMAGE_INFOS,
+            An.FilepickerCmd.LOCAL_IMAGE_THUMBNAILS,
+            An.FilepickerCmd.SHRED -> unsupported()
+
             else -> rsrc.jsonObjectError(R.string.InvalidFilepickerCommand_, cmd.toString())
         }
     }
 
+    private fun unsupported(): JSONObject {
+        return rsrc.jsonObjectError(R.string.UnsupportedOperation)
+    }
+
+    override fun listDir(ret: JSONObject, cpath: String): JSONObject {
+        return fileinfo(Basepath.ensureTrailingSlash(cpath))
+    }
+
     /// @param cpath Trailing / imply cpath is directory and filename is "".
     private fun actionFileInfo(params: JSONObject): JSONObject {
-        val cpath = params.stringOrNull(An.Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidPath)
-        return fileinfo(cpath, false)
+        val cpath = params.stringOrNull(Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidPath)
+        return fileinfo(cpath)
     }
 
     private fun actionListDir(params: JSONObject): JSONObject {
-        val cpath = params.stringOrNull(An.Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidPath)
-        return fileinfo(cpath, true)
+        val cpath = params.stringOrNull(Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidPath)
+        return fileinfo(Basepath.ensureTrailingSlash(cpath))
     }
 
-    private fun fileinfo(cpath: String, listdir: Boolean): JSONObject {
-        val cleanrpath = Support.getcleanrpathStrict(rsrc, cpath).let {
+    private fun fileinfo(cpath: String): JSONObject {
+        return this.fileinfo(JSONObject(), cpath)
+    }
+
+    private fun fileinfo(ret: JSONObject, cpath: String): JSONObject {
+        var cleancpath = Support.getcleanrpathStrict(rsrc, cpath).let {
             it.first ?: return rsrc.jsonObjectError(it.second)
         }
-        val ret = JSONObject()
-        ret.put(An.Key.path, cpath)
         val dirtree = ret.putJSONArrayOrFail(An.Key.dirtree)
-        if (cleanrpath.isEmpty()) {
-            dirtree.put(toDeletedFileStat(storage.getHomeRoot()))
+        if (cleancpath.isEmpty()) {
+            ret.put(Key.path, cleancpath)
+            for (root in arrayOf(storage.getHomeRoot())) {
+                val json = toDeletedFileStat(root, "", root.name)
+                var size = 0L
+                root.scanTrash { file ->
+                    if (file.stat.isFile) {
+                        size += file.stat.length
+                    }
+                }
+                json.put(IFileInfo.Key.length, size)
+                dirtree.put(json)
+            }
+            return ret
+        }
+        val fileinfo = storage.fileInfo(cleancpath) ?: return rsrc.jsonObjectError(R.string.InvalidPath_, cpath)
+        val root = fileinfo.root
+        val ccpath = if (cpath.endsWith(FS) && !cleancpath.endsWith(FS)) cleancpath + FS else cleancpath
+        val (dir, name) = Basepath.splitPath(ccpath)
+        ret.put(Key.path, ccpath)
+        if (dir == root.cpath && name.isEmpty()) {
+            val sizes = TreeMap<String, Long>()
+            val infos = TreeMap<String, JSONObject>()
+            for (d in dirsList(root)) {
+                val dcpath = d.cpath()
+                if (!infos.containsKey(dcpath)) {
+                    var size = 0L
+                    filesAtDir(root, dcpath) {
+                        size += it.stat.length
+                    }
+                    sizes[dcpath] = size + (sizes[dcpath] ?: 0L)
+                    infos[dcpath] = d.toJSON()
+                }
+            }
+            for ((dcpath, json) in infos.entries) {
+                val size = sizes[dcpath] ?: 0L
+                json.put(IFileInfo.Key.length, size)
+                dirtree.put(json)
+            }
+        } else if (name.isEmpty() || dir.isNullOrEmpty() && name == root.cpath) {
+            val seen = TreeSet<String>()
+            root.history(if (dir.isNullOrEmpty()) name else dir, "", false) { dstat ->
+                if (seen.add(dstat.cpath())) {
+                    dirtree.put(dstat.toJSON())
+                }
+            }
         } else {
-            val fileinfo = storage.fileInfo(cleanrpath) ?: return rsrc.jsonObjectError(R.string.InvalidPath_, cpath)
-            ret.put(An.Key.dirpath, JSONArray().put(FileInfoUtil.tojson(fileinfo)))
-            val history = fileinfo.root.history(if (cpath.endsWith(File.separator)) fileinfo.rpath + File.separator else fileinfo.rpath, listdir)
-            for (info in history) {
-                dirtree.put(info.toJSON())
+            root.history(dir ?: "", name, false) { dstat ->
+                dirtree.put(dstat.toJSON())
             }
         }
         return ret
     }
 
-    private fun actionMkdirs(params: JSONObject): JSONObject {
-        return rsrc.jsonObjectError(R.string.UnsupportedOperation)
-    }
-
     private fun actionDelete(params: JSONObject): JSONObject {
-        fun run(): JSONObject? {
-            val cpath = params.stringOrNull(An.Key.path) ?: return null
-            val array = params.getJSONArray(An.Key.infos) ?: return null
-            val infos = array.toJSONObjectOrNullList().mapNotNull { it }
-            val fileinfo = storage.fileInfoAt(cpath).let {
-                it.first ?: return rsrc.jsonObjectError(it.second)
-            }
-            return deletedCounts(fileinfo.root.pruneHistory(infos, false))
+        val cpath = params.stringOrNull(Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidArguments)
+        val infos = params.getJSONArray(An.Key.infos)
+            ?.mapsJSONObjectNotNull { JSONObjectDeletedFileStat(it) }
+            ?.toList()
+            ?: return rsrc.jsonObjectError(R.string.InvalidArguments)
+        val fileinfo = storage.fileInfoAt(cpath).let {
+            it.result() ?: return rsrc.jsonObjectError(it.failure()!!)
         }
-        return run() ?: return rsrc.jsonObjectError(R.string.InvalidArguments)
+        return cleanupTrashResult(rsrc, R.string.Removed, pruneHistory(fileinfo.root, infos, false))
     }
 
     private fun actionRename(params: JSONObject): JSONObject {
         fun run(): JSONObject? {
-            val s = params.stringOrNull(An.Key.path) ?: return null
-            val srcjson = JSONUtil.jsonObjectOrNull(s) ?: return null
-            val dstpath = params.stringOrNull(An.Key.filename) ?: return null
-            val srcpath = srcjson.stringOrNull(An.Key.src) ?: return null
+            val dstpath = params.stringOrNull(An.Key.dst) ?: return null
+            val srcpath = params.stringOrNull(An.Key.src) ?: return null
+            val srcinfos = params.jsonArrayOrNull(An.Key.infos) ?: return null
             val dst = storage.fileInfoAt(dstpath).let {
-                it.first ?: return rsrc.jsonObjectError(it.second)
+                it.result() ?: return rsrc.jsonObjectError(it.failure()!!)
             }
             val src = storage.fileInfoAt(srcpath).let {
-                it.first ?: return rsrc.jsonObjectError(it.second)
+                it.result() ?: return rsrc.jsonObjectError(it.failure()!!)
             }
-            val srcinfos = srcjson.jsonArrayOrNull(An.Key.infos) ?: return null
-            val infos = srcinfos.toJSONObjectOrNullList().mapNotNull { it }
+            val infos = srcinfos.mapsJSONObjectNotNull { it }.toList()
             val result = src.root.recover(dst, infos)
             return recoverCounts(result)
         }
         return run() ?: rsrc.jsonObjectError(R.string.InvalidArguments)
     }
 
-    private fun actionCopyInfo(params: JSONObject): JSONObject {
-        TODO("Not yet implemented")
-    }
-
-    private fun actionCopy(params: JSONObject): JSONObject {
-        TODO("Not yet implemented")
-    }
-
     private fun actionDeleteDirSubtree(params: JSONObject): JSONObject {
-        val cpath = params.stringOrNull(An.Key.path) ?: return rsrc.jsonObjectError(R.string.InvalidPath)
-        val array = params.jsonArrayOrNull(An.Key.infos) ?: throw AssertionError()
-        val infos = array.toJSONObjectOrNullList().mapNotNull { it }
-        val fileinfo = storage.fileInfoAt(cpath).let {
-            it.first ?: return rsrc.jsonObjectError(it.second)
+        val cpath = params.stringOrNull(Key.path)
+            ?: return rsrc.jsonObjectError(R.string.InvalidPath)
+        val infos = params.jsonArrayOrNull(An.Key.infos)
+            ?.mapsJSONObjectNotNull { JSONObjectDeletedFileStat(it) }
+            ?.toList()
+            ?: return rsrc.jsonObjectError(R.string.InvalidArguments)
+        val fileinfo = if (cpath.isEmpty()) storage.getHomeRoot() else storage.fileInfoAt(cpath).let {
+            it.result() ?: return rsrc.jsonObjectError(it.failure()!!)
         }
-        return deletedCounts(fileinfo.root.pruneHistory(infos, true))
-    }
-
-    private fun actionDeleteAll(params: JSONObject): JSONObject {
-        TODO("Not yet implemented")
-    }
-
-    private fun actionDeleteInfo(params: JSONObject): JSONObject {
-        TODO("Not yet implemented")
-    }
-
-    private fun actionDeleteEmptyDirs(params: JSONObject): JSONObject {
-        return rsrc.jsonObjectError(R.string.UnsupportedOperation)
-    }
-
-    private fun actionLocalImageInfos(params: JSONObject): JSONObject {
-        TODO("Not yet implemented")
-    }
-
-    private fun actionLocalImageThumbnails(params: JSONObject, callback: Any): JSONObject {
-        TODO("Not yet implemented")
+        return cleanupTrashResult(rsrc, R.string.Removed, pruneHistory(fileinfo.root, infos, true))
     }
 
     private fun actionListRecursive(params: JSONObject): JSONObject {
-        val json = params.stringOrNull(An.Key.path) ?: throw AssertionError()
-        val searchparams = JSONUtil.jsonObjectOrNull(json) ?: throw AssertionError()
-        val cpath = searchparams.stringOrNull(An.Key.path) ?: throw AssertionError()
-        val searchtext = searchparams.stringOrNull(An.Key.text) ?: throw AssertionError()
-        val regex = Without.exceptionOrNull { Regex(searchtext) } ?: return rsrc.jsonObjectError(R.string.InvalidRegex_, searchtext)
-        val cleanrpath = Support.getcleanrpathStrict(rsrc, cpath).let {
-            it.first ?: rsrc.jsonError(it.second)
+        val cpath = params.stringOrNull(Key.path)
+            ?: throw AssertionError()
+        val searchtext = params.stringOrNull(Key.text)
+            ?: throw AssertionError()
+        val regex = Without.exceptionOrNull { Regex(searchtext) }
+            ?: return rsrc.jsonObjectError(R.string.InvalidRegex_, searchtext)
+        val cleancpath = Support.getcleanrpathStrict(rsrc, cpath).first
+        val root = if (cleancpath.isNullOrEmpty() || cleancpath == FS) {
+            storage.getHomeRoot()
+        } else {
+            val fileinfo = storage.fileInfo(cleancpath)
+                ?: return rsrc.jsonObjectError(R.string.InvalidPath_, cpath)
+            fileinfo.root
         }
         val ret = JSONObject()
-        ret.put(An.Key.path, cpath)
+        ret.put(Key.path, root.cpath + FS)
         val dirtree = ret.putJSONArrayOrFail(An.Key.dirtree)
-        val warns = JSONArray()
-        val predicate = { info: IDeletedFileStat ->
-            regex.containsMatchIn(Basepath.joinRpath(info.dir, info.name))
-        }
+        val seen = TreeSet<String>()
+        val result = TreeMap<String, JSONObject>()
         try {
-            if (cleanrpath.isEmpty()) {
-                for (info in storage.getHomeRoot().searchHistory("", predicate)) {
-                    dirtree.put(info.toJSON())
+            root.scanTrash { dstat ->
+                if (!dstat.stat.isFile) return@scanTrash
+                val dcpath = dstat.cpath()
+                if (seen.add(dcpath) && regex.containsMatchIn(dcpath)) {
+                    result[dcpath] = dstat.toJSON()
                 }
-            } else {
-                val fileinfo = storage.fileInfo(cleanrpath) ?: return rsrc.jsonObjectError(R.string.InvalidPath_, cpath)
-                ret.put(An.Key.dirpath, JSONArray().put(FileInfoUtil.tojson(fileinfo)))
-                for (info in fileinfo.root.searchHistory(
-                        (if (cpath.endsWith(File.separator)) fileinfo.rpath + File.separator else fileinfo.rpath),
-                        predicate
-                )) {
-                    dirtree.put(info.toJSON())
-                }
+            }
+            for (json in result.values) {
+                dirtree.put(json)
             }
             return ret
         } catch (e: Exception) {
@@ -224,36 +245,130 @@ class HistoryFilepickerHandler(
         }
     }
 
-    private fun toDeletedFileStat(info: IFileInfo): JSONObject {
-        val ret = FileInfoUtil.tojson(info)
-        ret.put(IFileInfo.Key.id, 0)
-        ret.put(IFileInfo.Key.dir, info.name)
-        ret.put(IFileInfo.Key.name, "")
-        ret.put(IFileInfo.Key.lastDeleted, info.stat()!!.lastModified)
-        return ret
+    @Throws(JSONException::class)
+    fun actionDirInfo(params: JSONObject): JSONObject {
+        val cpath = params.stringOrNull(Key.path) ?: return rsrc.jsonObjectError(R.string.ParameterMissingPath)
+        var files = 0L
+        var size = 0L
+        val errors = TreeSet<String>()
+        val cleancpath = Support.getcleanrpathStrict(errors, rsrc, cpath)
+        if (errors.size > 0) return rsrc.jsonObjectError(errors)
+        val fileinfo: IFileInfo? = if (cleancpath == null) null
+        else if (cleancpath.isEmpty() || cleancpath == FS) storage.getHomeRoot()
+        else storage.fileInfo(cleancpath)
+        if (fileinfo == null || !fileinfo.root.supportHistory)
+            return rsrc.jsonObjectError(R.string.InvalidPath)
+        val root = fileinfo.root
+        if (cleancpath?.isEmpty() == true || cleancpath != null && cleancpath.indexOf(FS) < 0 && cpath.endsWith(FS)) {
+            val dirs = dirsUnder(root, fileinfo.cpath)
+            val seen = TreeSet<String>()
+            for (dir in dirs) {
+                val dircpath = dir.cpath()
+                if (seen.add(dircpath)) {
+                    filesAtDir(root, dircpath) { file ->
+                        ++files
+                        size += file.stat.length
+                    }
+                }
+            }
+            return JSONObject().put(
+                Key.result, JSONArray()
+                    .put(files).put(seen.size).put(size)
+            )
+        }
+        root.history(cleancpath ?: "", "", false) {
+            ++files
+            size += it.stat.length
+        }
+        return JSONObject().put(Key.result, JSONArray()
+            .put(files).put(1).put(size)
+        )
     }
 
-    private fun deletedCounts(result: Pair<Int, Int>): JSONObject {
-        val (files, dirs) = result
-        return JSONObject()
-                .put(An.Key.total, files + dirs)
-                .put(An.Key.count, files)
-                .put(An.Key.result, String.format("%s %d %s, %d %s",
-                        rsrc.get(R.string.Removed),
-                        files, rsrc.get(R.string.file),
-                        dirs, rsrc.get(R.string.dir)))
-
+    private fun toDeletedFileStat(info: IFileInfo, dir: String, name: String): JSONObject {
+        val ret = FileInfoUtil.toJSONFileInfo(info)
+        ret.put(IFileInfo.Key.id, 0)
+        ret.put(IFileInfo.Key.dir, dir)
+        ret.put(IFileInfo.Key.name, name)
+        ret.put(IFileInfo.Key.lastDeleted, info.stat()!!.lastModified)
+        return ret
     }
 
     private fun recoverCounts(result: Pair<Int, Int>): JSONObject {
         val (oks, fails) = result
         return JSONObject()
-                .put(An.Key.total, oks + fails)
-                .put(An.Key.fails, fails)
-                .put(An.Key.result, String.format("%s %d %s, %d %s",
-                        rsrc.get(R.string.Recover),
-                        oks, rsrc.get(R.string.OK),
-                        fails, rsrc.get(R.string.failed)))
+            .put(An.Key.total, oks + fails)
+            .put(An.Key.fails, fails)
+            .put(
+                An.Key.result, String.format(
+                    "%s %d %s, %d %s",
+                    rsrc.get(R.string.Recover),
+                    oks, rsrc.get(R.string.OK),
+                    fails, rsrc.get(R.string.failed)
+                )
+            )
+    }
 
+    companion object {
+        fun cleanupTrashResult(rsrc: IResUtil, msgid: StringId, result: CleanupTrashResult): JSONObject {
+            return JSONObject()
+                .put(An.Key.total, result.files + result.dirs)
+                .put(An.Key.count, result.files)
+                .put(
+                    An.Key.result, String.format(
+                        "%s %d %s, %d %s, %s",
+                        rsrc.get(msgid),
+                        result.files, rsrc.get(R.string.file),
+                        result.dirs, rsrc.get(R.string.dir),
+                        TextUt.fileHexUnit4String(result.totalsize, "B")
+                    )
+                )
+        }
+
+        fun pruneHistory(root: IRootInfo, infos: List<IDeletedFileStat>, all: Boolean): CleanupTrashResult {
+            return root.transaction {
+                root.cleanupTrash { dstat ->
+                    for (info in infos) {
+                        if (info.stat.isDir && (info.dir == "" || info.cpath() == dstat.dir)) return@cleanupTrash true
+                        else if (info.stat.isFile) {
+                            if (all && (info.dir == dstat.dir && info.name == dstat.name)) return@cleanupTrash true
+                            else if (info.id == dstat.id) return@cleanupTrash true
+                        }
+                    }
+                    return@cleanupTrash false
+                }
+            }
+        }
+
+        fun dirsList(
+            root: IRootInfo,
+        ): ArrayList<IDeletedFileStat> {
+            val dirs = ArrayList<IDeletedFileStat>()
+            root.history(root.cpath, "", true) { dstat ->
+                dirs.add(dstat)
+            }
+            return dirs
+        }
+
+        fun dirsUnder(
+            root: IRootInfo,
+            cpath: String,
+        ): ArrayList<IDeletedFileStat> {
+            val dirs = ArrayList<IDeletedFileStat>()
+            val cpathslash = cpath + FS
+            root.history(root.cpath, "", true) { dstat ->
+                val dircpath = dstat.cpath()
+                if (dircpath == cpath || dircpath.startsWith(cpathslash)) {
+                    dirs.add(dstat)
+                }
+            }
+            return dirs
+        }
+
+        fun filesAtDir(root: IRootInfo, cpath: String, callback: Fun10<IDeletedFileStat>) {
+            root.history(cpath, "", false) {
+                callback(it)
+            }
+        }
     }
 }

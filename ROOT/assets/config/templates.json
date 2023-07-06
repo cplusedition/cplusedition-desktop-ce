@@ -100,19 +100,19 @@
     "Notes": [
       {
         "category": "Notes",
-        "label": "Notes",
-        "name": "notes-v2",
-        "classes": "x-emoji-notes",
-        "template": "notes-v2.html",
-        "desc": "Template for writing simple notes."
-      },
-      {
-        "category": "Notes",
         "label": "Notes (Sticker1)",
         "name": "notes-sticker1",
         "classes": "x-emoji-notes",
         "template": "notes-sticker1.html",
         "desc": "Template for simple sticker notes."
+      },
+      {
+        "category": "Notes",
+        "label": "Notes",
+        "name": "notes-v2",
+        "classes": "x-emoji-notes",
+        "template": "notes-v2.html",
+        "desc": "Template for writing simple notes."
       }
     ],
     "Shopping": [
@@ -132,6 +132,14 @@
         "name": "todo-v2",
         "classes": "x-emoji-todo",
         "template": "todo-v2.html",
+        "desc": "Template for managing a todo list."
+      },
+      {
+        "category": "Todo",
+        "label": "Todo (Compact)",
+        "name": "todo-v2c",
+        "classes": "x-emoji-todo",
+        "template": "todo-v2c.html",
         "desc": "Template for managing a todo list."
       }
     ]

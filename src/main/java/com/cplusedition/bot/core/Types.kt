@@ -17,6 +17,7 @@
 package com.cplusedition.bot.core
 
 import java.io.File
+import java.util.TreeMap
 
 typealias Fun00 = () -> Unit
 typealias Fun10<T> = (T) -> Unit
@@ -43,4 +44,3 @@ typealias  IStringTransformer = (String) -> String?
 typealias  IFilePathCallback = (file: File, rpath: String) -> Unit
 typealias  IFilePathPredicate = (file: File, rpath: String) -> Boolean
 typealias IFilePathCollector<T> = (file: File, rpath: String) -> T?
-

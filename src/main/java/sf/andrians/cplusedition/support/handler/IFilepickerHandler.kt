@@ -21,7 +21,8 @@ import org.json.JSONObject
 interface IFilepickerHandler {
 
     @Throws(Exception::class)
-    fun handle(cmd: Int, params: JSONObject): String
+    fun handle(cmd: Int, params: JSONObject): JSONObject
+    fun listDir(ret: JSONObject, cpath: String): JSONObject
 
     class ThumbnailResult {
         var error: String? = null
@@ -47,9 +48,9 @@ interface IFilepickerHandler {
 
     interface IThumbnailCallback {
         /**
-         * @param rpath The id or context relative path to locate the full size image.
+         * @param cpath Context relative path to locate the full size image.
          */
         @Throws(Exception::class)
-        fun getThumbnail(rpath: String, lastmodified: Long, size: Int): ThumbnailResult
+        fun getThumbnail(cpath: String, lastmodified: Long, tnsize: Int): ThumbnailResult
     }
 }

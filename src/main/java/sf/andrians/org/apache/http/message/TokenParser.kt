@@ -69,7 +69,7 @@ class TokenParser {
         var whitespace = false
         while (!cursor.atEnd()) {
             val current = buf[cursor.pos]
-            whitespace = if (delimiters != null && delimiters[current.toInt()]) {
+            whitespace = if (delimiters != null && delimiters[current.code]) {
                 break
             } else if (isWhitespace(current)) {
                 skipWhiteSpace(buf, cursor)
@@ -100,7 +100,7 @@ class TokenParser {
         var whitespace = false
         while (!cursor.atEnd()) {
             val current = buf[cursor.pos]
-            whitespace = if (delimiters != null && delimiters[current.toInt()]) {
+            whitespace = if (delimiters != null && delimiters[current.code]) {
                 break
             } else if (isWhitespace(current)) {
                 skipWhiteSpace(buf, cursor)
@@ -160,7 +160,7 @@ class TokenParser {
         val indexTo = cursor.upperBound
         for (i in indexFrom until indexTo) {
             val current = buf[i]
-            if (delimiters != null && delimiters[current.toInt()] || isWhitespace(current)) {
+            if (delimiters != null && delimiters[current.code] || isWhitespace(current)) {
                 break
             }
             pos++
@@ -186,7 +186,7 @@ class TokenParser {
         val indexTo = cursor.upperBound
         for (i in indexFrom until indexTo) {
             val current = buf[i]
-            if (delimiters != null && delimiters[current.toInt()]
+            if (delimiters != null && delimiters[current.code]
                     || isWhitespace(current) || current == DQUOTE) {
                 break
             }

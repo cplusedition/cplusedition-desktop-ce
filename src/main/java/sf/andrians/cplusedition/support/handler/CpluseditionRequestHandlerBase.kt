@@ -16,6 +16,7 @@
 */
 package sf.andrians.cplusedition.support.handler
 
+import com.cplusedition.bot.core.TextUt
 import java.util.*
 import kotlin.collections.set
 
@@ -29,8 +30,6 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
     }
 
     enum class HtmlTag(private val flags: Int) {
-        //#BEGIN HtmlTag
-        //#BEGIN SHUFFLE
         A(Flags.User),
         ABBR(Flags.User),
         ADDRESS(Flags.User),
@@ -147,15 +146,13 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
         EMBED(Flags.None),
         OBJECT(Flags.None),
         SCRIPT(Flags.None),
-        //#END SHUFFLE
-        //#END HtmlTag
         ;
 
         companion object {
             private val tags: MutableMap<String, HtmlTag> = TreeMap()
 
             fun get(name: String): HtmlTag? {
-                return tags[name.toUpperCase(Locale.ENGLISH)]
+                return tags[TextUt.toUpperCase(name)]
             }
 
             init {
@@ -172,8 +169,6 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
     }
 
     enum class HtmlAttr(private val property: String, private val flags: Int) {
-        //#BEGIN HtmlAttr
-        //#BEGIN SHUFFLE
         Abbr("abbr", Flags.User),
         Alt("alt", Flags.User),
         Autoplay("autoplay", Flags.User),
@@ -300,8 +295,6 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
         Target("target", Flags.User),
         Typemustmatch("typemustmatch", Flags.User),
         Usemap("usemap", Flags.User),
-        //#END SHUFFLE
-        //#END HtmlAttr
         ;
 
         companion object {
@@ -324,7 +317,6 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
     }
 
     enum class HtmlEvent {
-        //#BEGIN SHUFFLE
         onabort,
         onautocomplete,
         onautocompleteerror,
@@ -403,7 +395,6 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
         onwaiting;
 
         companion object {
-            //#END SHUFFLE
             private val events: MutableMap<String, HtmlEvent> = TreeMap()
 
             operator fun get(name: String?): HtmlEvent? {
@@ -419,8 +410,7 @@ abstract class CpluseditionRequestHandlerBase protected constructor(
     }
 
     companion object {
-        //#NOTE Java new URI() do not escape []. However dart Uri.parse() throws exception on[].
-        internal const val PATH_ILLEGAL = "[]\u007f\\" // ?\"<>{}[]|\\^`%&*()';~!$#;
+        internal const val PATH_ILLEGAL = "[]\u007f\\"
         protected const val DEF_LINEWIDTH = 120
         protected const val DEF_INDENTWIDTH = 2
     }

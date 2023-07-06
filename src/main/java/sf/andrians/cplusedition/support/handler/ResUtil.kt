@@ -17,11 +17,13 @@
 package sf.andrians.cplusedition.support.handler
 
 import com.cplusedition.anjson.JSONUtil
+import com.cplusedition.bot.core.BotResult
+import com.cplusedition.bot.core.IBotResult
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import sf.andrians.cplusedition.R
-import sf.andrians.cplusedition.support.An
+import sf.andrians.cplusedition.support.An.Key
 import sf.andrians.cplusedition.support.IResources
 import sf.andrians.cplusedition.support.SecureException
 import sf.andrians.cplusedition.support.StorageException
@@ -33,20 +35,24 @@ class ResUtil(private val rsrc: IResources) : IResUtil {
         return rsrc
     }
 
-    override fun get(id: Int, vararg args: String): String {
-        var ret = rsrc.getString(id)
+    override fun get(stringid: Int): String {
+        return rsrc.getString(stringid)
+    }
+
+    override fun get(stringid: Int, vararg args: String): String {
+        var ret = rsrc.getString(stringid)
         if (args.isNotEmpty()) ret += args.joinToString("")
         return ret
     }
 
-    override fun format(id: Int, vararg args: Any?): String {
-        return rsrc.getFormatted(id, *args)
+    override fun format(stringid: Int, vararg args: Any?): String {
+        return rsrc.getFormatted(stringid, *args)
     }
 
-    override fun jsonObjectError(ret: JSONObject, id: Int, vararg args: String): JSONObject {
+    override fun jsonObjectError(ret: JSONObject, stringid: Int, vararg args: String): JSONObject {
         try {
             JSONUtil.clear(ret)
-            ret.put(An.Key.errors, get(id, *args))
+            ret.put(Key.errors, get(stringid, *args))
             return ret
         } catch (e: JSONException) {
             throw AssertionError()
@@ -63,29 +69,65 @@ class ResUtil(private val rsrc: IResources) : IResUtil {
         return jsonobjecterror1(msg)
     }
 
-    override fun jsonObjectError(key: Int, vararg args: String): JSONObject {
-        return jsonobjecterror1(get(key, *args))
+    override fun jsonObjectParametersInvalid(vararg names: String): JSONObject {
+        val msg = rsrc.getString(R.string.ParametersInvalid)
+        return jsonobjecterror1(if (names.isNotEmpty()) "$msg: ${names.joinToString(", ")}" else msg)
     }
 
-    override fun jsonObjectError(e: Throwable?, key: Int, vararg args: String): JSONObject {
-        val msg = get(key, *args)
+    override fun jsonObjectError(stringid: Int, vararg args: String): JSONObject {
+        return jsonobjecterror1(get(stringid, *args))
+    }
+
+    override fun jsonObjectError(msg: String?): JSONObject {
+        return jsonobjecterror1(msg)
+    }
+
+    override fun jsonObjectError(e: Throwable?, msg: String): JSONObject {
         
         return jsonobjecterror1(msg)
     }
 
+    override fun jsonObjectError(e: Throwable?, stringid: Int, vararg args: String): JSONObject {
+        return jsonObjectError(e, get(stringid, *args))
+    }
+
+    override fun jsonObjectError(errors: JSONArray): JSONObject {
+        return if (errors.length() == 0) JSONObject() else JSONObject().put(Key.errors, errors)
+    }
+
     override fun jsonObjectError(errors: Collection<String>): JSONObject {
-        return when (errors.size) {
-            0 -> JSONObject().put(An.Key.errors, rsrc.getString(R.string.Error))
-            else -> jsonobject1(An.Key.errors, errors)
-        }
+        return if (errors.isEmpty()) JSONObject() else jsonobject1(Key.errors, errors)
     }
 
-    override fun jsonError(key: Int, vararg args: String): String {
-        return jsonError(get(key, *args))
+    override fun <R> botObjectError(msg: String): IBotResult<R, JSONObject> {
+        return BotResult.fail(jsonObjectError(msg))
     }
 
-    override fun jsonError(e: Throwable?, key: Int, vararg args: String): String {
-        val msg = get(key, *args)
+    override fun <R> botObjectError(msg: Collection<String>): IBotResult<R, JSONObject> {
+        return BotResult.fail(jsonObjectError(msg))
+    }
+
+    override fun <R> botObjectError(id: Int, vararg args: String): IBotResult<R, JSONObject> {
+        return BotResult.fail(jsonObjectError(id, *args))
+    }
+
+    override fun <R> botObjectError(e: Throwable?, msg: String): IBotResult<R, JSONObject> {
+        return BotResult.fail(jsonObjectError(e, msg))
+    }
+
+    override fun <R> botObjectError(e: Throwable?, id: Int, vararg args: String): IBotResult<R, JSONObject> {
+        return BotResult.fail(jsonObjectError(e, id, *args))
+    }
+
+    override fun jsonError(stringid: Int, vararg args: String): String {
+        return jsonError(get(stringid, *args))
+    }
+
+    override fun jsonError(e: Throwable?, stringid: Int, vararg args: String): String {
+        return jsonError(e, get(stringid, *args))
+    }
+
+    override fun jsonError(e: Throwable?, msg: String): String {
         
         return jsonError(msg)
     }
@@ -95,7 +137,7 @@ class ResUtil(private val rsrc: IResources) : IResUtil {
     }
 
     override fun jsonError(msg: String): String {
-        return JSONObject().put(An.Key.errors, msg).toString()
+        return JSONObject().put(Key.errors, msg).toString()
     }
 
     override fun jsonErrorInvalidPath(path: String): String {
@@ -106,71 +148,111 @@ class ResUtil(private val rsrc: IResources) : IResUtil {
         return jsonError(rsrc.getString(R.string.NotFound_) + path)
     }
 
+    override fun jsonObjectWarning(stringid: Int, vararg args: String): JSONObject {
+        return JSONObject().put(Key.warns, get(stringid, *args))
+    }
+
     override fun jsonObjectWarning(warnings: Collection<String>): JSONObject {
-        return jsonobject1(An.Key.warns, warnings)
+        return if (warnings.isEmpty()) JSONObject() else jsonobject1(Key.warns, warnings)
     }
 
     override fun jsonResult(value: Boolean): String {
-        return "{ \"" + An.Key.result + "\" : " + value.toString() + " }"
+        return "{ \"" + Key.result + "\" : " + value.toString() + " }"
     }
 
     override fun jsonResult(value: Int): String {
-        return "{ \"" + An.Key.result + "\" : " + value.toString() + " }"
+        return "{ \"" + Key.result + "\" : " + value.toString() + " }"
     }
 
     override fun jsonResult(value: Long): String {
-        return "{ \"" + An.Key.result + "\" : " + value.toString() + " }"
+        return "{ \"" + Key.result + "\" : " + value.toString() + " }"
     }
 
     override fun jsonResult(value: String): String {
-        return JSONObject().put(An.Key.result, value).toString()
+        return JSONObject().put(Key.result, value).toString()
+    }
+
+    override fun jsonObjectResult(stringid: Int, vararg args: String): JSONObject {
+        return JSONObject().put(Key.result, get(stringid, *args))
     }
 
     override fun jsonObjectResult(value: Boolean): JSONObject {
-        return JSONObject().put(An.Key.result, value)
+        return JSONObject().put(Key.result, value)
     }
 
     override fun jsonObjectResult(value: Int): JSONObject {
-        return JSONObject().put(An.Key.result, value)
+        return JSONObject().put(Key.result, value)
     }
 
     override fun jsonObjectResult(value: Long): JSONObject {
-        return JSONObject().put(An.Key.result, value)
+        return JSONObject().put(Key.result, value)
     }
 
     override fun jsonObjectResult(value: String): JSONObject {
-        return JSONObject().put(An.Key.result, value)
+        return JSONObject().put(Key.result, value)
+    }
+
+    override fun jsonObjectResult(value: JSONObject): JSONObject {
+        return JSONObject().put(Key.result, value)
+    }
+
+    override fun jsonObjectResult(value: JSONArray): JSONObject {
+        return JSONObject().put(Key.result, value)
     }
 
     override fun jsonObjectResult(key: String, value: JSONObject): JSONObject {
         return JSONObject().put(key, value)
     }
 
-    override fun ajaxError(serial: Long, id: Int, vararg args: String): String {
-        return JSONObject().put(An.Key.serial, serial).put(An.Key.errors, get(id, *args)).toString()
+    override fun ajaxError(serial: Long, stringid: Int, vararg args: String): String {
+        return JSONObject().put(Key.serial, serial).put(Key.errors, get(stringid, *args)).toString()
     }
 
-    override fun secureException(id: Int, vararg args: String): SecureException {
-        return SecureException(get(id, *args))
+    override fun secureException(stringid: Int, vararg args: String): SecureException {
+        return SecureException(get(stringid, *args))
     }
 
-    override fun secureException(e: Throwable?, id: Int, vararg args: String): SecureException {
+    override fun secureException(e: Throwable?, stringid: Int, vararg args: String): SecureException {
         if (e != null && e is SecureException) return e
-        return SecureException(get(id, *args), e)
+        return SecureException(get(stringid, *args), e)
     }
 
-    override fun storageException(id: Int, vararg args: String): StorageException {
-        return StorageException(get(id, *args))
+    override fun storageException(stringid: Int, vararg args: String): StorageException {
+        return StorageException(get(stringid, *args))
     }
 
-    override fun storageException(e: Throwable?, id: Int, vararg args: String): StorageException {
+    override fun storageException(e: Throwable?, stringid: Int, vararg args: String): StorageException {
         if (e != null && e is StorageException) return e
-        return StorageException(get(id, *args), e)
+        return StorageException(get(stringid, *args), e)
+    }
+
+    override fun secureException(e: Throwable?, msg: String): SecureException {
+        if (e != null && e is SecureException) return e
+        return SecureException(msg, e)
+    }
+
+    override fun storageException(e: Throwable?, msg: String): StorageException {
+        if (e != null && e is StorageException) return e
+        return StorageException(msg, e)
+    }
+
+    override fun actionOK(stringid: Int): String {
+        return format(R.string.Action_OK, get(stringid))
+    }
+
+    override fun actionCancelled(stringid: Int): String {
+        return format(R.string.Action_Cancelled, get(stringid))
+    }
+
+    override fun actionFailed(stringid: Int): String {
+        return format(R.string.Action_Failed, get(stringid))
     }
 
     private fun jsonobjecterror1(value: Any?): JSONObject {
         return try {
-            JSONObject().put(An.Key.errors, value)
+            val ret = JSONObject()
+            if (value != null) ret.put(Key.errors, value)
+            ret
         } catch (e: JSONException) {
             throw AssertionError()
         }
@@ -183,5 +265,4 @@ class ResUtil(private val rsrc: IResources) : IResUtil {
             throw AssertionError()
         }
     }
-
 }

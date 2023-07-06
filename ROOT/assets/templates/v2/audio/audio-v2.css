@@ -1,0 +1,232 @@
+.xx-root {
+  background-color: #fffff0;
+}
+.xx-top {
+  box-sizing: border-box;
+  width: 90%;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding-bottom: 100vh;
+}
+.xx-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url(/assets/images/samples/woods.jpg);
+  background-position: center;
+  background-size: cover;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  padding: 2ex 1em;
+  box-sizing: border-box;
+  min-height: 10ex;
+}
+.xx-title {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-shadow: 0 0 2px #000;
+  color: #fff;
+}
+.xx-subtitle {
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 0 0 2px #000;
+  color: #fff;
+}
+.xx-body {
+  border-bottom: 5px solid #0af;
+}
+.xx-header {
+  text-align: center;
+  font-family: Frijole-Regular;
+  font-size: 125%;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #666;
+  padding: 0.25ex 0;
+  margin: 10px 0 5px 0;
+}
+ul.xx-audios {
+  padding: 0;
+  margin: 5px 0px 10px 0;
+}
+ul.xx-audios > li {
+  display: flex;
+  align-items: baseline;
+  border-left: 10px solid #444;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 0;
+  list-style: none;
+}
+li.xx-audio.xx-style01 {
+  background-color: #f98;
+}
+li.xx-audio.xx-style02 {
+  background-color: #f85;
+}
+li.xx-audio.xx-style03 {
+  background-color: #fa4;
+}
+li.xx-audio.xx-style04 {
+  background-color: #fc3;
+}
+li.xx-audio.xx-style05 {
+  background-color: #bc6;
+}
+li.xx-audio.xx-style06 {
+  background-color: #8c7;
+}
+li.xx-audio.xx-style07 {
+  background-color: #8da;
+}
+li.xx-audio.xx-style08 {
+  background-color: #8de;
+}
+li.xx-audio.xx-style09 {
+  background-color: #9cd;
+}
+li.xx-audio.xx-style10 {
+  background-color: #cbf;
+}
+li.xx-audio.xx-style11 {
+  background-color: #fcc;
+}
+li.xx-audio.xx-style12 {
+  background-color: #fda;
+}
+li.xx-audio.xx-style13 {
+  background-color: #fe9;
+}
+li.xx-audio.xx-style14 {
+  background-color: #ee8;
+}
+li.xx-audio.xx-style15 {
+  background-color: #de8;
+}
+li.xx-audio.xx-style16 {
+  background-color: #ceb;
+}
+li.xx-audio.xx-style17 {
+  background-color: #bbeed4;
+}
+li.xx-audio.xx-style18 {
+  background-color: #c8e8f8;
+}
+li.xx-audio.xx-style19 {
+  background-color: #e0e0ff;
+}
+li.xx-audio.xx-style20 {
+  background-color: #ecd8ec;
+}
+li.xx-audio.xx-style21 {
+  background-color: #ccc;
+}
+li.xx-audio.xx-style22 {
+  background-color: #ddd;
+}
+li.xx-audio.xx-style23 {
+  background-color: #eee;
+}
+li.xx-audio > a.xx-bullet {
+  display: inline-block;
+  flex: 0 0 auto;
+  align-self: center;
+  margin: 0 10px 0 0;
+  overflow: visible;
+  box-sizing: border-box;
+  text-align: center;
+  min-width: 3rem;
+  font-size: 2rem;
+  font-family: FontAwesome;
+}
+li.xx-audio > a.x-video.xx-bullet:before {
+  font-size: 1.5rem;
+  content: "\f03d";
+}
+li.xx-audio > a.x-video.x-video-poster.xx-error:before {
+  font-size: 1.5rem;
+  font-family: FontAwesome;
+  content: "\f03d";
+}
+li.xx-audio > a.xx-error {
+  box-sizing: border-box;
+  text-align: center;
+  min-width: 3rem;
+  color: #444;
+}
+li.xx-video .x-video-poster {
+  display: inline-block;
+  flex: 0 0 auto;
+  align-self: center;
+  min-width: 2.5rem;
+  margin: 0 15px 0 0;
+  overflow: visible;
+}
+li.xx-audio .x-video-poster > div {
+  pointer-events: none;
+  position: relative;
+  display: grid;
+}
+li.xx-audio .x-video-poster img {
+  pointer-events: none;
+  max-width: 10rem;
+  max-height: 10rem;
+}
+li.xx-video .x-video-poster .x-play {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+li.xx-video .x-video-poster .x-play:before {
+  font-family: FontAwesome;
+  font-size: 2rem;
+  text-shadow: 0 0 2px #000;
+  color: #fff;
+  content: "\f01d";
+}
+li.xx-audio > div {
+  flex: 1 1 100%;
+}
+li.xx-audio > div > div.xx-subject {
+  font-family: Antonio-Regular;
+  margin-bottom: 5px;
+  width: 100%;
+}
+li.xx-audio .x-audio-filename, li.xx-video .x-video-filename, li.xx-audio .x-media-filesize, li.xx-video .x-media-filesize {
+  font-family: Antonio-Light;
+  color: #444;
+}
+li.xx-audio > div > div.xx-content {
+  color: #000;
+  width: 100%;
+}
+li.xx-audio span.xx-audioinfo {
+  font-weight: bold;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+li.xx-audio .xx-link {
+  margin-right: 10px;
+}
+@media  print {
+  .xx-root {
+    background-color: #fff !important;
+  }
+}
+@media  print {
+  div.xx-top {
+    padding-bottom: 0 !important;
+  }
+}

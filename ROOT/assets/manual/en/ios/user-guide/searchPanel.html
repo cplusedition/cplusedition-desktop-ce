@@ -1,0 +1,122 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="pageTemplatesPanel.html" />
+        <link rel="next" type="text/html" href="settingsPanel.html" />
+    </head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title xx-blue">
+                Search Panel
+            </div>
+            <div class="xx-content">
+                <div class="x-head3 xx-head-blue">
+                    <a name="SearchPanel"></a>Introduction
+                </div>
+                <div class="x-para">
+                    The Global Search Panel perform text search among all the documents using Regular expressions. Regular expression is a powerful tool for text matching. If you are not familiar with it, you can using it for simple text search by avoiding or escaping the regular expression meta characters: <span class="x-code">.?*+^$()[]{}|</span>. See the <span class="x-code">java.util.regex.Pattern</span> documentation for details.</div>
+                        <div class="x-para" style="display:flex;"><a style="margin-right:10px;" href="../../../img/sidepanel/templates/globalSearchPanel.jpg?view"><img class="xx-figure-lb" src="../../../img/sidepanel/templates/globalSearchPanel.jpg" /></a></div>
+                <div class="x-head3 xx-head-blue">
+                    Toolbar
+                </div><div class="x-para"><img style="border:1px solid #888; height:8ex; " src="../../../img/sidepanel/templates/globalSearchPanelToolbar01.jpg" /></div>
+                <div class="x-para">
+                    <ul class="x-none x-compact">
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">Text search regular expression. The regular expression for the search. Here is an
+                            example: <span class="x-code">(?i)(href|src)\s*=\s*"/Home/test/</span>.
+                             Or you can simply enter <span class="x-code">/Home/test/</span> which may result in more matches,
+                             but it would include matches for the regular expression above.
+                             </div>
+                        </li>
+                        <li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Use ignorecase for the search pattern.</span></li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">
+                            Perform the regular expression search.
+                        </div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Filepath filter regular expression, eg. <span class="x-code">.*\.html$</span>.</div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Use ignorecase for the filepath filter pattern.</span></li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">
+                            Clear search text and results.
+                        </div>
+                        </li>
+                    </ul>
+                    <ul class="x-none xx-tips">
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;">
+                            
+                        </div>
+                        <div class="x-list-content">Note that searches are match against the raw document content,
+                            ie. including the markups, instead just the visible text.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="x-head3 xx-head-blue">
+                    Search Result
+                </div>
+                <div class="x-para">
+                    Click on one of the files in the Global Search Panel result list, opens the file.<br /></div><ul class="x-none xx-tips"><li class="x-list">
+                    </li>
+                </ul>
+                <div class="xx-ruler xx-blue">
+                    <br />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li>
+                        <li class="xx-toc1"><a href="features.html">Features</a></li><li class="xx-toc1"><a href="systemMenu.html">System Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html">Drawing Canvas</a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html">Dialogs</a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html"><span class="xx-inactive">Search</span></a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html">Files</a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html">Events</a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+</body></html>

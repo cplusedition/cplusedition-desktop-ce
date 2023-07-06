@@ -61,8 +61,11 @@ div.xx-media audio {
   display: block;
   width: -webkit-fill-available;
   margin: 0 auto;
-  padding: 10px 0 0 0;
+  padding: 0;
   max-width: 100%;
+}
+div.xx-media img.x-audio-poster {
+  padding-bottom: 10px;
 }
 div.xx-media div.x-media-photo img, div.xx-media div.xx-photo img, div.xx-media video {
   display: block;
@@ -105,6 +108,56 @@ div.xx-media div.x-media-photo img.x-landscape, div.xx-media div.xx-photo img.x-
 }
 .xx-top.xx-size-xxlarge div.xx-section, .xx-top.xx-size-xxlarge div.xx-comment {
   width: 480px;
+}
+div.xx-top div.xx-media.xx-scroll-v div.x-media-photo, div.xx-top div.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 240px;
+  width: 180px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+div.xx-top.xx-size-large div.xx-media.xx-scroll-v div.x-media-photo, div.xx-top.xx-size-large div.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 320px;
+  width: 225px;
+}
+div.xx-top.xx-size-xlarge div.xx-media.xx-scroll-v div.x-media-photo, div.xx-top.xx-size-xlarge div.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 400px;
+  width: 270px;
+}
+div.xx-top.xx-size-xxlarge div.xx-media.xx-scroll-v div.x-media-photo, div.xx-top.xx-size-xxlarge div.xx-media.xx-scroll-v div.xx-photo {
+  max-height: 480px;
+  width: 360px;
+}
+div.xx-top div.xx-media.xx-scroll-v div.x-media-photo img, div.xx-top div.xx-media.xx-scroll-v div.xx-photo img, div.xx-top div.xx-media.xx-scroll-v div.xx-photo picture {
+  width: unset !important;
+  height: unset !important;
+  max-width: -webkit-fill-available !important;
+  max-height: unset !important;
+  display: flex;
+}
+div.xx-top div.xx-media.xx-scroll-h div.x-media-photo, div.xx-top div.xx-media.xx-scroll-h div.xx-photo {
+  height: 180px;
+  max-width: 240px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+div.xx-top.xx-size-large div.xx-media.xx-scroll-h div.x-media-photo, div.xx-top.xx-size-large div.xx-media.xx-scroll-h div.xx-photo {
+  height: 225px;
+  max-width: 320px;
+}
+div.xx-top.xx-size-xlarge div.xx-media.xx-scroll-h div.x-media-photo, div.xx-top.xx-size-xlarge div.xx-media.xx-scroll-h div.xx-photo {
+  height: 270px;
+  max-width: 400px;
+}
+div.xx-top.xx-size-xxlarge div.xx-media.xx-scroll-h div.x-media-photo, div.xx-top.xx-size-xxlarge div.xx-media.xx-scroll-h div.xx-photo {
+  height: 360px;
+  max-width: 480px;
+}
+div.xx-top div.xx-media.xx-scroll-h div.x-media-photo img, div.xx-top div.xx-media.xx-scroll-h div.xx-photo img, div.xx-top div.xx-media.xx-scroll-h div.xx-photo picture {
+  width: unset !important;
+  height: unset !important;
+  max-height: -webkit-fill-available !important;
+  max-width: unset !important;
+  display: flex;
 }
 div.x-sticker > div.x-subject {
   padding-bottom: 0;

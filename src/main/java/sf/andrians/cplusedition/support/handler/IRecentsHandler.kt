@@ -16,17 +16,14 @@
 */
 package sf.andrians.cplusedition.support.handler
 
-import org.json.JSONArray
 import org.json.JSONObject
 
 interface IRecentsHandler {
-    @Throws(Exception::class)
-    fun handleRecents(cmd: Int): String
 
     /// @param cpath Context relative path with or without leading /.
-    fun recentsPut(navigation: Int, cpath: String, state: JSONObject?)
+    fun recentsPut(navigation: Int, cpath: String, state: JSONObject?, timestamp: Long): JSONObject
+    fun recentsSave(session: JSONObject)
+    fun recentsRestore(session: JSONObject)
+    fun handle(cmd: Int): JSONObject
 
-    @Throws(Exception::class)
-    fun recentsSave(state: JSONObject)
-    fun recentsRestore(recents: JSONArray?)
 }

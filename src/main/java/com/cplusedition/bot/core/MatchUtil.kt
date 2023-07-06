@@ -21,7 +21,11 @@ object MatchUt : MatchUtil()
 open class MatchUtil {
 
     fun compile(vararg regexs: String): Array<Regex> {
-        return Array(regexs.size) { i -> Regex(regexs[i]) }
+        return Array(regexs.size) { Regex(regexs[it]) }
+    }
+
+    fun compile(regexs: List<String>): Array<Regex> {
+        return Array(regexs.size) { Regex(regexs[it]) }
     }
 
     /**

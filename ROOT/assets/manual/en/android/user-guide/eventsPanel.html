@@ -1,0 +1,113 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css" />
+        <link rel="stylesheet" type="text/css" href="userGuide.css" />
+        <link rel="prev" type="text/html" href="calendarPanel.html" />
+        <link rel="next" type="text/html" href="recentsPanel.html" />
+    </head>
+    <body>
+        <div class="x-root">
+        <div class="xx-top">
+            <div class="xx-title xx-green">
+                Events Panel
+            </div>
+            <div class="xx-content">
+                <div class="x-head3 xx-head-green">
+                    <a name="AlarmsPanel"></a>Introduction
+                </div><div class="xx-padding-top-bottom-left" style="float:right;clear:none;">
+                    <div class="x-flex" style="flex-direction:column; "><a href="../../../img/sidepanel/explore/eventsPanel01.jpg?view"><img class="xx-figure-lb" src="../../../img/sidepanel/explore/eventsPanel01.jpg#" /></a></div>
+                </div>
+                <div class="x-para">
+                    The Events Panel show the calendar events. If an event has the reminder alarm enabled, it sends a notification at the scheduled time of the event. Each event entry has following fields:<ul class="x-none x-compact"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">The alarm/done indicator:<br /><span class="x-symbol" style="font-family: FontAwesome;"></span>  means event is not done and has a pending alarm.<br /><span class="x-symbol" style="font-family: FontAwesome;"></span>  means event is not done and has a pending alarm. However, it is not yet posted to the notification system for some reasons.<br /><span class="x-symbol" style="font-family: FontAwesome;"></span>  means event is not done and has no pending alarm.<br /><span class="x-symbol" style="font-family: FontAwesome;"><span class="x-symbol" style="font-family: FontAwesome;"></span></span>  means event is marked as done. When an event is marked as done, its alarm would be disabled and, if it is a repeating alarm, its time stamp would stop advancing.</span></li><li class="x-list xx-tips"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content"><ul class="x-none"><li class="x-list xx-tips"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Click on the indicator toggle the done status.</span></li></ul></span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">The date/time of the event. </span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">The repeat setting (once, daily, workdays, weekly, monthly or yearly).</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">The private indicator (<span class="x-symbol" style="font-family: FontAwesome;"></span>) means event is private and would only be shown when user is logged in.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Finally the description text for the event. If the event has an associated document location, this field is shown as a link and click on it goes to the target location. The link is colored red if the target document does not exists.</span></li></ul><ul class="x-none xx-tips"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">You can create events/alarms here. Or you can use the insert event action in the main context menu which automatically attach the document location to the event.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that when the alarm goes off, it would post a notification to remind you of the event. But it would not wake up the device or wake you up like an alarm clock.</span></li><div class="x-hidden"><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Note that the system post a restriction on the number of pending alarms. As of iOS 11, the limit is 64. But that is not a problem. The app make sure alarms with the earliest triggers are posted first.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Unfortunately, the iOS notification system do not has the necessary support to automatically update every kind of repeating alarms the app supported. So repeating alarms, after the first trigger, <span class="x-error">may require the app running in the foreground to schedule the next trigger</span>. Has the app running any time before the next trigger would get it properly rescheduled.</span></li></div></ul></div>
+                
+                <div class="x-head3 xx-head-green"><a name="toolbar"></a>
+                    Toolbar
+                </div>
+                <div class="x-para"><div class=""><img class="xx-figure-toolbar" src="../../../img/sidepanel/explore/crop/eventsPanelToolbar01.jpg#" /></div><div class="xx-padding-top-bottom-left" style="float:right;clear:none;">
+                    <div class="x-flex" style="flex-direction:column; "><a href="../../../img/main/contextmenu/crops/actionInsertAlarm1.jpg?view" style="margin:10px 0; "><img class="xx-figure-l" src="../../../img/main/contextmenu/crops/actionInsertAlarm1.jpg?t=1449651976825%23" /></a></div>
+                </div>
+                    <ul class="x-none xx-compact">
+
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">Cycle toolbars.</div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">Add a new event.</div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Remove selected event.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Edit the selected event.</span></li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"> </span><span class="x-list-content">Refresh the event list.</span></li>
+                        
+
+                    </ul>
+                </div><div class="x-para"><div class=""><img class="xx-figure-toolbar" src="../../../img/sidepanel/explore/crop/eventsPanelEditbar01.jpg#" /></div>
+                    <ul class="x-none xx-compact">
+
+                        
+                        <li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">Cycle toolbars.</div>
+                        </li><li class="x-list">
+                        <div class="x-bullet" style="font-family: FontAwesome;"></div>
+                        <div class="x-list-content">Delete all events. This is only available after login.</div>
+                        </li><li class="x-list"><span class="x-bullet" style="font-family: FontAwesome;"></span><span class="x-list-content">Toggle show/hide done events.</span></li>
+                        
+
+                    </ul>
+                </div>
+
+                <div class="xx-ruler xx-green">
+                    <br />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="x-rightsidebar" class="">
+            <div class="x-rsb-content">
+                <a class="x-rsb-tab" href="userGuide.html" style="background-color: rgba(0, 127, 255, 0.498039);">User
+                Guide</a> 
+                <div id="x-open-rightsidepanel" class="x-rsb-tab fa fa-toggle-up">
+                </div>
+                <div class="x-rsb-padding">
+                </div>
+            </div>
+        </div>
+        <div class="x-smokescreen" id="x-rightsidepanel" style="display: none;">
+            <div class="x-rightsidepanel">
+                <div>
+                    <div class="xx-toc">
+                        <a href="userGuide.html"><span>User Guide</span></a>
+                    </div>
+                    <ul class="x-none xx-toc">
+                        <li class="xx-toc1"><a href="introduction.html">Introduction</a></li><li class="xx-toc1"><span><a href="features.html">Features</a></span></li>
+                        <li class="xx-toc1"><a href="systemMenu.html">System Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainToolbar.html">Main Toolbar</a></li>
+                        <li class="xx-toc1"><a href="mainContextmenu.html">Main Contextmenu</a></li>
+                        <li class="xx-toc2"><a href="canvas.html">Drawing Canvas</a></li>
+                        <li class="xx-toc2"><a href="symbols.html">Symbols</a></li>
+                        <li class="xx-toc2"><a href="widgets.html">Widgets</a></li>
+                        <li class="xx-toc1"><a href="dialogs.html">Dialogs</a></li>
+                        <li class="xx-toc1"><span>Global</span></li>
+                        <li class="xx-toc2"><a href="pageTemplatesPanel.html">Page Templates</a></li>
+                        <li class="xx-toc2"><a href="searchPanel.html">Search</a></li>
+                        <li class="xx-toc2"><a href="settingsPanel.html">Settings</a></li>
+                        <li class="xx-toc1"><span>Explore</span></li>
+                        <li class="xx-toc2"><a href="filesPanel.html">Files</a></li>
+                        <li class="xx-toc2"><a href="calendarPanel.html">Calendar</a></li>
+                        <li class="xx-toc2"><a href="eventsPanel.html"><span class="xx-inactive">Events</span></a></li>
+                        <li class="xx-toc2"><a href="recentsPanel.html">Recents</a></li>
+                        <li class="xx-toc1"><span>Documents</span></li>
+                        <li class="xx-toc2"><a href="outlinePanel.html">Outline</a></li>
+                        <li class="xx-toc2"><a href="linksPanel.html">Links</a></li>
+                        <li class="xx-toc2"><a href="stylesPanel.html">Styles</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    
+
+
+
+
+
+</body></html>

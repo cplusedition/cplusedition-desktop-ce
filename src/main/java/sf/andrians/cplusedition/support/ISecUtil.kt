@@ -16,11 +16,16 @@
 */
 package sf.andrians.cplusedition.support
 
+import com.cplusedition.bot.core.DateUt
 import com.cplusedition.bot.core.Fun11
+import com.cplusedition.bot.core.Hex
 import com.cplusedition.bot.core.IBotResult
+import java.io.InputStream
+import java.io.OutputStream
 import java.security.Key
 import java.security.KeyStore.PrivateKeyEntry
 import java.security.KeyStore.TrustedCertificateEntry
+import java.security.MessageDigest
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.Signature
@@ -36,7 +41,7 @@ interface ISecUtilAccessor {
 
     fun deleteAlias(alias: String)
 
-    fun getBackupKeyAliases(): Map<String, Certificate>
+    fun getBackupPublicKeys(): Map<String, Certificate>
 
     /**
      * Get secret key for database access, create if not exists.
@@ -48,14 +53,15 @@ interface ISecUtilAccessor {
      * @param keylen in bits. Only 2048 or 4096 is supported.
      * @throw SecureException if create failed.
      */
-    fun createBackupKey(keylen: Int): PrivateKeyEntry
+    fun createBackupKey(keylen: Int): BackupKeyPair
 
     /**
      * Get private key for reading backups, create on if not exists.
      * @throw SecureException if create failed.
      */
     @Throws(SecureException::class)
-    fun getPrivateKey(): PrivateKey
+    fun getBackupKeyPair(): BackupKeyPair
+    fun getBackupPublicKey(): Certificate
 
     /**
      * Get public key for creating backups.
@@ -68,34 +74,68 @@ interface ISecUtilAccessor {
      * @return cert if import OK, error msgId if failed.
      */
     @Throws
-    fun importPublicKey(alias: String, publickeyfile: IFileInfo): IBotResult<TrustedCertificateEntry, StringId>
+    fun importPublicKey(alias: String, input: InputStream): IBotResult<TrustedCertificateEntry, StringId>
 
-    fun exportPublicKey(outfile: IFileInfo): IBotResult<Certificate, StringId>
-
+    /**
+     * @data null to delete entry.
+     */
     @Throws
-    fun putCf(name: String, data: ByteArray)
+    fun putCf(name: String): OutputStream?
 
-    fun getCf(name: String): ByteArray?
+    fun getCf(name: String): InputStream?
+
+    fun deleteCf(name: String): Boolean
 
     /**
      * @return [alias, valid, signature, barchart(sha256)]
      */
-    fun descOf(alias: String, cert: X509Certificate): Array<String>
+    fun descOf(alias: String, cert: Certificate): Array<String>
 
 }
 
+data class BackupKeyPair constructor(
+    val privateKey: PrivateKey,
+    val certificate: Certificate,
+)
+
 interface ISecUtil {
+    object EtcPaths {
+        const val eventsCf = "events.cf"
+        const val preferencesCf = "preferences.cf"
+        const val sessionCf = "session.cf"
+        const val settingsCf = "settings.cf"
+        const val xrefsCf = "xrefs.cf"
+        fun isValid(rpath: String): Boolean {
+            return rpath == eventsCf
+                    || rpath == preferencesCf
+                    || rpath == sessionCf
+                    || rpath == settingsCf
+                    || rpath == xrefsCf
+        }
+    }
+
     companion object {
-        val ALIAS_BACKUP = "#self"
-        val ALIAS_DB = "#db"
-        val MAX_BACKUP_KEYS = 8
+        const val ALIAS_BACKUP = "#self"
+        const val ALIAS_DB = "#db"
+        const val MAX_BACKUP_KEYS = 8
+        private val sha256 = MessageDigest.getInstance("SHA-256")!!
+
+        fun sha256Of(cert: Certificate): Pair<ByteArray, String> {
+            val sha256 = sha256.digest(cert.encoded)
+            val signature = Hex.encode(sha256, true).chunked(8).joinToString("-")
+            return Pair(sha256, signature)
+        }
+
+        fun dateOf(cert: Certificate): String {
+            return if (cert is X509Certificate) DateUt.dateString(cert.notAfter) else "????????"
+        }
     }
 
     fun <R> invoke(code: Fun11<ISecUtilAccessor, R>): R
     fun rsaEncryptionCipher(key: Key): Cipher
     fun rsaDecryptionCipher(key: Key): Cipher
-    fun rsaSign(key: PrivateKey): Signature
-    fun rsaVerify(key: PublicKey): Signature
+    fun rsaSigner(key: PrivateKey): Signature
+    fun rsaVerifier(key: PublicKey): Signature
 }
 
 object Best {
@@ -105,7 +145,13 @@ object Best {
     //// but patch to PKCS7Padding for mobile releases.
     const val CBC = "AES/CBC/PKCS5Padding"
     const val GCM = "AES/GCM/NoPadding"
+    const val CBC_PADDING = "PKCS5Padding"
+    const val GCM_PADDING = "NoPadding"
+    const val AES_MODE = "GCM"
+    const val AES_PADDING = "NoPadding"
     const val AESKeyLength = 256
+    //// Apparently, some device not having hardware support for keylength of 4096 yet.
+    //// Using 2048 for now. Should try 4096 later.
     const val RSAKeylength = 2048
     private val nameToCode: MutableMap<String, String> = TreeMap()
     private val codeToName: MutableMap<String, String> = TreeMap()
@@ -151,6 +197,4 @@ object Best {
             else -> return null
         }
     }
-
 }
-

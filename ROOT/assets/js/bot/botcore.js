@@ -1,4 +1,5 @@
-/*!            
+"use strict";
+/*!
     C+edition for Desktop, Community Edition.
     Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
     
@@ -14,10 +15,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-"use strict";
 /// Core utility classes.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BotResult = exports.IBotOKResult = exports.IBotResult = exports.Serial = exports.Stack = exports.ArrayUt = exports.MapUt = exports.ArrayIterable = exports.Without = exports.With = exports.If = exports.NumberMap = exports.StringMap = exports.replaceAll_ = exports.jsonOf_ = exports.json_ = exports.ssmapOf_ = exports.ssmap_ = exports.smapOf_ = exports.smap_ = exports.mapOf_ = exports.map_ = exports.sarray_ = exports.Attrs = exports.TextUt = exports.RandUt = exports.JSONUt = exports.Ut = exports.HtmlWriter = exports.Atts = exports.Logger = void 0;
+exports.BotResult = exports.IBotOKResult = exports.IBotResult = exports.DateTime = exports.Serial = exports.Stack = exports.ArrayUt = exports.MapUt = exports.ArrayIterable = exports.Without = exports.With = exports.If = exports.NumberMap = exports.StringMap = exports.replaceAll_ = exports.jsonOf_ = exports.json_ = exports.ssmap1_ = exports.ssmap_ = exports.smapOf_ = exports.smap_ = exports.mapOf_ = exports.map_ = exports.sarray_ = exports.Attrs = exports.TextUt = exports.RandUt = exports.JSONUt = exports.Ut = exports.HtmlWriter = exports.Atts = exports.Logger = void 0;
 class Logger {
     constructor(debugging) {
         this.debugging = debugging;
@@ -353,7 +353,6 @@ class Ut {
             this._asyncLoop(count, index + 1, callback);
         });
     }
-    //#BEGIN REGION VSCODE
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -496,8 +495,8 @@ class RandUt {
 exports.RandUt = RandUt;
 class TextUt {
 }
-exports.TextUt = TextUt;
 TextUt.lineSep$ = "\n";
+exports.TextUt = TextUt;
 class Attrs {
 }
 exports.Attrs = Attrs;
@@ -525,10 +524,10 @@ function ssmap_(...args) {
     return StringMap.from_(...args);
 }
 exports.ssmap_ = ssmap_;
-function ssmapOf_(key, value) {
+function ssmap1_(key, value) {
     return StringMap.of_(key, value);
 }
-exports.ssmapOf_ = ssmapOf_;
+exports.ssmap1_ = ssmap1_;
 function json_(...args) {
     return StringMap.from_(...args);
 }
@@ -845,6 +844,97 @@ class Serial {
     }
 }
 exports.Serial = Serial;
+class DateTime {
+    /// @date Either ms in UTC or a Date object.
+    /// @options.isUtc Specify if date parameter is utc or local time. Default is utc.
+    constructor(date, isUtc) {
+        this._date = (date instanceof Date ? date : new Date(date));
+        if (isUtc === false) {
+            this._date = new Date(this._date.valueOf() + this._date.getTimezoneOffset() * DateTime.MIN);
+        }
+    }
+    static local_(year, month, day, hour, minute, second, ms) {
+        return new DateTime(Date.UTC(year, month - 1, day !== null && day !== void 0 ? day : 1, hour !== null && hour !== void 0 ? hour : 0, minute !== null && minute !== void 0 ? minute : 0, second !== null && second !== void 0 ? second : 0, ms !== null && ms !== void 0 ? ms : 0), false);
+    }
+    static utc_(year, month, day, hour, minute, second, ms) {
+        return new DateTime(Date.UTC(year, month - 1, day !== null && day !== void 0 ? day : 1, hour !== null && hour !== void 0 ? hour : 0, minute !== null && minute !== void 0 ? minute : 0, second !== null && second !== void 0 ? second : 0, ms !== null && ms !== void 0 ? ms : 0), true);
+    }
+    /// @param ms UTC time in ms since 01/01/1970.
+    /// @param isUtc default is true.
+    static fromMillisecondsSinceEpoch_(ms, isUtc) {
+        return new DateTime(ms, isUtc);
+    }
+    static now_() {
+        return new DateTime(new Date());
+    }
+    static ms_() {
+        return Date.now();
+    }
+    /// @return Today string in form yyyymmdd
+    static today_() {
+        return DateTime.yyyymmdd_(this.now_());
+    }
+    static yyyymmdd_(date, sep = "") {
+        const year = date.year$.toFixed(0);
+        const month = date.month$.toFixed(0).padStart(2, "0");
+        const day = date.day$.toFixed(0).padStart(2, "0");
+        return year + sep + month + sep + day;
+    }
+    static hhmmss_(date, sep = "") {
+        const hour = date.hour$.toFixed(0);
+        const minute = date.minute$.toFixed(0).padStart(2, "0");
+        const second = date.second$.toFixed(0).padStart(2, "0");
+        return hour + sep + minute + sep + second;
+    }
+    add_(ms) {
+        return new DateTime(this._date.valueOf() + ms);
+    }
+    subtract_(ms) {
+        return new DateTime(this._date.valueOf() - ms);
+    }
+    isAfter_(date) {
+        return this.millisecondsSinceEpoch$ > date.millisecondsSinceEpoch$;
+    }
+    /// @return Milliseconds since 01/01/1970 in UTC time.
+    get millisecondsSinceEpoch$() {
+        return this._date.getTime();
+    }
+    /// Day of the month starting from 1.
+    get day$() {
+        return this._date.getDate();
+    }
+    get weekday$() {
+        return this._date.getDay();
+    }
+    /// Month of the year starting from 1.
+    get month$() {
+        return this._date.getMonth() + 1;
+    }
+    get year$() {
+        return this._date.getFullYear();
+    }
+    get hour$() {
+        return this._date.getHours();
+    }
+    get minute$() {
+        return this._date.getMinutes();
+    }
+    get second$() {
+        return this._date.getSeconds();
+    }
+}
+DateTime.FOREVER = 1 << 30;
+DateTime.MIN = 1000 * 60;
+DateTime.HOUR = DateTime.MIN * 60;
+DateTime.DAY = DateTime.HOUR * 24;
+DateTime.SUNDAY = 0;
+DateTime.MONDAY = 1;
+DateTime.TUEDAY = 2;
+DateTime.WEDNESDAY = 3;
+DateTime.THURSDAY = 4;
+DateTime.FRIDAY = 5;
+DateTime.SATURDAY = 6;
+exports.DateTime = DateTime;
 class IBotResult {
 }
 exports.IBotResult = IBotResult;

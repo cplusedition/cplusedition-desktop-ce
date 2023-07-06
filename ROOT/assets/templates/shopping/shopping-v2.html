@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="version" content="2">
-<meta name="metainfo" content="{&quot;C&quot;:30000,&quot;F&quot;:&quot;Cc&quot;,&quot;M&quot;:30000}">
+<meta name="metainfo" content="{&quot;C&quot;:3000005,&quot;F&quot;:&quot;Cc&quot;,&quot;M&quot;:3000005}">
 <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css">
 <link rel="stylesheet" type="text/css" href="/assets/templates/shopping/shopping-v2.css">
 </head>
 <body>
-<div class="x-root xx-root xx-style07">
+<div class="x-root xx-root xx-style06">
 <div class="xx-top">
 <div class="xx-head x-imageholder">
 <div class="xx-title">Shopping</div>
@@ -20,7 +20,7 @@
 <table class="xx-todos x-calc-context">
 <tbody>
 <tr class="xx-header"><th class="xx-desc" colspan="2">Description</th><th class="xx-quantity">#</th><th class="xx-price">$</th></tr>
-<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-ph="short-date">XXX</code> <span class="x-placeholder">Use the <span class="x-symbol x-bubble fa fa-bars"></span> action tab to create a subtotal group. Use the <span class="fa fa-plus x-bubble"></span> action tab to create new entries. Click on the <span class="fa fa-square-o x-bubble"></span> bullet at the left to toggle the done status.</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
+<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-ph="date-auto">XXX</code> <span class="x-placeholder">Use the <span class="x-symbol x-bubble fa fa-bars"></span> action tab to create a subtotal group. Use the <span class="fa fa-plus x-bubble"></span> action tab to create new entries. Click on the <span class="fa fa-square-o x-bubble"></span> bullet at the left to toggle the done status.</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
 <tr class="xx-subtotal"><td class="x-calc-total" colspan="4">0.00</td></tr>
 </tbody>
 </table>
@@ -31,38 +31,27 @@
 </div>
 </div>
 <div id="x-rightsidebar">
-<div class="x-rsb-content">
-<div class="x-rsb-tab x-t-button fa fa-bars" x-tp="t/xx-section/xx-sections/xx-sections">
-<table class="x-hidden">
-<tbody x-tp>
+<div class="x-rsb-content"><template name="xx-photo">
+<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="date-auto">XXX</code> <span class="x-placeholder" x-th="a-photo0">XXX</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
+</template><template name="xx-image">
+<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="date-auto">XXX</code> <span class="x-placeholder" x-th="a-image">XXX</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
+</template><template name="xx-section">
 <tr class="xx-section"><td colspan="4">
 <table class="xx-todos x-calc-context">
 <tbody>
 <tr class="xx-header"><th class="xx-desc" colspan="2">Description</th><th class="xx-quantity">#</th><th class="xx-price">$</th></tr>
-<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="short-date">XXX</code> <span class="x-placeholder">Description</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
+<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="date-auto">XXX</code> <span class="x-placeholder">Description</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
 <tr class="xx-subtotal"><td class="x-calc-total" colspan="4">0.00</td></tr>
 </tbody>
 </table>
 </td></tr>
-</tbody>
-</table>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-plus" x-tp="t/xx-todo xx-header/xx-section">
-<table class="x-hidden">
-<tbody x-tp>
-<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="short-date">XXX</code> <span class="x-placeholder">Description</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
-</tbody>
-</table>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-camera x-hide-in-desktop" x-tp="t/xx-todo xx-header/xx-section">
-<table class="x-hidden">
-<tbody x-tp>
-<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="short-date">XXX</code> <span class="x-placeholder" x-th="a-photo">XXX</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
-</tbody>
-</table>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-square" x-tp="{&quot;t&quot;:&quot;shopping&quot;,&quot;m&quot;:[[{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status00&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status01&quot;,&quot;b&quot;:&quot;#f00000&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status02&quot;,&quot;b&quot;:&quot;#f70&quot;}],[{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status03&quot;,&quot;b&quot;:&quot;#fa0&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status04&quot;,&quot;b&quot;:&quot;#6b6&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status05&quot;,&quot;b&quot;:&quot;#099&quot;}],[{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status06&quot;,&quot;b&quot;:&quot;#1e90ff&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status07&quot;,&quot;b&quot;:&quot;#b4a7d6&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status08&quot;,&quot;b&quot;:&quot;#d5a6bd&quot;}],[{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status09&quot;,&quot;b&quot;:&quot;#cccccc&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status10&quot;,&quot;b&quot;:&quot;#999999&quot;},{&quot;a&quot;:&quot;s\/xx-todo\/\/xx-status\/xx-status11&quot;,&quot;b&quot;:&quot;#000000&quot;}]]}"></div>
-<div class="x-rsb-tab x-t-button fa fa-toggle-down" x-tp="{&quot;t&quot;:&quot;shopping&quot;,&quot;n&quot;:&quot;shopping-v2&quot;,&quot;m&quot;:[[{&quot;c&quot;:&quot;fa-minus&quot;,&quot;a&quot;:&quot;d\/xx-todo xx-section&quot;},{&quot;c&quot;:&quot;fa-eye-slash&quot;,&quot;a&quot;:&quot;c\/xx-hide\/\/xx-body&quot;}],[{&quot;c&quot;:&quot;fa-bell-o&quot;,&quot;a&quot;:&quot;alarm\/&quot;},{}],[{&quot;c&quot;:&quot;x-fa-cut-not-marked&quot;,&quot;a&quot;:&quot;X\/xx-done\/xx-todo\/xx-status&quot;},{&quot;c&quot;:&quot;x-fa-cut-marked&quot;,&quot;a&quot;:&quot;x\/xx-done\/xx-todo\/xx-status&quot;}],[{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style00&quot;,&quot;i&quot;:&quot;.\/shopping-v2-00-button.jpg&quot;},{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style01&quot;,&quot;i&quot;:&quot;.\/shopping-v2-01-button.jpg&quot;}],[{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style02&quot;,&quot;i&quot;:&quot;.\/shopping-v2-02-button.jpg&quot;},{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style03&quot;,&quot;i&quot;:&quot;.\/shopping-v2-03-button.jpg&quot;}],[{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style04&quot;,&quot;i&quot;:&quot;.\/shopping-v2-04-button.jpg&quot;},{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style05&quot;,&quot;i&quot;:&quot;.\/shopping-v2-05-button.jpg&quot;}],[{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style06&quot;,&quot;i&quot;:&quot;.\/shopping-v2-06-button.jpg&quot;},{&quot;a&quot;:&quot;s\/xx-root\/xx-root\/xx-style\/xx-style07&quot;,&quot;i&quot;:&quot;.\/shopping-v2-07-button.jpg&quot;}]]}"></div>
+</template><template name="xx-todo">
+<tr class="xx-todo xx-status04"><td class="xx-status"></td><td class="xx-desc"><code class="xx-date" x-th="date-auto">XXX</code> <span class="x-placeholder">Description</span></td><td class="x-calc-quantity">1</td><td class="x-calc-price">0</td></tr>
+</template>
+<div class="x-rsb-tab x-t-button fa fa-bars" x-tp="widget,template,,xx-section,1/xx-section/xx-sections/xx-sections"></div>
+<div class="x-rsb-tab x-t-button fa fa-plus" x-tp="widget,template,,xx-todo,1/xx-todo xx-header/xx-section"></div>
+<div class="x-rsb-tab x-t-button fa fa-square" x-tp="{&quot;t&quot;:&quot;shopping&quot;,&quot;m&quot;:[[{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status00&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status01&quot;,&quot;b&quot;:&quot;#f00000&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status02&quot;,&quot;b&quot;:&quot;#f70&quot;}],[{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status03&quot;,&quot;b&quot;:&quot;#fa0&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status04&quot;,&quot;b&quot;:&quot;#6b6&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status05&quot;,&quot;b&quot;:&quot;#099&quot;}],[{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status06&quot;,&quot;b&quot;:&quot;#1e90ff&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status07&quot;,&quot;b&quot;:&quot;#b4a7d6&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status08&quot;,&quot;b&quot;:&quot;#d5a6bd&quot;}],[{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status09&quot;,&quot;b&quot;:&quot;#cccccc&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status10&quot;,&quot;b&quot;:&quot;#999999&quot;},{&quot;a&quot;:&quot;s/xx-todo//xx-status/xx-status11&quot;,&quot;b&quot;:&quot;#000000&quot;}]],&quot;n&quot;:&quot;shopping-v2&quot;}"></div>
+<div class="x-rsb-tab x-t-button fa fa-toggle-down" x-tp="{&quot;t&quot;:&quot;shopping&quot;,&quot;m&quot;:[[{&quot;a&quot;:&quot;d/xx-todo xx-section&quot;,&quot;c&quot;:&quot;fa-minus&quot;},{&quot;a&quot;:&quot;c/xx-hide//xx-body&quot;,&quot;c&quot;:&quot;fa-eye-slash&quot;},{&quot;a&quot;:&quot;T/xx-hide-quantity/xx-section xx-body/&quot;,&quot;c&quot;:&quot;fa-hashtag&quot;},{&quot;a&quot;:&quot;T/xx-hide-price/xx-section xx-body/&quot;,&quot;c&quot;:&quot;fa-dollar&quot;}],[{&quot;a&quot;:&quot;alarm/&quot;,&quot;c&quot;:&quot;fa-bell-o&quot;},{&quot;a&quot;:&quot;widget,template,,xx-image,1/xx-todo xx-header/xx-section&quot;,&quot;c&quot;:&quot;fa-file-image-o&quot;},{&quot;a&quot;:&quot;widget,template,,xx-photo,1/xx-todo xx-header/xx-section&quot;,&quot;c&quot;:&quot;fa-camera x-disabled-in-desktop&quot;},{}],[{&quot;a&quot;:&quot;X/xx-done/xx-todo/xx-status&quot;,&quot;c&quot;:&quot;x-fa-cut-not-marked&quot;},{&quot;a&quot;:&quot;x/xx-done/xx-todo/xx-status&quot;,&quot;c&quot;:&quot;x-fa-cut-marked&quot;},{&quot;a&quot;:&quot;bg/xx-todo xx-section&quot;,&quot;c&quot;:&quot;fa-square&quot;},{}],[{&quot;a&quot;:&quot;s/xx-root/xx-root/xx-style/xx-style00&quot;,&quot;i&quot;:&quot;./shopping-v2-00-button.jpg&quot;},{&quot;a&quot;:&quot;s/xx-root/xx-root/xx-style/xx-style02&quot;,&quot;i&quot;:&quot;./shopping-v2-02-button.jpg&quot;},{&quot;a&quot;:&quot;s/xx-root/xx-root/xx-style/xx-style04&quot;,&quot;i&quot;:&quot;./shopping-v2-04-button.jpg&quot;},{&quot;a&quot;:&quot;s/xx-root/xx-root/xx-style/xx-style06&quot;,&quot;i&quot;:&quot;./shopping-v2-06-button.jpg&quot;}]],&quot;n&quot;:&quot;shopping-v2&quot;}"></div>
 <div class="x-rsb-tab x-t-button fa fa-ellipsis-h" x-tp="classes/x-box x-box-gray x-bold x-code x-error x-float-left-clear-none x-float-right-clear-none x-italic x-pre x-style-dark x-style-light x-warn"></div>
 <a class="x-rsb-tab x-placeholder" href="index.html" style="background-color: rgba(136, 187, 0, 0.75);">Up</a>
 <div class="x-rsb-padding"></div>

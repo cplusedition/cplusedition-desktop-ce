@@ -1,0 +1,238 @@
+<?xml version="1.0" ?>
+<!-- LLK v0.13: CSSLexer.ll, generated on 2023-02-11. -->
+<llk>
+	<tokentypes>
+		<type name="RADIAL_GRADIENT" id="69" modifier="3"/>
+		<type name="CDC" id="65" modifier="3"/>
+		<type name="SPACES" id="59" modifier="3"/>
+		<type name="TAILMATCH" id="35" modifier="1">
+			<value text="$=" />
+		</type>
+		<type name="VAR" id="73" modifier="3"/>
+		<type name="ANGLE" id="12" modifier="8388609">
+			<value text="rad" />
+			<value text="deg" />
+			<value text="grad" />
+			<value text="turn" />
+		</type>
+		<type name="CDO" id="30" modifier="1">
+			<value text="&lt;!--" />
+		</type>
+		<type name="HEADMATCH" id="34" modifier="1">
+			<value text="^=" />
+		</type>
+		<type name="CENTER" id="25" modifier="8388609">
+			<value text="center" />
+		</type>
+		<type name="RGBA" id="67" modifier="3"/>
+		<type name="SEMICOLON" id="42" modifier="1">
+			<value text=";" />
+		</type>
+		<type name="LINEAR_GRADIENT" id="68" modifier="3"/>
+		<type name="Space" id="79" modifier="3"/>
+		<type name="RESOLUTION" id="15" modifier="8388609">
+			<value text="dpi" />
+			<value text="dpcm" />
+			<value text="dppx" />
+		</type>
+		<type name="LPAREN" id="47" modifier="1">
+			<value text="(" />
+		</type>
+		<type name="DOT" id="57" modifier="3"/>
+		<type name="Dot" id="83" modifier="2"/>
+		<type name="FUNCTION" id="76" modifier="3"/>
+		<type name="HexDigit" id="86" modifier="2"/>
+		<type name="HASH" id="94" modifier="1"/>
+		<type name="SHAPE" id="27" modifier="8388609">
+			<value text="circle" />
+			<value text="ellipse" />
+		</type>
+		<type name="AT" id="24" modifier="8388609">
+			<value text="at" />
+		</type>
+		<type name="_NULL_" id="3" modifier="0"/>
+		<type name="WORDMATCH" id="32" modifier="1">
+			<value text="~=" />
+		</type>
+		<type name="LBRACE" id="49" modifier="1">
+			<value text="{" />
+		</type>
+		<type name="_IGNORE_" id="1" modifier="3145728"/>
+		<type name="FONT_FACE" id="7" modifier="8388609">
+			<value text="@font-face" />
+		</type>
+		<type name="LENGTH" id="11" modifier="8388609">
+			<value text="em" />
+			<value text="ex" />
+			<value text="ch" />
+			<value text="rem" />
+			<value text="vw" />
+			<value text="vh" />
+			<value text="vmax" />
+			<value text="vmin" />
+			<value text="cm" />
+			<value text="mm" />
+			<value text="in" />
+			<value text="pt" />
+			<value text="pc" />
+			<value text="px" />
+		</type>
+		<type name="CALC" id="74" modifier="3"/>
+		<type name="Newline" id="80" modifier="3"/>
+		<type name="URI" id="72" modifier="3"/>
+		<type name="COMMENT" id="61" modifier="3"/>
+		<type name="LANGMATCH" id="33" modifier="1">
+			<value text="|=" />
+		</type>
+		<type name="IdentifierPart" id="93" modifier="3"/>
+		<type name="IMPORT" id="4" modifier="8388609">
+			<value text="@import" />
+		</type>
+		<type name="S" id="77" modifier="1"/>
+		<type name="SUBSTRMATCH" id="36" modifier="1">
+			<value text="*=" />
+		</type>
+		<type name="AT_KEYWORD" id="91" modifier="1"/>
+		<type name="FREQ" id="14" modifier="8388609">
+			<value text="Hz" />
+			<value text="kHz" />
+		</type>
+		<type name="COMMA" id="40" modifier="1">
+			<value text="," />
+		</type>
+		<type name="LBRACKET" id="51" modifier="1">
+			<value text="[" />
+		</type>
+		<type name="URL_PART" id="98" modifier="3"/>
+		<type name="SIDE" id="26" modifier="8388609">
+			<value text="left" />
+			<value text="right" />
+			<value text="top" />
+			<value text="bottom" />
+		</type>
+		<type name="STAR" id="43" modifier="1">
+			<value text="*" />
+		</type>
+		<type name="PERCENT" id="29" modifier="1">
+			<value text="&#37;" />
+		</type>
+		<type name="KEYFRAMES" id="9" modifier="8388609">
+			<value text="@keyframes" />
+		</type>
+		<type name="STRING" id="87" modifier="1"/>
+		<type name="TO" id="23" modifier="8388609">
+			<value text="to" />
+		</type>
+		<type name="COLUMN" id="39" modifier="1">
+			<value text="||" />
+		</type>
+		<type name="LT" id="46" modifier="1">
+			<value text="&lt;" />
+		</type>
+		<type name="ONLY" id="18" modifier="8388609">
+			<value text="only" />
+		</type>
+		<type name="DECIMAL" id="55" modifier="3"/>
+		<type name="FROM" id="22" modifier="8388609">
+			<value text="from" />
+		</type>
+		<type name="BUILTIN" id="17" modifier="8388609">
+			<value text="auto" />
+			<value text="inherit" />
+			<value text="initial" />
+			<value text="unset" />
+			<value text="inset" />
+			<value text="outset" />
+		</type>
+		<type name="DASH" id="63" modifier="3"/>
+		<type name="Name" id="95" modifier="3"/>
+		<type name="Identifier" id="90" modifier="2"/>
+		<type name="MEDIA" id="6" modifier="8388609">
+			<value text="@media" />
+		</type>
+		<type name="Unicode" id="89" modifier="2"/>
+		<type name="NUMBER" id="82" modifier="1"/>
+		<type name="NEWLINE" id="60" modifier="3"/>
+		<type name="IMPORTANT" id="16" modifier="8388609">
+			<value text="important" />
+		</type>
+		<type name="PAGE" id="5" modifier="8388609">
+			<value text="@page" />
+		</type>
+		<type name="RPAREN" id="48" modifier="1">
+			<value text=")" />
+		</type>
+		<type name="RGB" id="66" modifier="3"/>
+		<type name="Range" id="99" modifier="3"/>
+		<type name="REPEATING_RADIAL_GRADIENT" id="71" modifier="3"/>
+		<type name="WEBKIT_KEYFRAMES" id="10" modifier="8388609">
+			<value text="@-webkit-keyframes" />
+		</type>
+		<type name="NOT" id="19" modifier="8388609">
+			<value text="not" />
+		</type>
+		<type name="RBRACE" id="50" modifier="1">
+			<value text="}" />
+		</type>
+		<type name="AND" id="20" modifier="8388609">
+			<value text="and" />
+		</type>
+		<type name="REAL" id="56" modifier="3"/>
+		<type name="_EOF_" id="0" modifier="0"/>
+		<type name="dash" id="78" modifier="1"/>
+		<type name="PLUS" id="44" modifier="1">
+			<value text="+" />
+		</type>
+		<type name="REPEATING_LINEAR_GRADIENT" id="70" modifier="3"/>
+		<type name="EXCLAIMATION" id="37" modifier="1">
+			<value text="!" />
+		</type>
+		<type name="UNICODE_RANGE" id="96" modifier="1"/>
+		<type name="EXTENT_KEYWORD" id="28" modifier="8388609">
+			<value text="closest-corner" />
+			<value text="closest-side" />
+			<value text="farthest-corner" />
+			<value text="farthest-side" />
+		</type>
+		<type name="OF" id="21" modifier="8388609">
+			<value text="of" />
+		</type>
+		<type name="DASHDASH" id="64" modifier="3"/>
+		<type name="IdentifierStart" id="92" modifier="3"/>
+		<type name="IDENTIFIER" id="58" modifier="3"/>
+		<type name="Escape" id="88" modifier="2"/>
+		<type name="Comment" id="81" modifier="2"/>
+		<type name="Digit" id="85" modifier="2"/>
+		<type name="OR" id="38" modifier="1">
+			<value text="|" />
+		</type>
+		<type name="EQUAL" id="53" modifier="1">
+			<value text="=" />
+		</type>
+		<type name="SLASH" id="62" modifier="3"/>
+		<type name="TIME" id="13" modifier="8388609">
+			<value text="ms" />
+			<value text="s" />
+		</type>
+		<type name="COLON" id="41" modifier="1">
+			<value text=":" />
+		</type>
+		<type name="RBRACKET" id="52" modifier="1">
+			<value text="]" />
+		</type>
+		<type name="GT" id="45" modifier="1">
+			<value text="&gt;" />
+		</type>
+		<type name="ATTR" id="75" modifier="3"/>
+		<type name="CHARSET" id="8" modifier="8388609">
+			<value text="@charset" />
+		</type>
+		<type name="URI_S" id="97" modifier="3"/>
+		<type name="TILDE" id="31" modifier="1">
+			<value text="~" />
+		</type>
+		<type name="HEX" id="54" modifier="3"/>
+		<type name="Hex" id="84" modifier="2"/>
+		<type name="_INVALID_" id="2" modifier="0"/>
+	</tokentypes>
+</llk>

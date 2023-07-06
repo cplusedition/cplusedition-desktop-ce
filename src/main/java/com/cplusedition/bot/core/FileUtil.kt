@@ -16,19 +16,19 @@
 */
 package com.cplusedition.bot.core
 
-import com.cplusedition.bot.core.ChecksumUtil.ChecksumKind
-import com.cplusedition.bot.core.WithUtil.Companion.With
+import com.cplusedition.bot.core.Basepath.Companion.cleanPath
 import java.io.*
+import java.nio.ByteBuffer
 import java.nio.charset.Charset
-import java.nio.file.FileSystems
-import java.nio.file.Files
+import java.nio.file.*
 import java.nio.file.attribute.FileTime
 import java.nio.file.attribute.PosixFilePermission
 import java.util.*
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-
-private val SEP = File.separatorChar // ie. '/' in unix.
+import kotlin.math.min
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -43,14 +43,14 @@ val File.lcSuffix: String
     }
 
 fun File.changeSuffix(newsuffix: String): File {
-    return File(parentFile, "${Basepath.nameWithoutSuffix(name)}$newsuffix")
+    return File(parentFile, "${Basepath.stem(name)}$newsuffix")
 }
 
-fun File.changeNameWithoutSuffix(newbase: String): File {
+fun File.changeStem(newbase: String): File {
     return File(parentFile, "$newbase${Basepath.suffix(name)}")
 }
 
-fun File.changeNameWithSuffix(newname: String): File {
+fun File.changeName(newname: String): File {
     return File(parentFile, newname)
 }
 
@@ -58,7 +58,7 @@ fun File.changeNameWithSuffix(newname: String): File {
  * @return Name of file entries under this directory, or an empty array.
  */
 fun File.listOrEmpty(): Array<String> {
-    return list() ?: EMPTY.stringArray
+    return Without.throwableOrNull { list() } ?: EMPTY.stringArray
 }
 
 /**
@@ -72,18 +72,22 @@ fun File.filesOrEmpty(): List<File> {
  * @return File with cleaned up path.
  */
 fun File.clean(): File {
-    return File(FileUt.cleanPath(absolutePath).toString())
+    return File(Basepath.cleanPath(absolutePath))
 }
 
 /**
  * @return File with cleaned up path.
  */
 fun File.clean(vararg segments: String): File {
-    return File(FileUt.cleanPath(file(*segments).absolutePath).toString())
+    return File(Basepath.cleanPath(file(*segments).absolutePath))
 }
 
 fun File.file(vararg segments: String): File {
-    return if (segments.isEmpty()) this else File(this, segments.joinPath())
+    return if (segments.isEmpty()) this else File(this, segments.joinToString(FS))
+}
+
+fun File.fileFmt(format: String, vararg args: Any?): File {
+    return File(TextUt.format(format, args))
 }
 
 fun File.mkparentOrNull(): File? {
@@ -121,6 +125,14 @@ fun File.existsOrNull(): File? {
  */
 fun File.existsOrFail(): File {
     return if (exists()) this else error(absolutePath)
+}
+
+fun File.canWriteOrFail(): File {
+    return if (exists() && canWrite()) this else error(absolutePath)
+}
+
+fun File.canReadOrFail(): File {
+    return if (exists() && canRead()) this else error(absolutePath)
 }
 
 /**
@@ -161,208 +173,280 @@ fun File.deleteOrFail(): File {
     return this
 }
 
-val File.ut: FileUtExtension
-    get() = FileUtExtension(this)
+val File.bot: FileUtExt
+    get() = FileUtExt(this)
 
 ////////////////////////////////////////////////////////////////////////
 
+val FS = File.separator
+val FSC = File.separatorChar
+val PS = File.pathSeparator
+val PSC = File.pathSeparatorChar
+val FS_PAT = Regex("[/\\\\]")
+
+interface IBasepath {
+    val dir: String?
+    val name: String
+    val stem: String
+    val suffix: String
+    val lcSuffix: String
+}
+
 open class Basepath(
-        var dir: String?,
-        var nameWithSuffix: String,
-        var nameWithoutSuffix: String,
-        var suffix: String
-) {
+    override val dir: String?,
+    override val name: String,
+    override val stem: String,
+    override val suffix: String
+) : IBasepath {
     companion object {
+        fun from(dir: String?, name: String): Basepath {
+            val namesuffix = splitName((name))
+            return Basepath(dir, name, namesuffix.first, namesuffix.second)
+        }
 
         fun from(file: File): Basepath {
             return from(file.absolutePath)
         }
 
-        fun from(dir: String?, nameWithSuffix: String): Basepath {
-            val namesuffix = splitName((nameWithSuffix))
-            return Basepath(dir, nameWithSuffix, namesuffix.first, namesuffix.second)
-        }
-
         /// @param path A clean path.
         fun from(path: CharSequence): Basepath {
             var end = path.length
-            while (end > 0 && path[end - 1] == SEP) end -= 1
-            var index = path.lastIndexOf(SEP, startIndex = end - 1)
-            val dir: String?
-            val name: String
-            if (index < 0) {
-                dir = null
-                name = if (end == path.length) path.toString() else path.substring(0, end)
-            } else {
-                dir = path.substring(0, index)
-                name = path.substring(index + 1, end)
+            while (end > 0 && path[end - 1] == FSC) end -= 1
+            val (dir, name) = splitCleanpath(path, end)
+            val stemsuffix = splitName(name)
+            return Basepath(dir, name, stemsuffix.first, stemsuffix.second)
+        }
+
+        fun fromClean(vararg segments: String): Basepath {
+            return from(cleanSequence(segments.bot.joinPath()))
+        }
+
+        fun cleanPath(path: CharSequence): String {
+            return cleanBuilder(StringBuilder(path)).toString()
+        }
+
+        fun cleanSequence(path: CharSequence): StringBuilder {
+            return cleanBuilder(StringBuilder(path))
+        }
+
+        /**
+         * Remove duplicated /, /./ and /../
+         */
+        fun cleanBuilder(b: StringBuilder): StringBuilder {
+            var c: Char
+            var last = -1
+            var len = 0
+            val max = b.length
+            var i = 0
+            val sep = FSC
+            while (i < max) {
+                c = b[i]
+                if ((last == sep.code || len == 0) && c == '.' && (i + 1 < max && b[i + 1] == sep || i + 1 >= max)) {
+                    ++i
+                    ++i
+                    continue
+                }
+                if (last == sep.code && c == sep) {
+                    ++i
+                    continue
+                }
+                if (last == sep.code && c == '.' && i + 1 < max && b[i + 1] == '.' && len >= 2 && (i + 2 >= max || b[i + 2] == sep)) {
+                    val index = b.lastIndexOf(sep, len - 2)
+                    if ("..$sep" != b.substring(index + 1, len)) {
+                        len = index + 1
+                        ++i
+                        ++i
+                        continue
+                    }
+                }
+                b.setCharAt(len++, c)
+                last = c.code
+                ++i
             }
-            index = name.lastIndexOf('.')
-            return if (index <= 0) Basepath(dir, name, name, "") else
-                Basepath(dir, name, name.substring(0, index), name.substring(index))
+            b.setLength(len)
+            return b
         }
 
-        fun fromClean(dir: Basepath, rpath: String): Basepath {
-            return fromClean(Basepath.joinPath(dir.toString(), rpath))
-        }
-
-        fun fromClean(path: String): Basepath {
-            return from(FileUt.cleanPath(path))
-        }
-
-        fun clean(path: String): String {
-            return FileUt.cleanPath(path).toString()
-        }
-
-        fun dir(path: String): String? {
+        fun dir(path: CharSequence): String? {
             var end = path.length
-            while (end > 0 && path[end - 1] == SEP) end -= 1
-            val index = path.lastIndexOf(SEP, startIndex = end - 1)
-            return if (index < 0) null else path.substring(0, index)
+            while (end > 0 && path[end - 1] == FSC) end -= 1
+            val index = path.lastIndexOf(FS, startIndex = end - 1)
+            return if (index < 0) null
+            else path.substring(0, index)
         }
 
-        fun nameWithSuffix(path: String): String {
+        fun name(path: CharSequence): String {
             var end = path.length
-            while (end > 0 && path[end - 1] == SEP) end -= 1
-            val index = path.lastIndexOf(SEP, startIndex = end - 1)
+            while (end > 0 && path[end - 1] == FSC) end -= 1
+            val index = path.lastIndexOf(FSC, startIndex = end - 1)
             return if (index < 0) {
-                if (end == path.length) path else path.substring(0, end)
+                if (end == path.length) path.toString()
+                else path.substring(0, end)
             } else path.substring(index + 1, end)
         }
 
-        fun nameWithoutSuffix(path: String): String {
-            val name = nameWithSuffix(path)
+        fun stem(path: CharSequence): String {
+            val name = name(path)
             val index = name.lastIndexOf('.')
-            return if (index <= 0) name else name.substring(0, index)
+            return if (index <= 0 || name == "..") name
+            else name.substring(0, index)
         }
 
-        fun suffix(path: String): String {
-            val name = nameWithSuffix(path)
+        fun suffix(path: CharSequence): String {
+            val name = name(path)
             val index = name.lastIndexOf('.')
-            return if (index <= 0) "" else name.substring(index)
+            return if (index <= 0 || name == "..") ""
+            else name.substring(index)
         }
 
-        fun lcSuffix(path: String): String {
+        fun lcSuffix(path: CharSequence): String {
             return TextUt.toLowerCase(suffix(path))
         }
 
-        fun ext(path: String?): String? {
+        fun ext(path: CharSequence?): String? {
             if (path == null) return null
-            val name = nameWithSuffix(path)
+            val name = name(path)
             val index = name.lastIndexOf('.')
-            return if (index <= 0) null else name.substring(index + 1)
+            return if (index <= 0 || name == "..") null
+            else name.substring(index + 1)
         }
 
-        fun lcExt(path: String?): String? {
+        fun lcExt(path: CharSequence?): String? {
             return TextUt.toLowerCaseOrNull(ext(path))
         }
 
-        fun changeNameWithSuffix(path: String, newname: String): String {
-            return from(path).changeNameWithSuffix(newname).toString()
+        fun changeName(path: CharSequence, newname: CharSequence): String {
+            return from(path).changeName(newname).toString()
         }
 
-        fun changeNameWithoutSuffix(path: String, newbase: String): String {
-            return from(path).changeNameWithoutSuffix(newbase).toString()
+        fun changeStem(path: CharSequence, newbase: CharSequence): String {
+            return from(path).changeStem(newbase).toString()
         }
 
-        fun changeSuffix(path: String, newsuffix: String): String {
-            return from(path).dirAndNameWithoutSuffix + newsuffix
+        fun changeSuffix(path: CharSequence, newsuffix: CharSequence): String {
+            return from(path).dirAndStem + newsuffix
         }
 
         /// If dir is null return name. If dir empty return /name. If dir == "." return ./name
-        fun joinPath(dir: String?, name: String): String {
-            return if (dir == null) name
-            else if (name.isEmpty()) dir
-            else joinPath0(dir, name)
+        fun joinPath(dir: CharSequence?, name: CharSequence): String {
+            return if (dir == null) name.toString()
+            else if (name.isEmpty()) dir.toString()
+            else joinpath0(dir, name)
         }
 
         /// Like joinPath() but return a relative path if directory is null, empty or ".".
-        fun joinRpath(dir: String?, name: String): String {
-            return if (dir == null || dir.isEmpty() || dir == ".") name
-            else if (name.isEmpty()) dir
-            else joinPath0(dir, name)
+        fun joinRpath(dir: CharSequence?, name: CharSequence): String {
+            return if (dir.isNullOrEmpty() || dir == ".") name.toString()
+            else if (name.isEmpty()) dir.toString()
+            else joinpath0(dir, name)
         }
 
-        /// Like joinPath() but return dir/ if name is empty.
-        fun joinPath1(dir: String?, name: String): String {
-            return if (dir == null) name
-            else joinPath0(dir, name)
+        /// Like joinPath() but return trailing file separator, eg. dir/, if name is empty.
+        fun joinPathSlash(dir: CharSequence?, name: CharSequence): String {
+            return joinpath0(dir ?: "", name)
         }
 
-        /// Like joinRpath() but return dir/ if name is empty.
-        fun joinRpath1(dir: String?, name: String): String {
-            return if (dir == null || dir.isEmpty() || dir == ".") name
-            else joinPath0(dir, name)
+        /// Like joinRpath() but with trailing file separator, eg. dir/, if name is empty.
+        fun joinRpathSlash(dir: CharSequence?, name: CharSequence): String {
+            return if (dir.isNullOrEmpty() || dir == ".") name.toString()
+            else joinpath0(dir, name)
         }
 
-        fun joinPath0(dir: String, name: String): String {
-            return if (dir.endsWith(File.separatorChar) || name.startsWith(File.separatorChar)) "$dir$name"
-            else "$dir$SEP$name"
+        private fun joinpath0(dir: CharSequence, name: CharSequence): String {
+            return "${trimTrailingSlash(dir)}$FS${trimLeadingSlash(name)}"
         }
 
-        /** This differ from Basepath() in that it returns name as "" if input has trailing /. */
-        fun splitPath1(path: String): Pair<String?, String> {
-            val cleanpath = FileUt.cleanPath(path)
-            val index = cleanpath.lastIndexOf(SEP)
-            if (index < 0) return Pair(null, cleanpath.toString())
-            return Pair(cleanpath.substring(0, index), cleanpath.substring(index + 1))
+        /**
+         * Split path to (dir, name). If input has trailing /, name is "".
+         */
+        fun splitPath(path: CharSequence): Pair<String?, String> {
+            return splitCleanpath(cleanPath(path))
         }
 
-        fun splitName(name: String): Pair<String, String> {
+        private fun splitCleanpath(path: CharSequence, end: Int = path.length): Pair<String?, String> {
+            val index = path.lastIndexOf(FS, startIndex = end - 1)
+            return if (index < 0) Pair(null, path.substring(0, end))
+            else Pair(path.substring(0, index), path.substring(index + 1, end))
+        }
+
+        /** Split name to (stem, suffix) */
+        fun splitName(name: CharSequence): Pair<String, String> {
             val index = name.lastIndexOf('.')
-            return if (index <= 0) Pair(name, "") else Pair(name.substring(0, index), name.substring(index + 1))
+            return if (index <= 0 || name == "..") Pair(name.toString(), "")
+            else Pair(name.substring(0, index), name.substring(index))
         }
 
-        fun trimLeadingSlash(path: String): String {
+        fun trimLeadingSlash(path: CharSequence): CharSequence {
             val len = path.length
             var index = 0
-            while (index < len && path[index] == File.separatorChar) ++index
-            return if (index == 0) path else path.substring(index);
+            while (index < len && path[index] == FSC) ++index
+            return if (index == 0) path else path.subSequence(index, path.length)
         }
 
-        fun trimTrailingSlash(path: String): String {
+        fun trimTrailingSlash(path: CharSequence): CharSequence {
             val len = path.length
             var index = len
-            while (index > 0 && path[index - 1] == File.separatorChar) --index
-            return if (index == len) path else path.substring(0, index)
+            while (index > 0 && path[index - 1] == FSC) --index
+            return if (index == len) path else path.subSequence(0, index)
+        }
+
+        fun ensureLeadingSlash(path: String): String {
+            return if (path.startsWith(FS)) path else FS + path
+        }
+
+        fun ensureTrailingSlash(path: String): String {
+            return if (path.endsWith(FS)) path else path + FS
+        }
+
+        /// @return Clean rpath or null if rpath starts with "../".
+        fun cleanRpath(rpath: CharSequence): String? {
+            val ret = trimLeadingSlash(cleanPath(rpath))
+            if (ret.startsWith("..$FSC")) return null
+            return ret.toString()
         }
     }
 
-    val lcSuffix: String get() = TextUt.toLowerCase(suffix)
+    override val lcSuffix: String get() = TextUt.toLowerCase(suffix)
     val ext: String? get() = if (suffix.isEmpty()) null else suffix.substring(1)
     val lcExt: String? get() = TextUt.toLowerCaseOrNull(ext)
-    val dirAndNameWithoutSuffix: String get() = joinPath(dir, nameWithoutSuffix)
-    val file get() = File(toString())
+    val dirAndStem: String get() = joinPath(dir, stem)
 
-    fun changeNameWithSuffix(newname: String): Basepath {
+    fun toFile(): File {
+        return File(this.toString())
+    }
+
+    fun file(rpath: CharSequence): Basepath {
+        return from(joinPath(this.toString(), rpath))
+    }
+
+    fun changeName(newname: CharSequence): Basepath {
         return from(joinPath(dir, newname))
     }
 
-    fun changeNameWithoutSuffix(newbase: String): Basepath {
+    fun changeStem(newbase: CharSequence): Basepath {
         return from(joinPath(dir, "$newbase$suffix"))
     }
 
-    fun changeSuffix(newsuffix: String): Basepath {
-        return from(joinPath(dir, "$nameWithoutSuffix$newsuffix"))
+    fun changeSuffix(newsuffix: CharSequence): Basepath {
+        return from(joinPath(dir, "$stem$newsuffix"))
     }
 
     override fun toString(): String {
-        return dirAndNameWithoutSuffix + suffix
+        return dirAndStem + suffix
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Basepath) return false
-        return dir == other.dir && nameWithSuffix == other.nameWithSuffix
+        return dir == other.dir && name == other.name
     }
 
     override fun hashCode(): Int {
         var result = dir?.hashCode() ?: 0
-        result = 31 * result + nameWithSuffix.hashCode()
-        result = 31 * result + nameWithoutSuffix.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + stem.hashCode()
         result = 31 * result + suffix.hashCode()
         return result
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -377,11 +461,9 @@ object FileUt : FileUtil()
 open class FileUtil {
 
     private val BUFSIZE = 16 * 1024
-    val SEP = File.separator
-    val SEPCHAR = File.separatorChar // ie. / in unix.
     val ROOT = File("", "")
-    val HOME = File(System.getProperty("user.home"))
-    val PWD = File(System.getProperty("user.dir"))
+    val HOME = File(System.getProperty("user.home")!!)
+    val PWD = File(System.getProperty("user.dir")!!)
     val everythingFilter: FileFilter = FileFilter { true }
     val fileFilter: FileFilter = FileFilter { it.isFile }
     val notFileFilter: FileFilter = FileFilter { !it.isFile }
@@ -407,34 +489,34 @@ open class FileUtil {
 
     /** Permission for world read only directory: rwXr-Xr-X */
     val permissionsWorldReadonlyDir = setOf(
-            PosixFilePermission.OWNER_READ,
-            PosixFilePermission.OWNER_WRITE,
-            PosixFilePermission.OWNER_EXECUTE,
-            PosixFilePermission.GROUP_READ,
-            PosixFilePermission.GROUP_EXECUTE,
-            PosixFilePermission.OTHERS_READ,
-            PosixFilePermission.OTHERS_EXECUTE
+        PosixFilePermission.OWNER_READ,
+        PosixFilePermission.OWNER_WRITE,
+        PosixFilePermission.OWNER_EXECUTE,
+        PosixFilePermission.GROUP_READ,
+        PosixFilePermission.GROUP_EXECUTE,
+        PosixFilePermission.OTHERS_READ,
+        PosixFilePermission.OTHERS_EXECUTE
     )
 
     /** Permission for world read only file: rw-r--r-- */
     val permissionsWorldReadonlyFile = setOf(
-            PosixFilePermission.OWNER_READ,
-            PosixFilePermission.OWNER_WRITE,
-            PosixFilePermission.GROUP_READ,
-            PosixFilePermission.OTHERS_READ
+        PosixFilePermission.OWNER_READ,
+        PosixFilePermission.OWNER_WRITE,
+        PosixFilePermission.GROUP_READ,
+        PosixFilePermission.OTHERS_READ
     )
 
     /** Permission for world read only directory: rwX----- */
     val permissionsOwnerOnlyDir = setOf(
-            PosixFilePermission.OWNER_READ,
-            PosixFilePermission.OWNER_WRITE,
-            PosixFilePermission.OWNER_EXECUTE
+        PosixFilePermission.OWNER_READ,
+        PosixFilePermission.OWNER_WRITE,
+        PosixFilePermission.OWNER_EXECUTE
     )
 
     /** Permission for world read only file: rw------- */
     val permissionsOwnerOnlyFile = setOf(
-            PosixFilePermission.OWNER_READ,
-            PosixFilePermission.OWNER_WRITE
+        PosixFilePermission.OWNER_READ,
+        PosixFilePermission.OWNER_WRITE
     )
 
     fun getPermission(file: File): Set<PosixFilePermission> {
@@ -493,6 +575,17 @@ open class FileUtil {
         return count
     }
 
+    /// @return true if src is newer than dst.
+    fun isNewer(src: File, dst: File): Boolean {
+        return src.lastModified() > dst.lastModified()
+    }
+
+    fun isRecursiveSymlink(file: Path, parent: Path): Boolean {
+        return (Without.throwableOrNull {
+            Files.isSymbolicLink(file) && Files.isSameFile(parent, file)
+        } == true)
+    }
+
     fun home(vararg segments: String): File {
         return if (segments.isEmpty()) HOME else HOME.clean(*segments)
     }
@@ -521,15 +614,15 @@ open class FileUtil {
     }
 
     fun file(vararg segments: String): File {
-        return File(segments.joinPath())
+        return File(segments.joinToString(FS))
     }
 
-    /**
-     * @return The specified directory if it exists or created, otherwise null.
-     */
-    fun mkdirs(vararg segments: String): File? {
-        val ret = file(*segments)
-        return if (ret.exists() || ret.mkdirs()) ret else null
+    fun fileFmt(format: String, vararg args: Any?): File {
+        return File(TextUt.format(format, args))
+    }
+
+    fun mkdirsOrNull(vararg segments: String): File? {
+        return mkdirsOrNull(file(*segments))
     }
 
     fun mkdirsOrNull(file: File): File? {
@@ -548,49 +641,7 @@ open class FileUtil {
     }
 
     fun cleanFile(vararg segments: String): File {
-        return File(cleanPath(file(*segments).absolutePath).toString())
-    }
-
-    fun cleanPath(path: String): StringBuilder {
-        return cleanPath(StringBuilder(path))
-    }
-
-    /**
-     * Remove duplicated /, /./ and /../
-     */
-    fun cleanPath(b: StringBuilder): StringBuilder {
-        var c: Char
-        var last = -1
-        var len = 0
-        val max = b.length
-        var i = 0
-        val sep = SEPCHAR
-        while (i < max) {
-            c = b[i]
-            if ((last == sep.toInt() || len == 0) && c == '.' && (i + 1 < max && b[i + 1] == sep || i + 1 >= max)) {
-                ++i
-                ++i
-                continue
-            }
-            if (last == sep.toInt() && c == sep) {
-                ++i
-                continue
-            }
-            if (last == sep.toInt() && c == '.' && i + 1 < max && b[i + 1] == '.' && len >= 2 && (i + 2 >= max || b[i + 2] == sep)) {
-                val index = b.lastIndexOf(SEPCHAR, len - 2)
-                if ("../" != b.substring(index + 1, len)) {
-                    len = index + 1
-                    ++i
-                    ++i
-                    continue
-                }
-            }
-            b.setCharAt(len++, c)
-            last = c.toInt()
-            ++i
-        }
-        b.setLength(len)
-        return b
+        return File(cleanPath(file(*segments).absolutePath))
     }
 
     /**
@@ -601,7 +652,7 @@ open class FileUtil {
         var c: Char
         val blen = b.length
         var i = 0
-        val sep = SEPCHAR
+        val sep = FSC
         val ret = ArrayList<String>()
         val buf = StringBuilder()
         while (i < blen) {
@@ -646,8 +697,12 @@ open class FileUtil {
      * @return Relative path without leading / or null if file is not under basedir.
      */
     fun rpathOrNull(file: File, basedir: File): String? {
-        val f = cleanPathSegments(file.absolutePath)
-        val b = cleanPathSegments(basedir.absolutePath)
+        return rpathOrNull(file.absolutePath, basedir.absolutePath)
+    }
+
+    fun rpathOrNull(filepath: String, basepath: String): String? {
+        val f = cleanPathSegments(filepath)
+        val b = cleanPathSegments(basepath)
         if (f.contains("..") || b.contains("..")) return null
         val blen = b.size
         val flen = f.size
@@ -659,7 +714,7 @@ open class FileUtil {
             ++i
         }
         if (i < blen) return null
-        return f.subList(i, flen).join(SEP)
+        return f.subList(i, flen).joinToString(FS)
     }
 
     /**
@@ -684,12 +739,12 @@ open class FileUtil {
         }
         val ret = ArrayList(f.subList(i, flen))
         if (i == blen) {
-            return ret.join(SEP)
+            return ret.joinToString(FS)
         }
         while (++i <= blen) {
             ret.add(0, "..")
         }
-        return ret.join(SEP)
+        return ret.joinToString(FS)
     }
 
     fun copy(dst: File, src: InputStream) {
@@ -706,14 +761,10 @@ open class FileUtil {
     }
 
     @Throws(IOException::class)
-    fun copy(output: OutputStream, input: InputStream) {
-        copy(BUFSIZE, output, input)
-    }
-
-    @Throws(IOException::class)
     fun copy(output: OutputStream, input: InputStream, length: Long): Long {
         val b = ByteArray(BUFSIZE)
         var remaining = length
+        var total = 0L
         while (remaining > 0) {
             val len = if (remaining > BUFSIZE) BUFSIZE else remaining.toInt()
             val n = input.read(b, 0, len)
@@ -721,28 +772,34 @@ open class FileUtil {
             if (n > 0) {
                 output.write(b, 0, n)
                 remaining -= n
+                total += n
             }
         }
-        return length - remaining
+        return total
     }
 
     @Throws(IOException::class)
-    fun copy(bufsize: Int, output: OutputStream, input: InputStream) {
-        val b = ByteArray(bufsize)
-        while (true) {
-            val n = input.read(b)
-            if (n < 0) break
-            output.write(b, 0, n)
-        }
+    fun copy(output: OutputStream, input: InputStream): Long {
+        return copy(BUFSIZE, output, input)
     }
 
     @Throws(IOException::class)
-    fun copy(buf: ByteArray, output: OutputStream, input: InputStream) {
+    fun copy(bufsize: Int, output: OutputStream, input: InputStream): Long {
+        return copy(ByteArray(bufsize), output, input)
+    }
+
+    @Throws(IOException::class)
+    fun copy(buf: ByteArray, output: OutputStream, input: InputStream): Long {
+        var written = 0L
         while (true) {
             val n = input.read(buf)
             if (n < 0) break
-            output.write(buf, 0, n)
+            if (n > 0) {
+                written += n
+                output.write(buf, 0, n)
+            }
         }
+        return written
     }
 
     @Throws(IOException::class)
@@ -755,50 +812,73 @@ open class FileUtil {
     }
 
     @Throws(IOException::class)
-    fun copy(dst: File, src: File) {
+    fun copyas(dst: File, src: File, preservetimestamp: Boolean = false) {
         With.inputStream(src) { input ->
             dst.mkparentOrNull() ?: throw IOException()
             With.outputStream(dst) { output ->
                 copy(output, input)
             }
         }
+        if (preservetimestamp) dst.setLastModified(src.lastModified())
         FileUt.setPermission(FileUt.getPermission(src), dst)
     }
 
     @Throws(IOException::class)
-    fun copydiff(dst: File, src: File): Boolean {
-        if (!src.exists()) throw IOException()
-        if (dst.exists() && !diff(dst, src)) return false
+    fun copydiff(dst: File, src: File, preservetimestamp: Boolean = false): Boolean {
+        if (!src.isFile) throw IOException()
+        if (dst.isDirectory) throw IOException()
+        if (dst.isFile && !diff(dst, src)) return false
         With.inputStream(src) { input ->
             dst.mkparentOrNull() ?: throw IOException()
             With.outputStream(dst) { output ->
                 copy(output, input)
             }
         }
+        if (preservetimestamp) dst.setLastModified(src.lastModified())
         FileUt.setPermission(FileUt.getPermission(src), dst)
         return true
     }
 
-    fun copyto(dstdir: File, vararg srcfiles: File): Int {
-        return copyto(dstdir, srcfiles.iterator())
+    fun copyto(dstdir: File, srcfile: File, preservetimestamp: Boolean = false) {
+        copyas(File(dstdir, srcfile.name), srcfile, preservetimestamp)
     }
 
-    fun copyto(dstdir: File, srcfiles: Collection<File>): Int {
-        return copyto(dstdir, srcfiles.iterator())
+    fun copyto(dstdir: File, srcfiles: Collection<File>, preservetimestamp: Boolean = false): Int {
+        return copyto(dstdir, srcfiles.iterator(), preservetimestamp)
     }
 
-    fun copyto(dstdir: File, srcfiles: Sequence<File>): Int {
-        return copyto(dstdir, srcfiles.iterator())
+    fun copyto(dstdir: File, srcfiles: Sequence<File>, preservetimestamp: Boolean = false): Int {
+        return copyto(dstdir, srcfiles.iterator(), preservetimestamp)
     }
 
-    fun copyto(dstdir: File, srcfiles: Iterator<File>): Int {
+    fun copyto(dstdir: File, srcfiles: Iterator<File>, preservetimestamp: Boolean = false): Int {
         if (!dstdir.isDirectory) error("# Expecting a directory: $dstdir")
         var count = 0
         for (srcfile in srcfiles) {
-            copy(File(dstdir, srcfile.name), srcfile)
+            copyas(File(dstdir, srcfile.name), srcfile, preservetimestamp)
             ++count
         }
         return count
+    }
+
+    fun copyto(dstdir: File, vararg srcfiles: File): Int {
+        return copyto(dstdir, srcfiles.iterator(), false)
+    }
+
+    fun copydir(
+        dstdir: File,
+        srcdir: File,
+        preservetimestamp: Boolean = false,
+        predicate: Fun21<File, File, Boolean>? = null
+    ) {
+        srcdir.bot.walk { file, rpath ->
+            val dst = dstdir.file(rpath)
+            if (predicate?.invoke(dst, file) != false) {
+                if (file.isDirectory) {
+                    dst.mkdirsOrNull() ?: throw IOException()
+                } else copyas(dst, file, preservetimestamp)
+            }
+        }
     }
 
     @Throws(IOException::class)
@@ -811,36 +891,48 @@ open class FileUtil {
         return InputStreamReader(input, charset).readLines()
     }
 
-    /**
-     * Read input file as raw bytes.
-     */
+    fun delete(file: File): Boolean {
+        try {
+            return file.exists() && file.delete()
+        } catch (_: Throwable) {
+            return false
+        }
+    }
+
+    fun delete(files: Iterable<File>): Int {
+        var count = 0
+        files.forEach {
+            if (FileUt.delete(it)) ++count
+        }
+        return count
+    }
+
+    fun delete(files: Sequence<File>): Int {
+        var count = 0
+        files.forEach {
+            if (FileUt.delete(it)) ++count
+        }
+        return count
+    }
+
+    fun deleteRecursively(file: File): Boolean {
+        try {
+            return file.exists() && file.deleteRecursively()
+        } catch (_: Throwable) {
+            return false
+        }
+    }
+
     @Throws(IOException::class)
-    fun asBytes(input: InputStream): ByteArray {
-        return input.readBytes()
+    fun openGzOrInputStream(file: File): InputStream {
+        val input = file.inputStream()
+        return if (file.name.endsWith(".gz")) GZIPInputStream(input) else input
     }
 
-    /**
-     * Delete the given files.
-     * @throws AssertionError If failed to delete a file.
-     */
-    fun remove(files: Iterable<File>): Int {
-        var count = 0
-        files.forEach {
-            if (it.exists() && it.delete()) ++count
-        }
-        return count
-    }
-
-    /**
-     * Delete the given files.
-     * @throws AssertionError If failed to delete a file.
-     */
-    fun remove(files: Sequence<File>): Int {
-        var count = 0
-        files.forEach {
-            if (it.exists() && it.delete()) ++count
-        }
-        return count
+    @Throws(IOException::class)
+    fun openGzOrOutputStream(file: File): OutputStream {
+        val output = file.outputStream()
+        return if (file.name.endsWith(".gz")) GZIPOutputStream(output) else output
     }
 
     /**
@@ -849,18 +941,18 @@ open class FileUtil {
      */
     @Throws(IOException::class)
     fun zip(
-            zipfile: File,
-            basedir: File,
-            include: String,
-            exclude: String? = null,
-            preservetimestamp: Boolean = true
+        zipfile: File,
+        basedir: File,
+        include: String,
+        exclude: String? = null,
+        preservetimestamp: Boolean = true
     ): Int {
         return zip(
-                zipfile,
-                basedir,
-                Regex(include),
-                if (exclude != null) Regex(exclude) else null,
-                preservetimestamp
+            zipfile,
+            basedir,
+            Regex(include),
+            if (exclude != null) Regex(exclude) else null,
+            preservetimestamp
         )
     }
 
@@ -870,11 +962,11 @@ open class FileUtil {
      */
     @Throws(IOException::class)
     fun zip(
-            zipfile: File,
-            basedir: File,
-            include: Regex,
-            exclude: Regex? = null,
-            preservetimestamp: Boolean = true
+        zipfile: File,
+        basedir: File,
+        include: Regex,
+        exclude: Regex? = null,
+        preservetimestamp: Boolean = true
     ): Int {
         var count = 0
         zip(zipfile, basedir, preservetimestamp) { file, rpath ->
@@ -905,7 +997,7 @@ open class FileUtil {
     fun zip(zipfile: File, basedir: File, preservetimestamp: Boolean = true, accept: IFilePathPredicate): Int {
         var count = 0
         With.zipOutputStream(zipfile) { out ->
-            FileUt.scan(basedir) { file, rpath ->
+            U.scan1(basedir, "") { file, rpath ->
                 val yes = accept(file, rpath)
                 if (yes) {
                     zipentry(out, preservetimestamp, file, rpath)
@@ -937,45 +1029,50 @@ open class FileUtil {
         return count
     }
 
-    private fun zipentry(out: ZipOutputStream, preservetimestamp: Boolean, file: File, rpath: String) {
-        val isfile = file.isFile
-        val name = rpath.replace(FileUt.SEPCHAR, '/')
-        val entry = ZipEntry(if (isfile) name else "$name/")
+    fun zipentry(out: ZipOutputStream, preservetimestamp: Boolean, file: File, rpath: String) {
+        val isdir = file.isDirectory
+        val entry = zipentry(rpath, isdir)
         if (preservetimestamp) {
             val time = FileTime.fromMillis(file.lastModified())
             entry.creationTime = time
             entry.lastModifiedTime = time
         }
         out.putNextEntry(entry)
-        if (isfile) {
+        if (!isdir) {
             copy(out, file)
+        }
+    }
+
+    fun zipentry(rpath: String, isdir: Boolean = false): ZipEntry {
+        return (if (FSC != '/') rpath.replace(FSC, '/') else rpath).let {
+            ZipEntry(if (isdir && !it.endsWith('/')) "$it/" else it)
         }
     }
 
     @Throws(IOException::class)
     fun unzip(
-            outdir: File,
-            zipfile: File,
-            include: String,
-            exclude: String? = null,
-            preservetimestamp: Boolean = true
+        outdir: File,
+        zipfile: File,
+        include: String,
+        exclude: String? = null,
+        preservetimestamp: Boolean = true
     ): Int {
         return unzip(
-                outdir,
-                zipfile,
-                Regex(include),
-                if (exclude != null) Regex(exclude) else null,
-                preservetimestamp
+            outdir,
+            zipfile,
+            Regex(include),
+            if (exclude != null) Regex(exclude) else null,
+            preservetimestamp
         )
     }
 
     @Throws(IOException::class)
     fun unzip(
-            outdir: File,
-            zipfile: File,
-            include: Regex,
-            exclude: Regex? = null,
-            preservetimestamp: Boolean = true
+        outdir: File,
+        zipfile: File,
+        include: Regex,
+        exclude: Regex? = null,
+        preservetimestamp: Boolean = true
     ): Int {
         var count = 0
         unzip(outdir, zipfile, preservetimestamp) {
@@ -988,10 +1085,10 @@ open class FileUtil {
 
     @Throws(IOException::class)
     fun unzip(
-            outdir: File,
-            zipfile: File,
-            preservetimestamp: Boolean = true,
-            accept: ((ZipEntry) -> Boolean)? = null
+        outdir: File,
+        zipfile: File,
+        preservetimestamp: Boolean = true,
+        accept: ((ZipEntry) -> Boolean)? = null
     ): Int {
         var count = 0
         With.zipInputStream(zipfile) { input, entry ->
@@ -1021,7 +1118,7 @@ open class FileUtil {
 
     fun count(dir: File, predicate: (File) -> Boolean): Int {
         var count = 0
-        dir.ut.walk { file, _ ->
+        dir.bot.walk { file, _ ->
             if (predicate(file)) ++count
         }
         return count
@@ -1033,7 +1130,7 @@ open class FileUtil {
     @Throws(IOException::class)
     fun diffDir(dir1: File, dir2: File): DiffStat<String> {
         val stat = DiffStat<String>()
-        dir1.ut.walk { file1, rpath ->
+        dir1.bot.walk { file1, rpath ->
             if (!file1.isFile) return@walk
             val file2 = File(dir2, rpath)
             when {
@@ -1042,7 +1139,7 @@ open class FileUtil {
                 else -> stat.sames.add(rpath)
             }
         }
-        dir2.ut.walk { file, rpath ->
+        dir2.bot.walk { file, rpath ->
             if (!file.isFile) return@walk
             if (!File(dir1, rpath).isFile) {
                 stat.bonly.add(rpath)
@@ -1057,7 +1154,7 @@ open class FileUtil {
     @Throws(IOException::class)
     fun diffDir1(dir1: File, dir2: File): DiffStat<String> {
         val stat = DiffStat<String>()
-        dir1.ut.walk { file1, rpath ->
+        dir1.bot.walk { file1, rpath ->
             if (!file1.isFile) return@walk
             val file2 = File(dir2, rpath)
             when {
@@ -1071,13 +1168,16 @@ open class FileUtil {
 
     @Throws(IOException::class)
     fun diff(file1: File, file2: File): Boolean {
+        if (!file1.exists() || !file2.exists()) return true
         var diff = false
-        With.inputStream(file1) { input1 ->
-            With.inputStream(file2) { input2 ->
-                diff = diff(input1, input2)
+        return Without.throwableOrNull {
+            With.inputStream(file1) { input1 ->
+                With.inputStream(file2) { input2 ->
+                    diff = diff(input1, input2)
+                }
             }
-        }
-        return diff
+            diff
+        } ?: true
     }
 
     @Throws(IOException::class)
@@ -1085,88 +1185,27 @@ open class FileUtil {
         val b1 = ByteArray(BUFSIZE)
         val b2 = ByteArray(BUFSIZE)
         while (true) {
-            val n1 = input1.read(b1)
-            val n2 = input2.read(b2)
+            val n1 = IOUt.readWhilePossible(input1, b1, 0, b1.size)
+            val n2 = IOUt.readWhilePossible(input2, b2, 0, b2.size)
             if (n1 != n2) {
                 return true
-            }
-            if (n1 < 0) {
-                return false
             }
             for (i in 0 until n1) {
                 if (b1[i] != b2[i]) {
                     return true
                 }
             }
+            if (n1 < b1.size) {
+                return false
+            }
         }
-    }
-
-    /**
-     * Walk the given directory recursively.
-     * Invoke the given predicate on each file/directory visited.
-     * Recurse into a directory only if predicate return true for the directory.
-     * Note that bottomUp and ignoresDir has no effect. It always scan
-     * preorder.
-     *
-     * @param predicate(File, String) -> Boolean
-     */
-    fun scan(dir: File, basepath: String = "", predicate: IFilePathPredicate) {
-        U.scan1(dir, basepath, predicate)
-    }
-
-    /**
-     * Walk the given directory recursively.
-     * Invoke the given callback on each file/directory visited.
-     *
-     * @param callback(file, rpath)
-     */
-    fun walk(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        U.walk1(dir, basepath, bottomup, ignoresdir, callback)
-    }
-
-    fun <T> walk3(ret: T, dir: File, basepath: String = "", ignoresdir: IFilePathPredicate? = null, callback: Fun31<T, File, String, T>) {
-        U.walk3(ret, dir, basepath, ignoresdir, callback)
-    }
-
-    /**
-     * Like walk() but call callback only on files.
-     */
-    fun files(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        U.walk1(dir, basepath, bottomup, ignoresdir) { file, rpath ->
-            if (file.isFile) callback(file, rpath)
-        }
-    }
-
-    /**
-     * Like walk() but call callback only on directories.
-     */
-    fun dirs(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        U.walk1(dir, basepath, bottomup, ignoresdir) { file, rpath ->
-            if (file.isDirectory) callback(file, rpath)
-        }
-    }
-
-    fun <T> collects(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, includes: IFilePathCollector<T>): Sequence<T> {
-        return U.collect1(dir, basepath, bottomup, ignoresdir, includes)
-    }
-
-    /**
-     * Like walk1() but it stop searching and return the first file
-     * with which the predicate returns true.
-     */
-    fun find(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, accept: IFilePathPredicate): File? {
-        return U.find1(dir, basepath, bottomup, ignoresdir, accept)
-    }
-
-    fun findOrFail(dir: File, basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, accept: IFilePathPredicate): File {
-        return find(dir, basepath, bottomup, ignoresdir, accept) ?: error(dir.absolutePath)
     }
 
     @Throws(IOException::class)
     fun findDupBySHA1(files: Sequence<File>): MutableMap<String, NavigableSet<File>> {
         val ret = TreeMap<String, NavigableSet<File>>()
         for (file in files) {
-            val digest = ChecksumKind.SHA1.digest(file)
+            val digest = SumKind.SHA1.digestToHex(file)
             var a: NavigableSet<File>? = ret[digest]
             if (a == null) {
                 a = TreeSet(lastModifiedComparator)
@@ -1178,7 +1217,7 @@ open class FileUtil {
     }
 
     fun findDup(dir: File): Map<File, NavigableSet<File>> {
-        val files = dir.ut.collects(FilePathCollectors::fileOfAny)
+        val files = dir.bot.collects(FilePathCollectors::fileOfAny)
         val bymd5 = findDupBySHA1(files)
         val ret = TreeMap<File, NavigableSet<File>>()
         for ((_, list) in bymd5) {
@@ -1195,6 +1234,24 @@ open class FileUtil {
             }
         }
         return ret
+    }
+
+    fun shred(file: File): Boolean {
+        if (!file.isFile) return false
+        val bufsize = 4096
+        val ch = Files.newByteChannel(file.toPath(), StandardOpenOption.READ, StandardOpenOption.WRITE)
+        val size = ch.size()
+        val buf = ByteArray(bufsize)
+        var pos = 0L
+        while (pos < size) {
+            ch.position(pos)
+            val len = min(size - pos, bufsize.toLong()).toInt()
+            RandomUt.get(buf)
+            val n = ch.write(ByteBuffer.wrap(buf, 0, len))
+            if (n < 0) return false
+            pos += n
+        }
+        return true
     }
 }
 
@@ -1240,70 +1297,171 @@ object FilePathCollectors {
 
 //////////////////////////////////////////////////////////////////////
 
-open class FileUtExtension(private val receiver: File) {
+open class FileUtExt(protected val receiver: File) {
+
+    val deprecated: FileUtDeprecated get() = FileUtDeprecated(receiver)
+
+    open fun walk(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        callback: IFilePathCallback
+    ) {
+        U.walk1(receiver, basepath, bottomup, null, callback)
+    }
+
+    open fun <T> collects(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        collector: IFilePathCollector<T>
+    ): Sequence<T> {
+        return U.collect1(receiver, basepath, bottomup, null, collector)
+    }
+
+    /**
+     * Like walk1() but it stop searching and return the first file
+     * with which the predicate returns true.
+     */
+    open fun find(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        accept: IFilePathPredicate
+    ): File? {
+        return U.find1(receiver, basepath, bottomup, null, accept)
+    }
 
     fun scan(basepath: String = "", predicate: IFilePathPredicate) {
-        FileUt.scan(receiver, basepath, predicate)
+        U.scan1(receiver, basepath, predicate)
     }
 
-    fun walk(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        FileUt.walk(receiver, basepath, bottomup, ignoresdir, callback)
+    ////////////////////////////////////////////////////////////
+
+    fun files(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        callback: IFilePathCallback
+    ) {
+        this.walk(basepath, bottomup) { file, rpath ->
+            if (file.isFile) callback(file, rpath)
+        }
     }
 
-    fun <T> walk3(ret: T, basepath: String = "", ignoresdir: IFilePathPredicate? = null, callback: Fun31<T, File, String, T>) {
-        FileUt.walk3(ret, receiver, basepath, ignoresdir, callback)
+    fun dirs(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        callback: IFilePathCallback
+    ) {
+        this.walk(basepath, bottomup) { file, rpath ->
+            if (file.isDirectory) callback(file, rpath)
+        }
     }
 
-    fun files(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        FileUt.files(receiver, basepath, bottomup, ignoresdir, callback)
+    fun findOrFail(
+        basepath: String = "",
+        bottomup: Boolean = false,
+        accept: IFilePathPredicate
+    ): File {
+        return this.find(basepath, bottomup, accept)
+            ?: error(receiver.absolutePath)
     }
 
-    fun dirs(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, callback: IFilePathCallback) {
-        FileUt.dirs(receiver, basepath, bottomup, ignoresdir, callback)
+    ////////////////////////////////////////////////////////////
+
+    fun collects(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<Pair<File, String>> {
+        return this.collects(basepath, bottomup, FilePathCollectors::pairOfAny)
     }
 
-    fun <T> collects(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, collector: IFilePathCollector<T>): Sequence<T> {
-        return FileUt.collects(receiver, basepath, bottomup, ignoresdir, collector)
+    fun <T> collects(
+        collector: IFilePathCollector<T>
+    ): Sequence<T> {
+        return this.collects("", false, collector)
     }
 
-    fun <T> collects(basepath: String = "", collector: IFilePathCollector<T>): Sequence<T> {
-        return FileUt.collects(receiver, basepath, false, null, collector)
+    fun fileOfFiles(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<File> {
+        return collects(basepath, bottomup, FilePathCollectors::fileOfFiles)
     }
 
-    fun <T> collects(collector: IFilePathCollector<T>): Sequence<T> {
-        return FileUt.collects(receiver, "", false, null, collector)
+    fun fileOfDirs(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<File> {
+        return collects(basepath, bottomup, FilePathCollectors::fileOfDirs)
     }
 
-    fun collects(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null): Sequence<Pair<File, String>> {
-        return FileUt.collects(receiver, basepath, bottomup, ignoresdir, FilePathCollectors::pairOfAny)
+    fun fileOfAny(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<File> {
+        return collects(basepath, bottomup, FilePathCollectors::fileOfAny)
     }
 
-    fun find(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, accept: IFilePathPredicate): File? {
-        return FileUt.find(receiver, basepath, bottomup, ignoresdir, accept)
+    fun pathOfFiles(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<String> {
+        return collects(basepath, bottomup, FilePathCollectors::pathOfFiles)
     }
 
-    fun findOrFail(basepath: String = "", bottomup: Boolean = false, ignoresdir: IFilePathPredicate? = null, accept: IFilePathPredicate): File {
-        return FileUt.findOrFail(receiver, basepath, bottomup, ignoresdir, accept)
+    fun pathOfDirs(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<String> {
+        return collects(basepath, bottomup, FilePathCollectors::pathOfDirs)
     }
+
+    fun pathOfAny(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<String> {
+        return collects(basepath, bottomup, FilePathCollectors::pathOfAny)
+    }
+
+    fun pairOfFiles(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<Pair<File, String>> {
+        return collects(basepath, bottomup, FilePathCollectors::pairOfFiles)
+    }
+
+    fun pairOfDirs(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<Pair<File, String>> {
+        return collects(basepath, bottomup, FilePathCollectors::pairOfDirs)
+    }
+
+    fun pairOfAny(
+        basepath: String = "",
+        bottomup: Boolean = false,
+    ): Sequence<Pair<File, String>> {
+        return collects(basepath, bottomup, FilePathCollectors::pairOfAny)
+    }
+
+    ////////////////////////////////////////////////////////////
 
     fun findDup(): Map<File, NavigableSet<File>> {
         return FileUt.findDup(receiver)
     }
 
     fun findDupBySHA1(): MutableMap<String, NavigableSet<File>> {
-        return FileUt.findDupBySHA1(FileUt.collects(receiver, includes = FilePathCollectors::fileOfAny))
+        return FileUt.findDupBySHA1(receiver.bot.fileOfAny())
     }
 
-    fun copyas(dstfile: File) {
-        FileUt.copy(dstfile, receiver)
+    fun copyas(dstfile: File, preservetimestamp: Boolean = false) {
+        FileUt.copyas(dstfile, receiver, preservetimestamp)
     }
 
-    fun copyto(dstdir: File) {
-        FileUt.copyto(dstdir, receiver)
+    fun copyto(dstdir: File, preservetimestamp: Boolean = false) {
+        FileUt.copyto(dstdir, receiver, preservetimestamp)
     }
 
-    fun copydiff(dstfile: File) {
-        FileUt.copydiff(dstfile, receiver)
+    fun copydiff(dstfile: File, preservetimestamp: Boolean = false) {
+        FileUt.copydiff(dstfile, receiver, preservetimestamp)
     }
 
     fun diff(other: File): Boolean {
@@ -1319,54 +1477,112 @@ open class FileUtExtension(private val receiver: File) {
     }
 }
 
-private object U {
-    fun scan1(
-            dir: File,
-            rpath: String,
-            predicate: IFilePathPredicate
+class FileUtDeprecated(
+    receiver: File,
+) : FileUtExt(receiver) {
+    private var ignoresdir: IFilePathPredicate? = null
+
+    fun ignoresdir(predicate: IFilePathPredicate): FileUtDeprecated {
+        this.ignoresdir = predicate
+        return this
+    }
+
+    override fun walk(
+        basepath: String,
+        bottomup: Boolean,
+        callback: IFilePathCallback
     ) {
+        U.walk1(receiver, basepath, bottomup, ignoresdir, callback)
+    }
+
+    override fun <T> collects(
+        basepath: String,
+        bottomup: Boolean,
+        collector: IFilePathCollector<T>
+    ): Sequence<T> {
+        return U.collect1(receiver, basepath, bottomup, ignoresdir, collector)
+    }
+
+    /**
+     * Like walk1() but it stop searching and return the first file
+     * with which the predicate returns true.
+     */
+    override fun find(
+        basepath: String,
+        bottomup: Boolean,
+        accept: IFilePathPredicate
+    ): File? {
+        return U.find1(receiver, basepath, bottomup, ignoresdir, accept)
+    }
+
+    fun <T> walk3(
+        ret: T,
+        basepath: String = "",
+        callback: Fun31<T, File, String, T>
+    ) {
+        walk3(ret, receiver, basepath, ignoresdir, callback)
+    }
+
+    private fun <T> walk3(
+        ret: T,
+        dir: File,
+        rpath: String = "",
+        ignoresdir: IFilePathPredicate? = null,
+        callback: Fun31<T, File, String, T>
+    ) {
+        val parentpath = dir.toPath()
         for (name in dir.listOrEmpty()) {
             val file = File(dir, name)
-            val filepath = if (rpath.isEmpty()) name else "$rpath$SEP$name"
-            if (predicate(file, filepath) && file.isDirectory) {
+            val filepath = if (rpath.isEmpty()) name else "$rpath$FS$name"
+            val ret1 = callback(ret, file, filepath)
+            if (file.isDirectory
+                && !FileUt.isRecursiveSymlink(file.toPath(), parentpath)
+                && (ignoresdir == null || !ignoresdir(file, filepath))
+            ) {
+                walk3(ret1, file, filepath, ignoresdir, callback)
+            }
+        }
+    }
+}
+
+private object U {
+    fun scan1(
+        dir: File,
+        rpath: String,
+        predicate: IFilePathPredicate
+    ) {
+        val parentpath = dir.toPath()
+        for (name in dir.listOrEmpty()) {
+            val file = File(dir, name)
+            val filepath = if (rpath.isEmpty()) name else "$rpath$FSC$name"
+            if (predicate(file, filepath)
+                && file.isDirectory
+                && !FileUt.isRecursiveSymlink(file.toPath(), parentpath)
+            ) {
                 scan1(file, filepath, predicate)
             }
         }
     }
 
     fun walk1(
-            dir: File,
-            rpath: String,
-            bottomup: Boolean,
-            ignoresdir: IFilePathPredicate?,
-            callback: IFilePathCallback
+        dir: File,
+        rpath: String,
+        bottomup: Boolean,
+        ignoresdir: IFilePathPredicate?,
+        callback: IFilePathCallback
     ) {
+        val parentpath = dir.toPath()
         for (name in dir.listOrEmpty()) {
             val file = File(dir, name)
-            val filepath = if (rpath.isEmpty()) name else "$rpath$SEP$name"
+            val filepath = if (rpath.isEmpty()) name else "$rpath$FS$name"
             if (!bottomup) callback(file, filepath)
-            if (file.isDirectory && (ignoresdir == null || !ignoresdir(file, filepath))) {
+            if (file.isDirectory
+                && !FileUt.isRecursiveSymlink(file.toPath(), parentpath)
+                && (ignoresdir == null || !ignoresdir(file, filepath))
+            ) {
                 walk1(file, filepath, bottomup, ignoresdir, callback)
             }
             if (bottomup) callback(file, filepath)
-        }
-    }
-
-    fun <T> walk3(
-            ret: T,
-            dir: File,
-            rpath: String,
-            ignoresdir: IFilePathPredicate?,
-            callback: Fun31<T, File, String, T>
-    ) {
-        for (name in dir.listOrEmpty()) {
-            var ret1 = ret
-            val file = File(dir, name)
-            val filepath = if (rpath.isEmpty()) name else "$rpath$SEP$name"
-            ret1 = callback(ret1, file, filepath)
-            if (file.isDirectory && (ignoresdir == null || !ignoresdir(file, filepath))) {
-                walk3(ret1, file, filepath, ignoresdir, callback)
-            }
         }
     }
 
@@ -1376,11 +1592,11 @@ private object U {
      * @return Sequence<Pair<File, String>> File/directory where includes() return true.
      */
     fun <T> collect1(
-            dir: File,
-            dirpath: String,
-            bottomup: Boolean,
-            ignoresdir: IFilePathPredicate?,
-            collector: IFilePathCollector<T>
+        dir: File,
+        dirpath: String,
+        bottomup: Boolean,
+        ignoresdir: IFilePathPredicate?,
+        collector: IFilePathCollector<T>
     ): Sequence<T> {
         return sequence {
             collect2(dir, dirpath, bottomup, ignoresdir, collector)
@@ -1388,21 +1604,25 @@ private object U {
     }
 
     private suspend fun <T> SequenceScope<T>.collect2(
-            dir: File,
-            dirpath: String,
-            bottomup: Boolean,
-            ignoresdir: IFilePathPredicate?,
-            collector: IFilePathCollector<T>
+        dir: File,
+        dirpath: String,
+        bottomup: Boolean,
+        ignoresdir: IFilePathPredicate?,
+        collector: IFilePathCollector<T>
     ) {
+        val parentpath = dir.toPath()
         for (name in dir.listOrEmpty()) {
             val file = File(dir, name)
-            val filepath = if (dirpath.isEmpty()) name else "$dirpath$SEP$name"
+            val filepath = if (dirpath.isEmpty()) name else "$dirpath$FS$name"
             if (!bottomup) {
                 collector(file, filepath)?.let {
                     yield(it)
                 }
             }
-            if (file.isDirectory && (ignoresdir == null || !ignoresdir(file, filepath))) {
+            if (file.isDirectory
+                && !FileUt.isRecursiveSymlink(file.toPath(), parentpath)
+                && (ignoresdir == null || !ignoresdir(file, filepath))
+            ) {
                 collect2(file, filepath, bottomup, ignoresdir, collector)
             }
             if (bottomup) {
@@ -1414,17 +1634,21 @@ private object U {
     }
 
     fun find1(
-            dir: File,
-            rpath: String,
-            bottomup: Boolean,
-            ignoresdir: IFilePathPredicate?,
-            accept: IFilePathPredicate
+        dir: File,
+        rpath: String,
+        bottomup: Boolean,
+        ignoresdir: IFilePathPredicate?,
+        accept: IFilePathPredicate
     ): File? {
+        val parentpath = dir.toPath()
         for (name in dir.listOrEmpty()) {
             val file = File(dir, name)
-            val filepath = if (rpath.isEmpty()) name else "$rpath$SEP$name"
+            val filepath = if (rpath.isEmpty()) name else "$rpath$FS$name"
             if (!bottomup && accept(file, filepath)) return file
-            if (file.isDirectory && (ignoresdir == null || !ignoresdir(file, filepath))) {
+            if (file.isDirectory
+                && !FileUt.isRecursiveSymlink(file.toPath(), parentpath)
+                && (ignoresdir == null || !ignoresdir(file, filepath))
+            ) {
                 val ret = find1(file, filepath, bottomup, ignoresdir, accept)
                 if (ret != null) return ret
             }
@@ -1432,8 +1656,6 @@ private object U {
         }
         return null
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////
-

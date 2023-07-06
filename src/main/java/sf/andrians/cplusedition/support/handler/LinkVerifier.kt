@@ -27,7 +27,7 @@ class LinkVerifier(private val context: ICpluseditionContext) : ILinkVerifier {
 
     private val storage = context.getStorage()
 
-    override fun handle(cmd: Int, data: String): String {
+    override fun handle(cmd: Int, data: JSONObject): JSONObject {
         return when (cmd) {
             ILinkVerifier.Cmd.LINKINFOS -> linkInfos(data)
             ILinkVerifier.Cmd.LINKINFO -> linkInfo(data)
@@ -40,11 +40,10 @@ class LinkVerifier(private val context: ICpluseditionContext) : ILinkVerifier {
      * where baseurl is the context relative URL of the iframe document.
      * @return {An.Key.errors: errors, An.Key.result: {link: status, ...}
      */
-    private fun linkInfos(data: String): String {
+    private fun linkInfos(infos: JSONObject): JSONObject {
         return try {
-            val infos = JSONObject(data)
             val base = infos.stringOrNull(An.Key.baseurl)
-                    ?: return storage.rsrc.jsonError(R.string.MissingBaseurlParameter)
+                ?: return storage.rsrc.jsonObjectError(R.string.ParameterMissingBaseurl)
             val baseuri = URI(base)
             val links = infos.getJSONObject(An.Key.links)
             val result = JSONObject()
@@ -55,25 +54,24 @@ class LinkVerifier(private val context: ICpluseditionContext) : ILinkVerifier {
             }
             val ret = JSONObject()
             ret.put(An.Key.result, result)
-            ret.toString()
+            ret
         } catch (e: Exception) {
-            storage.rsrc.jsonError(R.string.Error)
+            storage.rsrc.jsonObjectError(R.string.Error)
         }
     }
 
-    private fun linkInfo(data: String): String {
+    private fun linkInfo(infos: JSONObject): JSONObject {
         return try {
-            val infos = JSONObject(data)
             val base = infos.stringOrNull(An.Key.baseurl)
-                    ?: return storage.rsrc.jsonError(R.string.MissingBaseurlParameter)
+                ?: return storage.rsrc.jsonObjectError(R.string.ParameterMissingBaseurl)
             val baseuri = URI(base)
             val link = infos.getString(An.Key.path)
             val status = linkStatus(baseuri, link)
             val ret = JSONObject()
             ret.put(An.Key.linkinfo, status)
-            ret.toString()
+            ret
         } catch (e: Exception) {
-            storage.rsrc.jsonError(R.string.Error)
+            storage.rsrc.jsonObjectError(R.string.Error)
         }
     }
 
@@ -100,15 +98,8 @@ class LinkVerifier(private val context: ICpluseditionContext) : ILinkVerifier {
         return storage.linkInfo(uri)
     }
 
-    private fun jsonerror(msg: String): String {
+    private fun jsonerror(msg: String): JSONObject {
         context.w(msg)
-        val ret = JSONObject()
-        return try {
-            ret.put(An.Key.errors, msg)
-            ret.toString()
-        } catch (ex: JSONException) {
-            context.e("ASSERT: Unexpected exception: " + ex.message, ex)
-            "{'" + An.Key.errors + "': 'error'}"
-        }
+        return JSONObject().put(An.Key.errors, msg)
     }
 }

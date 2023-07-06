@@ -16,15 +16,18 @@
 */
 package sf.andrians.cplusedition.support.handler
 
+import org.json.JSONObject
+
 interface ILinkVerifier {
     object Cmd {
         const val INVALID = 0
         const val LINKINFOS = 1
         const val LINKINFO = 2
         private val names = arrayOf(
-                "INVALID",
-                "LINKINFOS",
-                "LINKINFO")
+            "INVALID",
+            "LINKINFOS",
+            "LINKINFO"
+        )
 
         fun toString(cmd: Int): String {
             return if (cmd < 0 || cmd >= names.size) {
@@ -33,5 +36,5 @@ interface ILinkVerifier {
         }
     }
 
-    fun handle(cmd: Int, data: String): String
+    fun handle(cmd: Int, data: JSONObject): JSONObject
 }

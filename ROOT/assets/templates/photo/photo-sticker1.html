@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="version" content="2">
-<meta name="metainfo" content="{&quot;C&quot;:30000,&quot;M&quot;:30000}">
+<meta name="metainfo" content="{&quot;C&quot;:3000005,&quot;M&quot;:3000005}">
 <link rel="stylesheet" type="text/css" href="/assets/css/client-v1.css">
 <link rel="stylesheet" type="text/css" href="/assets/templates/photo/photo-sticker1.css">
 </head>
@@ -14,19 +14,14 @@
 </div>
 </div>
 <div id="x-rightsidebar">
-<div class="x-rsb-content">
-<div class="x-rsb-tab x-t-button fa fa-bars" x-tp="t/xx-top xx-photo xx-comment/xx-top/xx-top">
-<div class="x-hidden" x-tp>
+<div class="x-rsb-content"><template name="xx-section">
 <div class="xx-comment x-sticker x-stick-on-document x-draggable x-z-top xx-style00">
 <div class="x-subject"><span class="x-float-right-clear-none fa fa-arrows" x-bt="m/"></span><span class="x-float-right-clear-none fa fa-retweet" x-bt="c/x-z-top x-z-upper x-z-middle x-z-lower x-z-bottom/x-sticker"></span><span class="xx-datetime" x-th="date">XXX</span></div>
 <div>
 <div class="xx-caption"><span class="x-placeholder">XXX</span></div>
 </div>
 </div>
-</div>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-file-image-o" x-tp="t/xx-top xx-photo xx-comment/xx-top/xx-top">
-<div class="x-hidden" x-tp>
+</template><template name="xx-image">
 <div class="xx-photo x-sticker x-stick-on-document x-draggable x-z-top xx-style00">
 <div class="x-subject"><span class="x-float-right-clear-none fa fa-arrows" x-bt="m/"></span><span class="x-float-right-clear-none fa fa-retweet" x-bt="c/x-z-top x-z-upper x-z-middle x-z-lower x-z-bottom/x-sticker"></span><span>Subject</span></div>
 <div>
@@ -34,10 +29,7 @@
 <div class="xx-caption"><span class="x-placeholder">XXX</span></div>
 </div>
 </div>
-</div>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-camera x-hide-in-desktop" x-tp="t/xx-top xx-photo xx-comment/xx-top/xx-top">
-<div class="x-hidden" x-tp>
+</template><template name="xx-photo">
 <div class="xx-photo x-sticker x-stick-on-document x-draggable x-z-top xx-style00">
 <div class="x-subject"><span class="x-float-right-clear-none fa fa-arrows" x-bt="m/"></span><span class="x-float-right-clear-none fa fa-retweet" x-bt="c/x-z-top x-z-upper x-z-middle x-z-lower x-z-bottom/x-sticker"></span><span>Subject</span></div>
 <div>
@@ -45,9 +37,11 @@
 <div class="xx-caption"><span class="xx-datetime" x-th="date">XXX</span>  <span class="x-placeholder">XXX</span></div>
 </div>
 </div>
-</div>
-</div>
-<div class="x-rsb-tab x-t-button fa fa-toggle-down" x-tp="{&quot;t&quot;:&quot;photo&quot;,&quot;m&quot;:[[{&quot;c&quot;:&quot;fa-minus&quot;,&quot;a&quot;:&quot;d\/xx-photo xx-comment&quot;},{&quot;c&quot;:&quot;fa-eye-slash&quot;,&quot;a&quot;:&quot;c\/xx-hide\/\/xx-top&quot;},{&quot;c&quot;:&quot;fa-expand&quot;,&quot;a&quot;:&quot;c\/xx-size-large xx-size-xlarge xx-size-xxlarge\/\/xx-top&quot;}]]}"></div>
+</template>
+<div class="x-rsb-tab x-t-button fa fa-bars" x-tp="widget,template,,xx-section,1/xx-top xx-photo xx-comment/xx-top/xx-top"></div>
+<div class="x-rsb-tab x-t-button fa fa-file-image-o" x-tp="widget,template,,xx-image,1/xx-top xx-photo xx-comment/xx-top/xx-top"></div>
+<div class="x-rsb-tab x-t-button fa fa-camera x-hide-in-desktop" x-tp="widget,template,,xx-photo,1/xx-top xx-photo xx-comment/xx-top/xx-top"></div>
+<div class="x-rsb-tab x-t-button fa fa-toggle-down" x-tp="{&quot;t&quot;:&quot;photo&quot;,&quot;m&quot;:[[{&quot;a&quot;:&quot;d/xx-photo xx-comment&quot;,&quot;c&quot;:&quot;fa-minus&quot;},{&quot;a&quot;:&quot;c/xx-hide//xx-top&quot;,&quot;c&quot;:&quot;fa-eye-slash&quot;},{&quot;a&quot;:&quot;bg/xx-photo xx-comment&quot;,&quot;c&quot;:&quot;fa-square&quot;}],[{&quot;a&quot;:&quot;c/xx-size-large xx-size-xlarge xx-size-xxlarge//xx-top&quot;,&quot;c&quot;:&quot;fa-expand&quot;},{},{}]],&quot;n&quot;:&quot;photo-v2&quot;}"></div>
 <div class="x-rsb-tab x-t-button fa fa-ellipsis-h" x-tp="classes/x-box x-box-gray x-bold x-code x-error x-float-left-clear-none x-float-right-clear-none x-italic x-pre x-style-dark x-style-light x-warn"></div>
 <a class="x-rsb-tab x-placeholder" href="index.html" style="background-color: rgba(136, 187, 0, 0.75);">Up</a>
 <div class="x-rsb-padding"></div>

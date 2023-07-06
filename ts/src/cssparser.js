@@ -16,11 +16,8 @@
 */
 "use strict";
 var
-    //#BEGIN CSSParserObject
-XxA7
-        //#END CSSParserObject
+XxXPo
         = (function () {
-            //#BEGIN REGION cssErrors.js
             var CSSIssueType = /** @class */ (function () {
                 function CSSIssueType(id, message) {
                     this.id = id;
@@ -63,8 +60,6 @@ XxA7
                 WhitespaceExpected: new CSSIssueType('css-whitespaceexpected', localize('expected.whitespace', "whitespace expected")),
                 MediaQueryExpected: new CSSIssueType('css-mediaqueryexpected', localize('expected.mediaquery', "media query expected"))
             };
-            //#END REGION cssErrors.js
-            //#BEGIN REGION cssNodes.js
             var __extends = (this && this.__extends) || (function () {
                 var extendStatics = function (d, b) {
                     extendStatics = Object.setPrototypeOf ||
@@ -1624,8 +1619,6 @@ XxA7
                 return ParseErrorCollector;
             }());
 
-            //#END REGION cssNodes.js
-            //#BEGIN REGION arrays.js
             /**
              * Takes a sorted array and a function p. The array is sorted in such a way that all elements where p(x) is false
              * are located before all elements where p(x) is true.
@@ -1634,7 +1627,7 @@ XxA7
             function findFirst(array, p) {
                 var low = 0, high = array.length;
                 if (high === 0) {
-                    return 0; // no children
+                    return 0;
                 }
                 while (low < high) {
                     var mid = Math.floor((low + high) / 2);
@@ -1647,8 +1640,6 @@ XxA7
                 }
                 return low;
             }
-            //#END REGION arrsy.js
-            //#BEGIN REGION cssSymbolScopejs
             var Scope = /** @class */ (function () {
                 function Scope(offset, length) {
                     this.offset = offset;
@@ -1735,7 +1726,7 @@ XxA7
                 ScopeBuilder.prototype.addScope = function (node) {
                     if (node.offset !== -1) {
                         var current = this.scope.findScope(node.offset, node.length);
-                        if (current && (current.offset !== node.offset || current.length !== node.length)) { // scope already known?
+                        if (current && (current.offset !== node.offset || current.length !== node.length)) {
                             var newScope = new Scope(node.offset, node.length);
                             current.addChild(newScope);
                             return newScope;
@@ -1746,7 +1737,7 @@ XxA7
                 };
                 ScopeBuilder.prototype.addSymbolToChildScope = function (scopeNode, node, name, value, type) {
                     if (scopeNode && scopeNode.offset !== -1) {
-                        var current = this.addScope(scopeNode); // create the scope or gets the existing one
+                        var current = this.addScope(scopeNode);
                         if (current) {
                             current.addSymbol(new Symbol(name, value, node, type));
                         }
@@ -1803,7 +1794,7 @@ XxA7
                         for (var _i = 0, _a = node.getSelectors().getChildren(); _i < _a.length; _i++) {
                             var child = _a[_i];
                             if (child instanceof /* nodes. */Selector) {
-                                if (child.getChildren().length === 1) { // only selectors with a single element can be extended
+                                if (child.getChildren().length === 1) {
                                     current.addSymbol(new Symbol(child.getChild(0).getText(), void 0, child, /* nodes. */ReferenceType.Rule));
                                 }
                             }
@@ -1963,8 +1954,6 @@ XxA7
                 };
                 return Symbols;
             }());
-            //#END REGION cssSymbolScopejs
-            //#BEGIN REGION cssScanner.js
             var TokenType;
             (function (TokenType) {
                 TokenType.Ident = 0;
@@ -2478,10 +2467,10 @@ XxA7
                 };
                 Scanner.prototype._identFirstChar = function (result) {
                     var ch = this.stream.peekChar();
-                    if (ch === _USC || // _
-                        ch >= _a && ch <= _z || // a-z
-                        ch >= _A && ch <= _Z || // A-Z
-                        ch >= 0x80 && ch <= 0xFFFF) { // nonascii
+                    if (ch === _USC ||
+                        ch >= _a && ch <= _z ||
+                        ch >= _A && ch <= _Z ||
+                        ch >= 0x80 && ch <= 0xFFFF) {
                         this.stream.advance(1);
                         result.push(String.fromCharCode(ch));
                         return true;
@@ -2499,12 +2488,12 @@ XxA7
                 };
                 Scanner.prototype._identChar = function (result) {
                     var ch = this.stream.peekChar();
-                    if (ch === _USC || // _
-                        ch === _MIN || // -
-                        ch >= _a && ch <= _z || // a-z
-                        ch >= _A && ch <= _Z || // A-Z
-                        ch >= _0 && ch <= _9 || // 0/9
-                        ch >= 0x80 && ch <= 0xFFFF) { // nonascii
+                    if (ch === _USC ||
+                        ch === _MIN ||
+                        ch >= _a && ch <= _z ||
+                        ch >= _A && ch <= _Z ||
+                        ch >= _0 && ch <= _9 ||
+                        ch >= 0x80 && ch <= 0xFFFF) {
                         this.stream.advance(1);
                         result.push(String.fromCharCode(ch));
                         return true;
@@ -2513,8 +2502,6 @@ XxA7
                 };
                 return Scanner;
             }());
-            //#END REGION cssScanner.js
-            //#BEGIN REGION cssParser.js
             var Parser = /** @class */ (function () {
                 function Parser(scnr, ignoreTriva) {
                     if (scnr === void 0) { scnr = new Scanner(ignoreTriva); }
@@ -2651,13 +2638,13 @@ XxA7
                         }
                         if (this.prevToken !== null) {
                             var prevEnd = this.prevToken.offset + this.prevToken.len;
-                            node.length = prevEnd > node.offset ? prevEnd - node.offset : 0; // offset is taken from current token, end from previous: Use 0 for empty nodes
+                            node.length = prevEnd > node.offset ? prevEnd - node.offset : 0;
                         }
                     }
                     return node;
                 };
                 Parser.prototype.markError = function (node, error, resyncTokens, resyncStopTokens) {
-                    if (this.token !== this.lastErrorToken) { // do not report twice on the same token
+                    if (this.token !== this.lastErrorToken) {
                         node.addIssue(new /* nodes. */Marker(node, error, /* nodes. */Level.Error, null, this.token.offset, this.token.len));
                         this.lastErrorToken = this.token;
                     }
@@ -2861,7 +2848,7 @@ XxA7
                     }
                     while (node.addChild(this._parseSimpleSelector())) {
                         hasContent = true;
-                        node.addChild(this._parseCombinator()); // optional
+                        node.addChild(this._parseCombinator());
                     }
                     return hasContent ? this.finish(node) : null;
                 };
@@ -2879,7 +2866,7 @@ XxA7
                     }
                     node.addChild(this._parsePrio());
                     if (this.peek(TokenType.SemiColon)) {
-                        node.semicolonPosition = this.token.offset; // not part of the declaration, but useful information for code assist
+                        node.semicolonPosition = this.token.offset;
                     }
                     return this.finish(node);
                 };
@@ -2904,7 +2891,7 @@ XxA7
                             if (this.peek(TokenType.SemiColon)) {
                                 this.finish(propertySet);
                                 node.setPropertySet(propertySet);
-                                node.semicolonPosition = this.token.offset; // not part of the declaration, but useful information for code assist
+                                node.semicolonPosition = this.token.offset;
                                 return this.finish(node);
                             }
                         }
@@ -2915,7 +2902,7 @@ XxA7
                         this._parsePrio();
                         if (this.peek(TokenType.SemiColon)) {
                             node.setValue(expression);
-                            node.semicolonPosition = this.token.offset; // not part of the declaration, but useful information for code assist
+                            node.semicolonPosition = this.token.offset;
                             return this.finish(node);
                         }
                     }
@@ -2986,7 +2973,7 @@ XxA7
                                     return this.finish(node, ParseError.LeftSquareBracketExpected);
                                 }
                                 break;
-                            case TokenType.BadString: // fall through
+                            case TokenType.BadString:
                                 break done;
                             case TokenType.EOF:
                                 var error = ParseError.RightCurlyExpected;
@@ -3033,7 +3020,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Node);
-                    this.consumeToken(); // charset
+                    this.consumeToken();
                     if (!this.accept(TokenType.String)) {
                         return this.finish(node, ParseError.IdentifierExpected);
                     }
@@ -3047,7 +3034,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Import);
-                    this.consumeToken(); // @import
+                    this.consumeToken();
                     if (!node.addChild(this._parseURILiteral()) && !node.addChild(this._parseStringLiteral())) {
                         return this.finish(node, ParseError.URIOrStringExpected);
                     }
@@ -3061,9 +3048,9 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Namespace);
-                    this.consumeToken(); // @namespace
-                    if (!node.addChild(this._parseURILiteral())) { // url literal also starts with ident
-                        node.addChild(this._parseIdent()); // optional prefix
+                    this.consumeToken();
+                    if (!node.addChild(this._parseURILiteral())) {
+                        node.addChild(this._parseIdent());
                         if (!node.addChild(this._parseURILiteral()) && !node.addChild(this._parseStringLiteral())) {
                             return this.finish(node, ParseError.URIExpected, [TokenType.SemiColon]);
                         }
@@ -3078,7 +3065,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */FontFace);
-                    this.consumeToken(); // @font-face
+                    this.consumeToken();
                     return this._parseBody(node, this._parseRuleSetDeclaration.bind(this));
                 };
                 Parser.prototype._parseViewPort = function () {
@@ -3088,7 +3075,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */ViewPort);
-                    this.consumeToken(); // @-ms-viewport
+                    this.consumeToken();
                     return this._parseBody(node, this._parseRuleSetDeclaration.bind(this));
                 };
                 Parser.prototype._parseKeyframe = function () {
@@ -3097,9 +3084,9 @@ XxA7
                     }
                     var node = this.create(/* nodes. */Keyframe);
                     var atNode = this.create(/* nodes. */Node);
-                    this.consumeToken(); // atkeyword
+                    this.consumeToken();
                     node.setKeyword(this.finish(atNode));
-                    if (atNode.getText() === '@-ms-keyframes') { // -ms-keyframes never existed
+                    if (atNode.getText() === '@-ms-keyframes') {
                         this.markError(atNode, ParseError.UnknownKeyword);
                     }
                     if (!node.setIdentifier(this._parseKeyframeIdent())) {
@@ -3146,7 +3133,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Supports);
-                    this.consumeToken(); // @supports
+                    this.consumeToken();
                     node.addChild(this._parseSupportsCondition());
                     return this._parseBody(node, this._parseSupportsDeclaration.bind(this, isNested));
                 };
@@ -3227,7 +3214,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Media);
-                    this.consumeToken(); // @media
+                    this.consumeToken();
                     if (!node.addChild(this._parseMediaQueryList())) {
                         return this.finish(node, ParseError.MediaQueryExpected);
                     }
@@ -3322,9 +3309,9 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Node);
-                    node.addChild(this._parseIdent()); // optional ident
+                    node.addChild(this._parseIdent());
                     if (this.accept(TokenType.Colon)) {
-                        if (!node.addChild(this._parseIdent())) { // optional ident
+                        if (!node.addChild(this._parseIdent())) {
                             return this.finish(node, ParseError.IdentifierExpected);
                         }
                     }
@@ -3335,8 +3322,8 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Document);
-                    this.consumeToken(); // @-moz-document
-                    this.resync([], [TokenType.CurlyL]); // ignore all the rules
+                    this.consumeToken();
+                    this.resync([], [TokenType.CurlyL]);
                     return this._parseBody(node, this._parseStylesheetStatement.bind(this));
                 };
                 Parser.prototype._parseUnknownAtRule = function () {
@@ -3433,7 +3420,7 @@ XxA7
                         this.peek(TokenType.SubstringOperator) ||
                         this.peek(TokenType.PrefixOperator) ||
                         this.peek(TokenType.SuffixOperator) ||
-                        this.peekDelim('=')) { // doesn't stick to the standard here
+                        this.peekDelim('=')) {
                         var node = this.createNode(/* nodes. */NodeType.Operator);
                         this.consumeToken();
                         return this.finish(node);
@@ -3519,7 +3506,7 @@ XxA7
                         }
                     }
                     else {
-                        this.consumeToken(); // TokenType.Hash
+                        this.consumeToken();
                     }
                     return this.finish(node);
                 };
@@ -3528,7 +3515,7 @@ XxA7
                         return null;
                     }
                     var node = this.createNode(/* nodes. */NodeType.ClassSelector);
-                    this.consumeToken(); // '.'
+                    this.consumeToken();
                     if (this.hasWhitespace() || !node.addChild(this._parseSelectorIdent())) {
                         return this.finish(node, ParseError.IdentifierExpected);
                     }
@@ -3560,14 +3547,14 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */AttributeSelector);
-                    this.consumeToken(); // BracketL
+                    this.consumeToken();
                     node.setNamespacePrefix(this._parseNamespacePrefix());
                     if (!node.setIdentifier(this._parseIdent())) {
                         return this.finish(node, ParseError.IdentifierExpected);
                     }
                     if (node.setOperator(this._parseOperator())) {
                         node.setValue(this._parseBinaryExpr());
-                        this.acceptIdent('i'); // case insensitive matching
+                        this.acceptIdent('i');
                     }
                     if (!this.accept(TokenType.BracketR)) {
                         return this.finish(node, ParseError.RightSquareBracketExpected);
@@ -3605,7 +3592,7 @@ XxA7
                     }
                     var pos = this.mark();
                     var node = this.createNode(/* nodes. */NodeType.PseudoSelector);
-                    this.consumeToken(); // Colon
+                    this.consumeToken();
                     if (this.hasWhitespace()) {
                         this.restoreAtMark(pos);
                         return null;
@@ -3644,7 +3631,7 @@ XxA7
                         return null;
                     }
                     while (true) {
-                        if (this.peek(TokenType.Comma)) { // optional
+                        if (this.peek(TokenType.Comma)) {
                             if (stopOnComma) {
                                 return this.finish(node);
                             }
@@ -3689,9 +3676,9 @@ XxA7
                 };
                 Parser.prototype._parseTerm = function () {
                     var node = this.create(/* nodes. */Term);
-                    node.setOperator(this._parseUnaryOperator()); // optional
-                    if (node.setExpression(this._parseURILiteral()) || // url before function
-                        node.setExpression(this._parseFunction()) || // function before ident
+                    node.setOperator(this._parseUnaryOperator());
+                    if (node.setExpression(this._parseURILiteral()) ||
+                        node.setExpression(this._parseFunction()) ||
                         node.setExpression(this._parseIdent()) ||
                         node.setExpression(this._parseStringLiteral()) ||
                         node.setExpression(this._parseNumeric()) ||
@@ -3707,7 +3694,7 @@ XxA7
                         return null;
                     }
                     var node = this.create(/* nodes. */Node);
-                    this.consumeToken(); // ParenthesisL
+                    this.consumeToken();
                     node.addChild(this._parseExpr());
                     if (!this.accept(TokenType.ParenthesisR)) {
                         return this.finish(node, ParseError.RightParenthesisExpected);
@@ -3751,8 +3738,8 @@ XxA7
                         return null;
                     }
                     this.scanner.inURL = true;
-                    this.consumeToken(); // consume ()
-                    node.addChild(this._parseURLArgument()); // argument is optional
+                    this.consumeToken();
+                    node.addChild(this._parseURLArgument());
                     this.scanner.inURL = false;
                     if (!this.accept(TokenType.ParenthesisR)) {
                         return this.finish(node, ParseError.RightParenthesisExpected);
@@ -3838,30 +3825,28 @@ XxA7
                 };
                 return Parser;
             }());
-            //#END REGION cssParser.js
             function CSSParserObject() {
             }
-            //#BEGIN USE_CSS_EDITOR
 
-            CSSParserObject["X2U"] = function (text, ignoretriva) {
+            CSSParserObject["XxXZU"] = function (text, ignoretriva) {
                 const scanner = new Scanner(ignoretriva);
                 scanner.setSource(text);
                 return scanner;
             }
-            CSSParserObject["Xlf"] = function (text) {
+            CSSParserObject["XxX4G"] = function (text) {
                 return new Parser(new Scanner(false)).parseStylesheet(text);
             }
-            CSSParserObject["X5e"] = function(text) {
+            CSSParserObject["XxX8x"] = function(text) {
                 return new Parser ().parseStylesheet(text);
             };
-            CSSParserObject["X4W"] = function (text) {
+            CSSParserObject["XxXsZ"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
                 var parser = new Parser();
                 return parser.internalParse(text, parser._parseRuleset, textProvider);
             };
-            CSSParserObject["XFY"] = function (text) {
+            CSSParserObject["XxXj7"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
@@ -3870,27 +3855,26 @@ XxA7
                     return parser._parseDeclarations(parser._parseRuleSetDeclaration.bind(parser))
                 }, textProvider);
             };
-            CSSParserObject["X2b"] = function (text) {
+            CSSParserObject["XxX8t"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
                 var parser = new Parser();
                 return parser.internalParse(text, parser._parseDeclaration, textProvider);
             };
-            CSSParserObject["XZi"] = function (text) {
+            CSSParserObject["XxX9M"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
                 var parser = new Parser();
                 return parser.internalParse(text, parser._parseExpr, textProvider);
             };
-            CSSParserObject["XhA"] = function(node) {
+            CSSParserObject["XxXJB"] = function(node) {
                 return node.isErroneous(true);
             };
-            CSSParserObject["X4n"] = function(node) {
+            CSSParserObject["XxXjr"] = function(node) {
                 return ParseErrorCollector.entries(node);
             };
         
-            //#END USE_CSS_EDITOR
             return CSSParserObject;
         }());

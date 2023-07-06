@@ -17,272 +17,251 @@
 package sf.andrians.cplusedition.support.media
 
 import com.cplusedition.bot.core.Basepath
-import sf.andrians.cplusedition.support.An
-import java.util.*
-import kotlin.collections.MutableMap
 
 object MimeUtil {
-    //#BEGIN SINCE 2.9.0 From andrians.dart An.MimeUtil.
-    const val ALL = "*/*"
-    const val HTML = "text/html"
-    const val CSS = "text/css"
-    const val PDF = "application/pdf"
-    const val JS = "text/javascript"
-    const val JPEG = "image/jpeg"
-    const val PNG = "image/png"
-    const val IMAGE = "image/*"
-    const val AUDIO = "audio/*"
-    const val VIDEO = "video/*"
-    const val M4A = "audio/mp4"
-    const val TEXT_PLAIN = "text/plain"
-    private val imageMimeByExt: MutableMap<String, String> = TreeMap()
-    private val imageExtByMime: MutableMap<String, String> = TreeMap()
+    object Mime {
+        const val HTML = "text/html"
+        const val CSS = "text/css"
+        const val JS = "text/javascript"
+        const val TXT = "text/plain"
+        const val PDF = "application/pdf"
+        const val JSON = "application/json"
+        const val XML = "application/xml"
+        const val JPEG = "image/jpeg"
+        const val PNG = "image/png"
+        const val GIF = "image/gif"
+        const val BMP = "image/bmp"
+        const val ICO = "image/vnd.microsoft.icon"
+        const val WEBP = "image/webp"
+        const val HEIC = "image/heic"
+        const val SVG = "image/svg+xml"
+        const val AUDIO = "audio/*"
+        const val M4A = "audio/mp4"
+        const val MP3 = "audio/mpeg"
+        const val WAV = "audio/wav"
+        const val OGG = "audio/ogg"
+        const val FLAC = "audio/flac"
+        const val AWB = "audio/amr-wb"
+        const val MP4 = "video/mp4"
+        const val MOV = "video/quicktime"
+        const val WEBM = "video/webm"
+        const val WOFF2 = "application/font-woff2"
+        const val WOFF = "application/font-woff"
+        const val TTF = "application/x-font-ttf"
+        const val OTF = "font/opentype"
+        const val EOT = "application/vnd.ms-fontobject"
+        const val DER = "application/pkcs7-mime"
+        const val PEM = "application/pem"
+        const val ZIP = "application/zip"
+        const val BACKUP = "application/vnd.cplusedition.backup"
+        const val IBACKUP = "application/vnd.cplusedition.ibackup"
+    }
 
-    private val audioPlaybackMimeByExt: MutableMap<String, String> = TreeMap()
-    private val audioPlaybackExtByMime: MutableMap<String, String> = TreeMap()
-    private val audioRecordMimeByExt: MutableMap<String, String> = TreeMap()
-    private val videoPlaybackMimeByExt: MutableMap<String, String> = TreeMap()
-    private val videoPlaybackExtByMime: MutableMap<String, String> = TreeMap()
-    private val videoRecordingMimeByExt: MutableMap<String, String> = TreeMap()
-    private val exportableMimeByExt: MutableMap<String, String> = TreeMap()
-    private val importableMimeByExt: MutableMap<String, String> = TreeMap()
-    private val FONT_MIMES: MutableMap<String, String> = TreeMap()
+    object Suffix {
+        const val HTML = ".html"
+        const val CSS = ".css"
+        const val JS = ".js"
+        const val TXT = ".txt"
+        const val PDF = ".pdf"
+        const val JSON = ".json"
+        const val XML = ".xml"
+        const val JPG = ".jpg"
+        const val JPEG = ".jpeg"
+        const val PNG = ".png"
+        const val GIF = ".gif"
+        const val BMP = ".bmp"
+        const val ICO = ".ico"
+        const val WEBP = ".webp"
+        const val HEIC = ".heic"
+        const val SVG = ".svg"
+        const val SVGZ = ".svgz"
+        const val M4A = ".m4a"
+        const val MP3 = ".mp3"
+        const val WAV = ".wav"
+        const val OGG = ".ogg"
+        const val FLAC = ".flac"
+        const val AWB = ".awb"
+        const val MP4 = ".mp4"
+        const val MOV = ".mov"
+        const val WEBM = ".webm"
+        const val WOFF2 = ".woff2"
+        const val WOFF = ".woff"
+        const val TTF = ".ttf"
+        const val OTF = ".otf"
+        const val EOT = ".eot"
+        const val DER = ".der"
+        const val PEM = ".pem"
+        const val ZIP = ".zip"
+        const val BACKUP = ".backup"
+        const val IBACKUP = ".ibackup"
+    }
+
+    object Fontface {
+        const val WOFF2 = "woff2"
+        const val WOFF = "woff"
+        const val OPENTYPE = "opentype"
+        const val EOT = "embeded-opentype"
+        const val SVG = "svg"
+    }
+
+    private val fontSuffices = setOf(Suffix.WOFF2, Suffix.WOFF, Suffix.TTF, Suffix.OTF, Suffix.EOT)
+    private val textViewerSuffices = setOf(Suffix.TXT, Suffix.JSON, Suffix.XML)
+    private val mimeBySuffix = mapOf(
+        Suffix.HTML to Mime.HTML,
+        Suffix.CSS to Mime.CSS,
+        Suffix.JS to Mime.JS,
+        Suffix.TXT to Mime.TXT,
+        Suffix.PDF to Mime.PDF,
+        Suffix.JSON to Mime.JSON,
+        Suffix.XML to Mime.XML,
+        Suffix.JPG to Mime.JPEG,
+        Suffix.JPEG to Mime.JPEG,
+        Suffix.PNG to Mime.PNG,
+        Suffix.GIF to Mime.GIF,
+        Suffix.BMP to Mime.BMP,
+        Suffix.ICO to Mime.ICO,
+        Suffix.WEBP to Mime.WEBP,
+        Suffix.HEIC to Mime.HEIC,
+        Suffix.M4A to Mime.M4A,
+        Suffix.MP3 to Mime.MP3,
+        Suffix.WAV to Mime.WAV,
+        Suffix.OGG to Mime.OGG,
+        Suffix.FLAC to Mime.FLAC,
+        Suffix.AWB to Mime.AWB,
+        Suffix.MP4 to Mime.MP4,
+        Suffix.MOV to Mime.MOV,
+        Suffix.WEBM to Mime.WEBM,
+        Suffix.WOFF2 to Mime.WOFF2,
+        Suffix.WOFF to Mime.WOFF,
+        Suffix.TTF to Mime.TTF,
+        Suffix.OTF to Mime.OTF,
+        Suffix.EOT to Mime.EOT,
+        Suffix.DER to Mime.DER,
+        Suffix.PEM to Mime.PEM,
+        Suffix.ZIP to Mime.ZIP,
+        Suffix.BACKUP to Mime.BACKUP,
+        Suffix.IBACKUP to Mime.IBACKUP,
+    )
+    private val suffixByMime = mutableMapOf(*(mimeBySuffix.map { it.value to it.key }.toTypedArray())).also {
+        it.put(Mime.JPEG, Suffix.JPG)
+    }
+
+    val mimeTextArray = arrayOf(Mime.TXT)
+
     fun mimeFromPath(path: String?): String? {
-        val ext = Basepath.lcExt(path) ?: return null
-        return when (ext) {
-            "html" -> HTML
-            "css" -> CSS
-            "js" -> JS
-            else -> mediaMimeFromLcExt(ext)
-        }
+        if (path == null) return null
+        return mimeBySuffix[Basepath.lcSuffix(path)]
     }
 
-    fun mediaMimeFromPath(path: String?): String? {
-        return mediaMimeFromLcExt(Basepath.lcExt(path))
+    fun mimeFromLcSuffix(lcsuffix: String): String? {
+        return mimeBySuffix[lcsuffix]
     }
 
-    fun mediaMimeFromLcExt(lcext: String?): String? {
-        if (lcext == null) {
-            return null
-        }
-        var ret = imageMimeByExt[lcext]
-        if (ret != null) {
-            return ret
-        }
-        if (audioPlaybackMimeByExt[lcext].also { ret = it } != null) {
-            return ret
-        }
-        if ("pdf" == lcext) {
-            return PDF
-        }
-        return if (videoPlaybackMimeByExt[lcext].also { ret = it } != null) {
-            ret
-        } else null
+    fun suffixFromMime(mime: String?): String? {
+        if (mime == null) return null
+        return suffixByMime[mime]
     }
 
-    fun audioPlaybackMimeFromPath(path: String?): String? {
-        return audioPlaybackMimeFromLcExt(Basepath.lcExt(path))
+    fun isBackupLcSuffix(lcsuffix: String): Boolean {
+        return lcsuffix == Suffix.ZIP || lcsuffix == Suffix.BACKUP || lcsuffix == Suffix.IBACKUP
     }
 
-    fun audioPlaybackMimeFromLcExt(lcext: String?): String? {
-        return if (lcext == null) null else audioPlaybackMimeByExt[lcext]
+    fun isImageLcSuffix(lcsuffix: String): Boolean {
+        return mimeBySuffix[lcsuffix]?.startsWith("image/") == true
     }
 
-    fun audioRecordMimeFromPath(path: String?): String? {
-        return audioRecordMimeFromLcExt(Basepath.lcExt(path))
+    fun isAudioLcSuffix(lcsuffix: String): Boolean {
+        return mimeBySuffix[lcsuffix]?.startsWith("audio/") == true
     }
 
-    fun audioRecordMimeFromLcExt(lcext: String?): String? {
-        return if (lcext == null) null else audioRecordMimeByExt[lcext]
+    fun isVideoLcSuffix(lcsuffix: String): Boolean {
+        return mimeBySuffix[lcsuffix]?.startsWith("video/") == true
     }
 
-    fun isAudioPlaybackLcExt(lcext: String?): Boolean {
-        return lcext != null && audioPlaybackMimeByExt.containsKey(lcext)
+    fun isMediaLcSuffix(lcsuffix: String): Boolean {
+        if (lcsuffix == Suffix.PDF) return true
+        val mime = mimeBySuffix[lcsuffix] ?: return false
+        return mime.startsWith("image/") || mime.startsWith("audio/") || mime.startsWith("video/")
     }
 
-    fun audioRecordingExt(): String {
-        return "m4a"
+    /// Text files other than html that can be viewed in the main editor area, eg, .xml, .txt, .json, ... etc.
+    fun isTextViewerLcSuffix(lcsuffix: String): Boolean {
+        return textViewerSuffices.contains(lcsuffix)
     }
 
-    fun imageMimeFromPath(path: String?): String? {
-        return imageMimeFromLcExt(Basepath.lcExt(path))
+    /// Files that can be viewed through a viewer, includes text, pdf, image, audio, video, ... etc.
+    fun isViewerLcSuffix(lcsuffix: String): Boolean {
+        return isTextViewerLcSuffix(lcsuffix) || isMediaLcSuffix(lcsuffix)
     }
 
-    fun imageMimeFromLcExt(lcext: String?): String? {
-        return if (lcext == null) null else imageMimeByExt[lcext]
+    fun isFontLcSuffix(lcsuffix: String): Boolean {
+        return fontSuffices.contains(lcsuffix)
     }
 
-    fun imageExtFromMime(mime: String?): String? {
-        return if (mime == null) null else imageExtByMime[mime]
+    fun isSeekableLcSuffix(lcsuffix: String): Boolean {
+        return isAudioLcSuffix(lcsuffix) || isVideoLcSuffix(lcsuffix) || lcsuffix == Suffix.BACKUP || lcsuffix == Suffix.IBACKUP
     }
 
-    fun isImagePath(path: String?): Boolean {
-        return isImageLcExt(Basepath.lcExt(path))
+    fun isImportableLcSuffix(lcsuffix: String): Boolean {
+        return true
     }
 
-    fun isImageLcExt(lcext: String?): Boolean {
-        return lcext != null && imageMimeByExt.containsKey(lcext)
+    fun imageMimeFromLcSuffix(lcsuffix: String): String? {
+        val mime = mimeBySuffix[lcsuffix] ?: return null
+        return if (mime.startsWith("image/")) mime else null
     }
 
-    fun isImageMime(mime: String?): Boolean {
-        return mime != null && imageExtByMime.containsKey(mime)
+    fun audioMimeFromLcSuffix(lcsuffix: String): String? {
+        val mime = mimeBySuffix[lcsuffix] ?: return null
+        return if (mime.startsWith("audio/")) mime else null
     }
 
-    fun isImageExportableToPhotoLibrary(lcext: String?): Boolean {
-        return lcext != null && imageMimeByExt.containsKey(lcext) && "ico" != lcext && "svg" != lcext
+    fun videoMimeFromLcSuffix(lcsuffix: String): String? {
+        val mime = mimeBySuffix[lcsuffix] ?: return null
+        return if (mime.startsWith("video/")) mime else null
     }
 
-    fun isVideoPlaybackLcExt(lcext: String?): Boolean {
-        return lcext != null && videoPlaybackMimeByExt.containsKey(lcext)
+    fun fontMimeFromLcSuffix(lcsuffix: String): String? {
+        return if (fontSuffices.contains(lcsuffix)) mimeBySuffix[lcsuffix] else null
     }
 
-    fun videoRecordingExt(): String {
-        return "mp4"
+    fun imageMimeFromPath(path: String): String? {
+        return imageMimeFromLcSuffix(Basepath.lcSuffix(path))
     }
 
-    fun videoPlaybackExtFromMime(mime: String?): String? {
-        return if (mime == null) null else videoPlaybackExtByMime[mime.toLowerCase()]
+    fun imageSuffixFromMime(mime: String): String? {
+        if (!mime.startsWith("image/")) return null
+        return suffixByMime[mime]
     }
 
-    fun videoPlaybackMimeFromPath(path: String?): String? {
-        return videoPlaybackMimeFromLcExt(Basepath.lcExt(path))
+    fun audioRecordingSuffix(): String {
+        return Suffix.M4A
     }
 
-    fun videoPlaybackMimeFromLcExt(lcext: String?): String? {
-        return if (lcext == null) null else videoPlaybackMimeByExt[lcext]
+    fun videoRecordingSuffix(): String {
+        return Suffix.MP4
     }
 
-    fun isHtmlPath(path: String?): Boolean {
-        return "html" == Basepath.lcExt(path)
-    }
-
-    fun isMediaLcExt(lcext: String?): Boolean {
-        return ("pdf" == lcext || isImageLcExt(lcext)
-                || isVideoPlaybackLcExt(lcext)
-                || isAudioPlaybackLcExt(lcext))
-    }
-
-    fun isImportableLcExt(lcext: String?): Boolean {
-        return (lcext != null
-                //#IF PRO
-                //#ELSE PRO
-                && importableMimeByExt.containsKey(lcext)
-                //#ENDIF PRO
-                )
-    }
-
-    fun isImportableMime(mime: String?): Boolean {
-        return (mime != null
-                //#IF PRO
-                //#ELSE PRO
-                && importableMimeByExt.containsValue(mime)
-                //#ENDIF PRO
-                )
-    }
-
-    fun isExportableLcExt(lcext: String?): Boolean {
-        return (lcext != null
-                //#IF PRO
-                //#ELSE PRO
-                && exportableMimeByExt.containsKey(lcext)
-                //#ENDIF PRO
-                )
-    }
-
-    fun isExportableMime(mime: String?): Boolean {
-        return (mime != null
-                //#IF PRO
-                //#ELSE PRO
-                && exportableMimeByExt.containsValue(mime)
-                //#ENDIF PRO
-                )
-    }
-
-    fun isSharableLcExt(lcext: String?): Boolean {
-        return isMediaLcExt(lcext)
-    }
-
-    //#BEGIN NOTE Java side only
-    fun isVideoPlaybackMime(mime: String?): Boolean {
-        return videoPlaybackExtByMime.containsKey(mime)
-    }
-
-    fun pdfMimeFromPath(path: String?): String? {
-        return pdfMimeFromLcExt(Basepath.lcExt(path))
-    }
-
-    fun pdfMimeFromLcExt(lcext: String?): String? {
-        return if ("pdf" == lcext) PDF else null
-    }
-
-    fun fontMimeFromPath(path: String?): String? {
-        return fontMimeFromLcExt(Basepath.lcExt(path))
-    }
-
-    fun fontMimeFromLcExt(lcext: String?): String? {
-        return if (lcext == null) {
-            null
-        } else FONT_MIMES[lcext]
-    }
-
-    fun fontFaceFormat(ext: String?): String? {
-        if (ext != null) {
-            val lc = ext.toLowerCase(Locale.ENGLISH)
-            if ("woff" == lc) {
-                return "woff"
-            } else if ("woff2" == lc) {
-                return "woff2"
-            } else if ("ttf" == lc || "otf" == lc) {
-                return "opentype"
-            } else if ("eot" == lc) {
-                return "embeded-opentype"
-            } else if ("svg" == lc || "svgz" == lc) {
-                return "svg"
-            }
+    fun fontFaceFormat(lcsuffix: String): String? {
+        if (Suffix.WOFF == lcsuffix) {
+            return Fontface.WOFF
+        } else if (Suffix.WOFF2 == lcsuffix) {
+            return Fontface.WOFF2
+        } else if (Suffix.TTF == lcsuffix || Suffix.OTF == lcsuffix) {
+            return Fontface.OPENTYPE
+        } else if (Suffix.EOT == lcsuffix) {
+            return Fontface.EOT
+        } else if (Suffix.SVG == lcsuffix || Suffix.SVGZ == lcsuffix) {
+            return Fontface.SVG
         }
         return null
     }
-    //#END NOTE Java side only.
 
-    //#END SINCE 2.9.0
-    init {
-        imageMimeByExt["png"] = PNG
-        imageMimeByExt["jpg"] = JPEG
-        imageMimeByExt["gif"] = "image/gif"
-        imageMimeByExt["bmp"] = "image/bmp"
-        imageMimeByExt["ico"] = "image/vnd.microsoft.icon"
-        imageMimeByExt["svg"] = "image/svg+xml"
-        for ((key, value) in imageMimeByExt) {
-            imageExtByMime[value] = key
-        }
-        imageMimeByExt["jpeg"] = JPEG
-        audioPlaybackMimeByExt["mp3"] = "audio/mpeg"
-        audioPlaybackMimeByExt["m4a"] = "audio/mp4"
-        audioPlaybackMimeByExt["wav"] = "audio/wav"
-        audioPlaybackMimeByExt["audio/mpeg"] = "mp3"
-        audioPlaybackMimeByExt["audio/mp4"] = "m4a"
-        audioPlaybackMimeByExt["audio/wav"] = "wav"
-        for ((key, value) in audioPlaybackMimeByExt) {
-            audioPlaybackExtByMime[value] = key
-        }
-        audioRecordMimeByExt["m4a"] = "audio/mp4"
-        videoPlaybackMimeByExt["mov"] = "video/quicktime"
-        videoPlaybackMimeByExt["mp4"] = "video/mp4"
-        for ((key, value) in videoPlaybackMimeByExt) {
-            videoPlaybackExtByMime[value] = key
-        }
-        videoRecordingMimeByExt["mp4"] = "video/mp4"
-        importableMimeByExt.putAll(imageMimeByExt)
-        importableMimeByExt.putAll(audioPlaybackMimeByExt)
-        importableMimeByExt.putAll(videoPlaybackMimeByExt)
-        importableMimeByExt[An.DEF.pdf] = PDF
-        exportableMimeByExt.putAll(importableMimeByExt)
-        exportableMimeByExt[An.DEF.css] = PDF
-        exportableMimeByExt[An.DEF.html] = HTML
-        FONT_MIMES["woff2"] = "application/font-woff2"
-        FONT_MIMES["woff"] = "application/font-woff"
-        FONT_MIMES["ttf"] = "application/x-font-ttf"
-        FONT_MIMES["otf"] = "font/opentype"
-        FONT_MIMES["eot"] = "application/vnd.ms-fontobject"
+    fun isSameType(lcsuffixa: String, lcsuffixb: String): Boolean {
+        if (isFontLcSuffix(lcsuffixa) && isFontLcSuffix(lcsuffixb)) return true
+        if (isImageLcSuffix(lcsuffixa) && isImageLcSuffix(lcsuffixb)) return true
+        if (isVideoLcSuffix(lcsuffixa) && isVideoLcSuffix(lcsuffixb)) return true
+        if (isAudioLcSuffix(lcsuffixa) && isAudioLcSuffix(lcsuffixb)) return true
+        return lcsuffixa == lcsuffixb
     }
 }

@@ -16,8 +16,18 @@
 */
 package com.cplusedition.bot.core
 
-import java.io.*
-import java.util.concurrent.*
+import com.cplusedition.bot.core.ProcessUtil.Companion.okOrFail
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.PrintWriter
+import java.util.concurrent.Callable
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 object ProcessUt : ProcessUtil()
 
@@ -27,7 +37,21 @@ open class ProcessUtil {
         try {
             Thread.sleep(ms)
         } catch (e: Throwable) {
-            throw AssertionError(e)
+            throw RuntimeException(e)
+        }
+    }
+
+    fun await(done: CountDownLatch) {
+        try {
+            done.await()
+        } catch (e: InterruptedException) {
+        }
+    }
+
+    fun await(done: CountDownLatch, ms: Long) {
+        try {
+            done.await(ms, TimeUnit.MILLISECONDS)
+        } catch (e: InterruptedException) {
         }
     }
 
@@ -49,7 +73,7 @@ open class ProcessUtil {
 
     @Throws(Exception::class)
     fun backtick(cmd: String, args: List<String>): String {
-        return backtick(FileUt.pwd(), cmd, args)
+        return backtick(FileUt.pwd(), cmd, *args.toTypedArray())
     }
 
     @Throws(Exception::class)
@@ -64,65 +88,78 @@ open class ProcessUtil {
 
     @Throws(Exception::class)
     fun backtick(workdir: File, cmd: String, vararg args: String): String {
-        val out = ByteArrayOutputStream()
-        val err = ByteArrayOutputStream()
         return ProcessUtBuilder(workdir, cmd, *args)
-                .out(out)
-                .err(err)
-                .async { process ->
-                    val rc = process.exitValue()
-                    if (rc != 0) {
-                        val outs = out.toString("UTF-8")
-                        val errs = err.toString("UTF-8")
-                        throw IOException("# ERROR: rc=$rc\n$outs\n$errs")
-                    }
-                    out.toString("UTF-8")
-                }.get()
+            .backtick { rc, out, err ->
+                okOrFail(rc, out, err)
+                IOUt.readText(out)
+            }.get()
     }
 
     @Throws(Exception::class)
-    fun backtick(out: OutputStream, workdir: File, cmd: String, args: List<String>): Int {
-        return backtick(out, workdir, cmd, *args.toTypedArray())
+    fun backtick(out: OutputStream, workdir: File, cmd: String, args: List<String>) {
+        backtick(out, workdir, cmd, *args.toTypedArray())
     }
 
     @Throws(Exception::class)
-    fun backtick(out: OutputStream, workdir: File, cmd: String, vararg args: String): Int {
-        val err = ByteArrayOutputStream()
-        return ProcessUtBuilder(workdir, cmd, *args)
-                .out(out)
-                .err(err)
-                .async { process ->
-                    val rc = process.exitValue()
-                    if (rc != 0) {
-                        val errs = err.toString("UTF-8")
-                        throw IOException("# ERROR: rc=$rc\n$errs")
-                    }
-                    rc
-                }.get()
+    fun backtick(out: OutputStream, workdir: File, cmd: String, vararg args: String) {
+        val err = MyByteOutputStream()
+        ProcessUtBuilder(workdir, cmd, *args)
+            .async(out, err) { rc ->
+                if (rc != 0) {
+                    val errs = IOUt.readText(err.inputStream())
+                    throw RuntimeException("# ERROR: rc=$rc\n$errs")
+                }
+            }.get()
+    }
+
+    companion object {
+        fun okOrFail(rc: Int, out: InputStream, err: InputStream) {
+            if (rc == 0) return
+            throw RuntimeException(errmsg(rc, out, err))
+        }
+
+        fun errmsg(rc: Int, out: InputStream, err: InputStream): String {
+            return StringPrintWriter().use { w ->
+                w.println("# rc=$rc")
+                print(w, out)
+                print(w, err)
+                w
+            }.toString()
+        }
+
+        fun print(w: PrintWriter, out: InputStream) {
+            IOUt.readText(out).let {
+                if (it.isNotEmpty()) w.println(it)
+            }
+        }
     }
 }
 
 class ProcessUtBuilder(
-        private var workdir: File,
-        private val cmd: String,
-        private vararg val args: String
+    private var workdir: File,
+    private val cmd: String,
+    private vararg val args: String
 ) {
     private var env: Array<out String>? = null
     private var timeout = DateUt.DAY
     private var timeunit = TimeUnit.MILLISECONDS
-    private var out: OutputStream? = null
-    private var err: OutputStream? = null
     private var input: InputStream? = null
+    private var onInputErrorCallback: Fun10<Exception> = { e -> throw e }
 
     constructor(cmd: String, vararg args: String) : this(FileUt.pwd(), cmd, *args)
+    constructor(cmd: String, args: Collection<String>) : this(FileUt.pwd(), cmd, *(args.toTypedArray()))
+    constructor(workdir: File, cmd: String, args: Collection<String>) : this(workdir, cmd, *(args.toTypedArray()))
 
     companion object {
         private val pool = Executors.newCachedThreadPool()
-    }
 
-    fun workdir(dir: File): ProcessUtBuilder {
-        this.workdir = dir
-        return this
+        fun submit(task: Runnable): Future<*> {
+            return pool.submit(task)
+        }
+
+        fun <V> submit(task: Callable<V>): Future<V> {
+            return pool.submit(task)
+        }
     }
 
     fun env(vararg env: String): ProcessUtBuilder {
@@ -136,91 +173,128 @@ class ProcessUtBuilder(
         return this
     }
 
-    fun out(out: OutputStream): ProcessUtBuilder {
-        this.out = out
-        return this
-    }
-
-    fun err(err: OutputStream): ProcessUtBuilder {
-        this.err = err
-        return this
-    }
-
     fun input(input: InputStream): ProcessUtBuilder {
         this.input = input
         return this
     }
 
-    private fun okOrFail(rc: Int, out: ByteArrayOutputStream, err: ByteArrayOutputStream) {
-        if (rc == 0) return
-        val w = StringPrintWriter()
-        w.println("# rc=$rc")
-        val outs = out.toByteArray().inputStream().reader().readText()
-        if (outs.isNotEmpty()) w.println(outs)
-        val errs = err.toByteArray().inputStream().reader().readText()
-        if (errs.isNotEmpty()) w.println(errs)
-        throw AssertionError(w.toString())
+    fun onInputError(callback: Fun10<Exception>): ProcessUtBuilder {
+        this.onInputErrorCallback = callback
+        return this
+    }
+
+    fun asyncOrFailStdio(): Future<Unit> {
+        return asyncOrFail(StayOpenOutputStream(System.out), StayOpenOutputStream(System.err)) {}
+    }
+
+    fun asyncOrFail(out: OutputStream, err: OutputStream = NullOutputStream()): Future<Unit> {
+        return asyncOrFail(out, err) {}
+    }
+
+    fun <V> asyncOrFail(out: OutputStream, callback: Fun01<V>): Future<V> {
+        return asyncOrFail(out, NullOutputStream(), callback)
+    }
+
+    fun <V> asyncOrFail(out: OutputStream, err: OutputStream, callback: Fun01<V>): Future<V> {
+        return async(out, err) { rc ->
+            if (rc != 0) throw RuntimeException("ERROR: rc=$rc")
+            callback()
+        }
     }
 
     fun asyncOrFail(): Future<Unit> {
-        val out = ByteArrayOutputStream()
-        val err = ByteArrayOutputStream()
-        this.out = out
-        this.err = err
-        return async { process ->
-            okOrFail(process.exitValue(), out, err)
+        return async(NullOutputStream(), NullOutputStream()) { rc ->
+            if (rc != 0) throw RuntimeException("ERROR: rc=$rc")
         }
     }
 
-    fun <V, O : OutputStream> asyncOrFail(out: O, callback: Fun11<O, V>): Future<V> {
-        this.out = out
-        return async { process ->
-            if (process.exitValue() != 0) throw AssertionError("${process.exitValue()}")
-            callback(out)
-        }
+    fun async(out: OutputStream, err: OutputStream): Future<Int> {
+        return async(out, err) { rc -> rc }
     }
 
-    fun <V, O : OutputStream, E : OutputStream> asyncOrFail(out: O, err: E, callback: Fun21<O, E, V>): Future<V> {
-        this.out = out
-        this.err = err
-        return async { process ->
-            if (process.exitValue() != 0) throw AssertionError("${process.exitValue()}")
-            callback(out, err)
-        }
+    fun <V> async(callback: Fun11<Int, V>): Future<V> {
+        return async(NullOutputStream(), NullOutputStream(), callback)
     }
 
     fun async(): Future<Int> {
-        return async { process ->
-            process.exitValue()
-        }
+        return async { rc -> rc }
     }
 
-    fun <V> async(callback: Fun11<Process, V>): Future<V> {
+    /// NOTE that the input, out and err streams are closed before calling the callback.
+    /// Wrap System.out and System.err in a StayOpenOutputStream if neccessary.
+    fun <V> async(
+        out: OutputStream,
+        err: OutputStream = NullOutputStream(),
+        callback: Fun11<Int, V>
+    ): Future<V> {
+        return async({
+            FileUt.copyByteWise(out, it)
+        }, {
+            FileUt.copyByteWise(err, it)
+        }, {
+            out.close()
+            err.close()
+            callback(it)
+        })
+    }
+
+    /// Pipe the process output to out(InputStream)
+    /// and return a Future for the result of out(InputStream).
+    /// The out() callback is executed in a separate thread.
+    /// The future return by this method complete after
+    /// the process ended and the out() method returns a result.
+    /// @param out(InputStream) The input stream comes from
+    /// the output stream of the process.
+    fun <V> pipe(
+        err: OutputStream = NullOutputStream(),
+        out: Fun11<InputStream, V>
+    ): Future<V?> {
+        var result: V? = null
+        return async({
+            result = out(it)
+        }, {
+            FileUt.copyByteWise(err, it)
+        }, {
+            err.close()
+            if (it != 0) throw IOException()
+            result
+        })
+    }
+
+    private fun <V> async(
+        out: Fun10<InputStream>,
+        err: Fun10<InputStream>,
+        callback: Fun11<Int, V>
+    ): Future<V> {
         return pool.submit(Callable {
             val cmdline = arrayOf(cmd, *args)
             val process = Runtime.getRuntime().exec(cmdline, env, workdir)
             try {
                 val outmon = pool.submit {
-                    process.inputStream.use {
-                        FileUt.copyByteWise(out ?: NullOutputStream(), it)
+                    process.inputStream.use { input ->
+                        out(input)
                     }
                 }
                 val errmon = pool.submit {
-                    process.errorStream.use {
-                        FileUt.copyByteWise(err ?: NullOutputStream(), it)
+                    process.errorStream.use { input ->
+                        err(input)
                     }
                 }
-                this.input?.let { input ->
-                    process.outputStream.use {
-                        FileUt.copy(DEFAULT_BUFFER_SIZE, it, input)
+                try {
+                    this.input?.use { input ->
+                        process.outputStream.use {
+                            FileUt.copy(DEFAULT_BUFFER_SIZE, it, input)
+                        }
                     }
+                } catch (e: Exception) {
+                    this.onInputErrorCallback(e)
                 }
                 if (!process.waitFor(timeout, timeunit)) {
                     throw TimeoutException()
                 }
                 outmon.get(timeout, timeunit)
                 errmon.get(timeout, timeunit)
-                return@Callable callback(process)
+                return@Callable callback(process.exitValue())
             } catch (e: Throwable) {
                 try {
                     process.destroyForcibly().waitFor()
@@ -230,16 +304,33 @@ class ProcessUtBuilder(
             }
         })
     }
+
+    fun backtickOrFail(): Future<String> {
+        return backtick { rc, out, err ->
+            if (rc != 0) {
+                throw RuntimeException(ProcessUtil.errmsg(rc, out, err))
+            }
+            IOUt.readText(out)
+        }
+    }
+
+    fun <V> backtickOrFail(callback: Fun21<InputStream, InputStream, V>): Future<V> {
+        return backtick { rc, out, err ->
+            okOrFail(rc, out, err)
+            callback(out, err)
+        }
+    }
+
+    /// backtick() is like async() but buffer the out and err streams implicitly.
+    fun <V> backtick(callback: Fun31<Int, InputStream, InputStream, V>): Future<V> {
+        val out = MyByteOutputStream()
+        val err = MyByteOutputStream()
+        return async(out, err) { rc ->
+            out.inputStream().use { o ->
+                err.inputStream().use { e ->
+                    callback(rc, o, e)
+                }
+            }
+        }
+    }
 }
-
-class NullOutputStream : OutputStream() {
-    override fun write(b: Int) {
-    }
-
-    override fun write(b: ByteArray) {
-    }
-
-    override fun write(b: ByteArray, off: Int, len: Int) {
-    }
-}
-

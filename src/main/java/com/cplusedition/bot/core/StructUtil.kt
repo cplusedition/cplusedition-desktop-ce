@@ -155,12 +155,37 @@ open class StructUtil {
      * 0, if a==null && b== null,
      * else return callback(a!!, b!!).
      */
-    fun <T> compareNullable(a: T?, b: T?, callback: (T, T) -> Int): Int {
+    fun <T> nullableCompare(a: T?, b: T?, callback: (T, T) -> Int): Int {
         return if (a == null) {
             if (b == null) 0 else -1
         } else {
             if (b == null) 1 else callback(a, b)
         }
+    }
+
+    fun <T> nullableEquals(a: T?, b: T?, callback: (T, T) -> Boolean): Boolean {
+        if (a == null) return b == null
+        if (b == null) return false
+        return callback(a, b)
+    }
+
+    fun <K, V> putList(ret: MutableMap<K, MutableList<V>>, key: K, vararg values: V) {
+        val c = ret[key] ?: ArrayList<V>().also { ret[key] = it }
+        c.bot.adding(*values)
+    }
+
+    fun <K, V> putList(ret: MutableMap<K, MutableList<V>>, key: K, values: Iterable<V>) {
+        val c = ret[key] ?: ArrayList<V>().also { ret[key] = it }
+        c.addAll(values)
+    }
+
+    fun <K, KK, VV> putTreeMap(ret: MutableMap<K, MutableMap<KK, VV>>, key1: K, key: KK, value: VV) {
+        val c = ret[key1] ?: TreeMap<KK, VV>().also { ret[key1] = it }
+        c[key] = value
+    }
+
+    fun byteArray(vararg a: Int): ByteArray {
+        return ByteArray(a.size) { a[it].toByte() }
     }
 }
 
@@ -179,12 +204,12 @@ open class DiffStat<T : Comparable<T>> {
     }
 
     fun toString(
-            msg1: String,
-            msg2: String,
-            printsames: Boolean = false,
-            printaonly: Boolean = true,
-            printbonly: Boolean = true,
-            printdiffs: Boolean = true
+        msg1: String,
+        msg2: String,
+        printsames: Boolean = false,
+        printaonly: Boolean = true,
+        printbonly: Boolean = true,
+        printdiffs: Boolean = true
     ): String {
         val w = StringPrintWriter()
         if (printsames) {
@@ -205,4 +230,79 @@ open class DiffStat<T : Comparable<T>> {
         }
         return w.toString()
     }
+}
+
+interface IEqualityMap<K, V> {
+    fun get(key: K): V?
+    fun put(key: K, value: V): V?
+    fun remove(key: K): V?
+    fun containsKey(key: K): Boolean
+    fun containsValue(value: V): Boolean
+    fun isEmpty(): Boolean
+    fun iterator(): Iterator<K>
+    fun clear()
+}
+
+/// A simple compact map that only require key with equality operator.
+class ArrayMap<K, V>(
+    cap: Int = 4
+) : IEqualityMap<K, V> {
+    private val _keys = ArrayList<K>(cap)
+    private val _values = ArrayList<V>(cap)
+    override fun get(key: K): V? {
+        val index = _keys.indexOf(key)
+        return if (index >= 0) _values.get(index) else null
+    }
+
+    override fun put(key: K, value: V): V? {
+        val index = _keys.indexOf(key)
+        if (index >= 0) {
+            val ret = _values.get(index)
+            _values.set(index, value)
+            return ret
+        } else {
+            _keys.add(key)
+            _values.add(value)
+            return null
+        }
+    }
+
+    override fun remove(key: K): V? {
+        val index = _keys.indexOf(key)
+        if (index >= 0) {
+            val ret = _values.get(index)
+            _keys.removeAt(index)
+            _values.removeAt(index)
+            return ret
+        }
+        return null
+    }
+
+    override fun containsKey(key: K): Boolean {
+        return _keys.indexOf(key) >= 0
+    }
+
+    override fun containsValue(value: V): Boolean {
+        return _values.indexOf(value) >= 0
+    }
+
+    override fun isEmpty(): Boolean {
+        return _keys.isEmpty()
+    }
+
+    override fun iterator(): Iterator<K> {
+        return _keys.iterator()
+    }
+
+    override fun clear() {
+        _keys.clear()
+        _values.clear()
+    }
+
+    data class Quad<T1, T2, T3, T4> constructor(
+        val first: T1,
+        val second: T2,
+        val third: T3,
+        val fourth: T4,
+    )
 }

@@ -118,17 +118,19 @@ class BasicHeaderValueParser : HeaderValueParser {
         return params.toTypedArray()
     }
 
-    override fun parseNameValuePair(buffer: CharArrayBuffer,
-                                    cursor: ParserCursor): NameValuePair {
+    override fun parseNameValuePair(
+        buffer: CharArrayBuffer,
+        cursor: ParserCursor
+    ): NameValuePair {
         Args.notNull(buffer, "Char array buffer")
         Args.notNull(cursor, "Parser cursor")
         val name = tokenParser.parseToken(buffer, cursor, TOKEN_DELIMS)
         if (cursor.atEnd()) {
             return BasicNameValuePair(name, null)
         }
-        val delim = buffer[cursor.pos].toInt()
+        val delim = buffer[cursor.pos].code
         cursor.updatePos(cursor.pos + 1)
-        if (delim != '='.toInt()) {
+        if (delim != '='.code) {
             return createNameValuePair(name, null)
         }
         val value = tokenParser.parseValue(buffer, cursor, VALUE_DELIMS)
@@ -139,28 +141,30 @@ class BasicHeaderValueParser : HeaderValueParser {
     }
 
     @Deprecated("(4.4) use {@link TokenParser}")
-    fun parseNameValuePair(buffer: CharArrayBuffer,
-                           cursor: ParserCursor,
-                           delimiters: CharArray?): NameValuePair {
+    fun parseNameValuePair(
+        buffer: CharArrayBuffer,
+        cursor: ParserCursor,
+        delimiters: CharArray?
+    ): NameValuePair {
         Args.notNull(buffer, "Char array buffer")
         Args.notNull(cursor, "Parser cursor")
         val delimSet = BitSet()
         if (delimiters != null) {
             for (delimiter in delimiters) {
-                delimSet.set(delimiter.toInt())
+                delimSet.set(delimiter.code)
             }
         }
-        delimSet.set('='.toInt())
+        delimSet.set('='.code)
         val name = tokenParser.parseToken(buffer, cursor, delimSet)
         if (cursor.atEnd()) {
             return BasicNameValuePair(name, null)
         }
-        val delim = buffer[cursor.pos].toInt()
+        val delim = buffer[cursor.pos].code
         cursor.updatePos(cursor.pos + 1)
-        if (delim != '='.toInt()) {
+        if (delim != '='.code) {
             return createNameValuePair(name, null)
         }
-        delimSet.clear('='.toInt())
+        delimSet.clear('='.code)
         val value = tokenParser.parseValue(buffer, cursor, delimSet)
         if (!cursor.atEnd()) {
             cursor.updatePos(cursor.pos + 1)
@@ -195,8 +199,10 @@ class BasicHeaderValueParser : HeaderValueParser {
         private const val PARAM_DELIMITER = ';'
         private const val ELEM_DELIMITER = ','
 
-        private val TOKEN_DELIMS: BitSet = TokenParser.Companion.INIT_BITSET('='.toInt(), PARAM_DELIMITER.toInt(), ELEM_DELIMITER.toInt())
-        private val VALUE_DELIMS: BitSet = TokenParser.Companion.INIT_BITSET(PARAM_DELIMITER.toInt(), ELEM_DELIMITER.toInt())
+        private val TOKEN_DELIMS: BitSet = TokenParser.Companion.INIT_BITSET('='.code,
+            PARAM_DELIMITER.code,
+            ELEM_DELIMITER.code)
+        private val VALUE_DELIMS: BitSet = TokenParser.Companion.INIT_BITSET(PARAM_DELIMITER.code, ELEM_DELIMITER.code)
 
         /**
          * Parses elements with the given parser.

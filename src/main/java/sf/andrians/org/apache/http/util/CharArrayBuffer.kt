@@ -77,7 +77,8 @@ class CharArrayBuffer(capacity: Int) : CharSequence, Serializable {
             return
         }
         if (off < 0 || off > b.size || len < 0 ||
-                off + len < 0 || off + len > b.size) {
+            off + len < 0 || off + len > b.size
+        ) {
             throw IndexOutOfBoundsException("off: " + off + " len: " + len + " b.length: " + b.size)
         }
         if (len == 0) {
@@ -177,7 +178,8 @@ class CharArrayBuffer(capacity: Int) : CharSequence, Serializable {
             return
         }
         if (off < 0 || off > b.size || len < 0 ||
-                off + len < 0 || off + len > b.size) {
+            off + len < 0 || off + len > b.size
+        ) {
             throw IndexOutOfBoundsException("off: " + off + " len: " + len + " b.length: " + b.size)
         }
         if (len == 0) {
@@ -317,15 +319,6 @@ class CharArrayBuffer(capacity: Int) : CharSequence, Serializable {
     }
 
     /**
-     * Returns `true` if this buffer is empty, that is, its
-     * [.length] is equal to `0`.
-     * @return `true` if this buffer is empty, `false`
-     * otherwise.
-     */
-    val isEmpty: Boolean
-        get() = len == 0
-
-    /**
      * Returns `true` if this buffer is full, that is, its
      * [.length] is equal to its [.capacity].
      * @return `true` if this buffer is full, `false`
@@ -333,6 +326,7 @@ class CharArrayBuffer(capacity: Int) : CharSequence, Serializable {
      */
     val isFull: Boolean
         get() = len == buffer.size
+
     /**
      * Returns the index within this buffer of the first occurrence of the
      * specified character, starting the search at the specified
@@ -454,17 +448,17 @@ class CharArrayBuffer(capacity: Int) : CharSequence, Serializable {
      * {@inheritDoc}
      * @since 4.4
      */
-    override fun subSequence(beginIndex: Int, endIndex: Int): CharSequence {
-        if (beginIndex < 0) {
-            throw IndexOutOfBoundsException("Negative beginIndex: $beginIndex")
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+        if (startIndex < 0) {
+            throw IndexOutOfBoundsException("Negative beginIndex: $startIndex")
         }
         if (endIndex > len) {
-            throw IndexOutOfBoundsException("endIndex: " + endIndex + " > length: " + len)
+            throw IndexOutOfBoundsException("endIndex: $endIndex > length: $len")
         }
-        if (beginIndex > endIndex) {
-            throw IndexOutOfBoundsException("beginIndex: $beginIndex > endIndex: $endIndex")
+        if (startIndex > endIndex) {
+            throw IndexOutOfBoundsException("beginIndex: $startIndex > endIndex: $endIndex")
         }
-        return CharBuffer.wrap(buffer, beginIndex, endIndex)
+        return CharBuffer.wrap(buffer, startIndex, endIndex)
     }
 
     override fun toString(): String {

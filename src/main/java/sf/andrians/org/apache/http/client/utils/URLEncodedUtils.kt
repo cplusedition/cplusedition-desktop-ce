@@ -50,7 +50,8 @@ import sf.andrians.org.apache.http.message.BasicNameValuePair
 import sf.andrians.org.apache.http.message.ParserCursor
 import sf.andrians.org.apache.http.message.TokenParser
 import sf.andrians.org.apache.http.protocol.HTTP
-import sf.andrians.org.apache.http.util.Args
+import sf.andrians.org.apache.http.util.Args.check
+import sf.andrians.org.apache.http.util.Args.notNull
 import sf.andrians.org.apache.http.util.CharArrayBuffer
 import java.io.IOException
 import java.io.InputStreamReader
@@ -77,11 +78,14 @@ object URLEncodedUtils {
     private const val PATH_SEPARATOR = '/'
     private val PATH_SEPARATORS = BitSet(256)
 
+    init {
+        PATH_SEPARATORS.set(PATH_SEPARATOR.code)
+    }
+
     @Deprecated("4.5 Use {@link #parse(URI, Charset)}")
     fun parse(uri: URI, charsetName: String?): List<NameValuePair> {
         return parse(uri, if (charsetName != null) Charset.forName(charsetName) else null)
     }
-
     /**
      * Returns a list of [NameValuePair]s URI query parameters.
      * By convention, `'&'` and `';'` are accepted as parameter separators.
@@ -93,13 +97,12 @@ object URLEncodedUtils {
      * @since 4.5
      */
     fun parse(uri: URI, charset: Charset?): List<NameValuePair> {
-        Args.notNull(uri, "URI")
+        notNull(uri, "URI")
         val query = uri.rawQuery
         return if (query != null && !query.isEmpty()) {
             parse(query, charset)
         } else createEmptyList()
     }
-
     /**
      * Returns a list of [NameValuePairs][NameValuePair] as parsed from an [HttpEntity].
      * The encoding is taken from the entity's Content-Encoding header.
@@ -115,14 +118,15 @@ object URLEncodedUtils {
      */
     @Throws(IOException::class)
     fun parse(
-            entity: HttpEntity): List<NameValuePair> {
-        Args.notNull(entity, "HTTP entity")
-        val contentType = ContentType.get(entity)
+        entity: HttpEntity
+    ): List<NameValuePair> {
+        notNull(entity, "HTTP entity")
+        val contentType = ContentType[entity]
         if (contentType == null || !contentType.mimeType.equals(CONTENT_TYPE, ignoreCase = true)) {
             return createEmptyList()
         }
         val len = entity.contentLength
-        Args.check(len <= Int.MAX_VALUE, "HTTP entity is too large")
+        check(len <= Int.MAX_VALUE, "HTTP entity is too large")
         val charset = contentType.charset ?: HTTP.DEF_CONTENT_CHARSET
         val inStream = entity.content ?: return createEmptyList()
         val buf: CharArrayBuffer
@@ -137,28 +141,30 @@ object URLEncodedUtils {
         } finally {
             inStream.close()
         }
-        return if (buf.isEmpty) {
+        return if (buf.length == 0) {
             createEmptyList()
-        } else parse(buf, charset, QP_SEP_A)
+        } else parse(
+            buf,
+            charset,
+            QP_SEP_A
+        )
     }
-
     /**
      * Returns true if the entity's Content-Type header is
      * `application/x-www-form-urlencoded`.
      */
     fun isEncoded(entity: HttpEntity): Boolean {
-        Args.notNull(entity, "HTTP entity")
+        notNull(entity, "HTTP entity")
         val h = entity.contentType
         if (h != null) {
             val elems = h.elements
-            if (elems.isNotEmpty()) {
+            if (elems.size > 0) {
                 val contentType = elems[0].name
                 return contentType.equals(CONTENT_TYPE, ignoreCase = true)
             }
         }
         return false
     }
-
     /**
      * Adds all parameters within the Scanner to the list of `parameters`, as encoded by
      * `encoding`. For example, a scanner containing the string `a=1&b=2&c=3` would add the
@@ -175,12 +181,12 @@ object URLEncodedUtils {
      */
     @Deprecated("(4.4) use {@link #parse(String, java.nio.charset.Charset)}")
     fun parse(
-            parameters: MutableList<NameValuePair?>,
-            scanner: Scanner,
-            charset: String?) {
+        parameters: MutableList<NameValuePair?>,
+        scanner: Scanner,
+        charset: String?
+    ) {
         parse(parameters, scanner, "[$QP_SEP_A$QP_SEP_S]", charset)
     }
-
     /**
      * Adds all parameters within the Scanner to the list of
      * `parameters`, as encoded by `encoding`. For
@@ -200,10 +206,11 @@ object URLEncodedUtils {
      */
     @Deprecated("(4.4) use {@link #parse(CharArrayBuffer, java.nio.charset.Charset, char...)}")
     fun parse(
-            parameters: MutableList<NameValuePair?>,
-            scanner: Scanner,
-            parameterSepartorPattern: String?,
-            charset: String?) {
+        parameters: MutableList<NameValuePair?>,
+        scanner: Scanner,
+        parameterSepartorPattern: String?,
+        charset: String?
+    ) {
         scanner.useDelimiter(parameterSepartorPattern)
         while (scanner.hasNext()) {
             val name: String?
@@ -220,7 +227,6 @@ object URLEncodedUtils {
             parameters.add(BasicNameValuePair(name, value))
         }
     }
-
     /**
      * Returns a list of [NameValuePair]s URI query parameters.
      * By convention, `'&'` and `';'` are accepted as parameter separators.
@@ -239,7 +245,6 @@ object URLEncodedUtils {
         buffer.append(s)
         return parse(buffer, charset, QP_SEP_A, QP_SEP_S)
     }
-
     /**
      * Returns a list of [NameValuePairs][NameValuePair] as parsed from the given string using the given character
      * encoding.
@@ -259,7 +264,6 @@ object URLEncodedUtils {
         buffer.append(s)
         return parse(buffer, charset, *separators)
     }
-
     /**
      * Returns a list of [NameValuePair]s parameters.
      *
@@ -273,24 +277,26 @@ object URLEncodedUtils {
      *
      * @since 4.4
      */
-    fun parse(buf: CharArrayBuffer, charset: Charset?, vararg separators: Char): List<NameValuePair> {
-        Args.notNull(buf, "Char array buffer")
-        val tokenParser: TokenParser = TokenParser.Companion.INSTANCE
+    fun parse(
+        buf: CharArrayBuffer, charset: Charset?, vararg separators: Char
+    ): List<NameValuePair> {
+        notNull(buf, "Char array buffer")
+        val tokenParser = TokenParser.INSTANCE
         val delimSet = BitSet()
         for (separator in separators) {
-            delimSet.set(separator.toInt())
+            delimSet.set(separator.code)
         }
         val cursor = ParserCursor(0, buf.length)
         val list: MutableList<NameValuePair> = ArrayList()
         while (!cursor.atEnd()) {
-            delimSet.set('='.toInt())
+            delimSet.set('='.code)
             val name = tokenParser.parseToken(buf, cursor, delimSet)
             var value: String? = null
             if (!cursor.atEnd()) {
-                val delim = buf[cursor.pos].toInt()
+                val delim = buf[cursor.pos].code
                 cursor.updatePos(cursor.pos + 1)
-                if (delim == '='.toInt()) {
-                    delimSet.clear('='.toInt())
+                if (delim == '='.code) {
+                    delimSet.clear('='.code)
                     value = tokenParser.parseToken(buf, cursor, delimSet)
                     if (!cursor.atEnd()) {
                         cursor.updatePos(cursor.pos + 1)
@@ -298,23 +304,26 @@ object URLEncodedUtils {
                 }
             }
             if (!name.isEmpty()) {
-                list.add(BasicNameValuePair(
+                list.add(
+                    BasicNameValuePair(
                         decodeFormFields(name, charset),
-                        decodeFormFields(value, charset)))
+                        decodeFormFields(value, charset)
+                    )
+                )
             }
         }
         return list
     }
 
-    fun splitSegments(s: CharSequence, separators: BitSet): MutableList<String?> {
+    fun splitSegments(s: CharSequence, separators: BitSet): MutableList<String> {
         val cursor = ParserCursor(0, s.length)
-        val list: MutableList<String?> = ArrayList()
         if (cursor.atEnd()) {
-            return list
+            return mutableListOf()
         }
-        if (separators[s[cursor.pos].toInt()]) {
+        if (separators[s[cursor.pos].code]) {
             cursor.updatePos(cursor.pos + 1)
         }
+        val list: MutableList<String> = ArrayList()
         val buf = StringBuilder()
         while (true) {
             if (cursor.atEnd()) {
@@ -322,7 +331,7 @@ object URLEncodedUtils {
                 break
             }
             val current = s[cursor.pos]
-            if (separators[current.toInt()]) {
+            if (separators[current.code]) {
                 list.add(buf.toString())
                 buf.setLength(0)
             } else {
@@ -333,7 +342,7 @@ object URLEncodedUtils {
         return list
     }
 
-    fun splitPathSegments(s: CharSequence): MutableList<String?> {
+    fun splitPathSegments(s: CharSequence): MutableList<String> {
         return splitSegments(s, PATH_SEPARATORS)
     }
     /**
@@ -353,17 +362,15 @@ object URLEncodedUtils {
      *
      * @since 4.5
      */
-
-    fun parsePathSegments(s: CharSequence, charset: Charset? = Consts.UTF_8): List<String?> {
-        Args.notNull(s, "Char sequence")
+    @JvmOverloads
+    fun parsePathSegments(s: CharSequence, charset: Charset? = Consts.UTF_8): MutableList<String> {
+        notNull(s, "Char sequence")
         val list = splitPathSegments(s)
         for (i in list.indices) {
-            val ss = urlDecode(list[i], charset ?: Consts.UTF_8, false)
-            list.set(i, ss)
+            list.set(i, urlDecode(list[i], charset ?: Consts.UTF_8, false))
         }
         return list
     }
-
     /**
      * Returns a string consisting of joint encoded path segments.
      *
@@ -374,14 +381,13 @@ object URLEncodedUtils {
      * @since 4.5
      */
     fun formatSegments(segments: Iterable<String>, charset: Charset): String {
-        Args.notNull<Iterable<String>>(segments, "Segments")
+        notNull(segments, "Segments")
         val result = StringBuilder()
         for (segment in segments) {
             result.append(PATH_SEPARATOR).append(urlEncode(segment, charset, PATHSAFE, false))
         }
         return result.toString()
     }
-
     /**
      * Returns a string consisting of joint encoded path segments.
      *
@@ -393,7 +399,6 @@ object URLEncodedUtils {
     fun formatSegments(vararg segments: String): String {
         return formatSegments(Arrays.asList(*segments), Consts.UTF_8)
     }
-
     /**
      * Returns a String that is suitable for use as an `application/x-www-form-urlencoded`
      * list of parameters in an HTTP PUT or HTTP POST.
@@ -403,11 +408,11 @@ object URLEncodedUtils {
      * @return An `application/x-www-form-urlencoded` string
      */
     fun format(
-            parameters: List<NameValuePair>,
-            charset: String?): String {
+        parameters: List<NameValuePair>,
+        charset: String?
+    ): String {
         return format(parameters, QP_SEP_A, charset)
     }
-
     /**
      * Returns a String that is suitable for use as an `application/x-www-form-urlencoded`
      * list of parameters in an HTTP PUT or HTTP POST.
@@ -420,9 +425,10 @@ object URLEncodedUtils {
      * @since 4.3
      */
     fun format(
-            parameters: List<NameValuePair>,
-            parameterSeparator: Char,
-            charset: String?): String {
+        parameters: List<NameValuePair>,
+        parameterSeparator: Char,
+        charset: String?
+    ): String {
         val result = StringBuilder()
         for (parameter in parameters) {
             val encodedName = encodeFormFields(parameter.name, charset)
@@ -438,7 +444,6 @@ object URLEncodedUtils {
         }
         return result.toString()
     }
-
     /**
      * Returns a String that is suitable for use as an `application/x-www-form-urlencoded`
      * list of parameters in an HTTP PUT or HTTP POST.
@@ -450,11 +455,11 @@ object URLEncodedUtils {
      * @since 4.2
      */
     fun format(
-            parameters: Iterable<NameValuePair>,
-            charset: Charset?): String {
+        parameters: Iterable<NameValuePair>,
+        charset: Charset?
+    ): String {
         return format(parameters, QP_SEP_A, charset)
     }
-
     /**
      * Returns a String that is suitable for use as an `application/x-www-form-urlencoded`
      * list of parameters in an HTTP PUT or HTTP POST.
@@ -467,10 +472,11 @@ object URLEncodedUtils {
      * @since 4.3
      */
     fun format(
-            parameters: Iterable<NameValuePair>,
-            parameterSeparator: Char,
-            charset: Charset?): String {
-        Args.notNull(parameters, "Parameters")
+        parameters: Iterable<NameValuePair>,
+        parameterSeparator: Char,
+        charset: Charset?
+    ): String {
+        notNull(parameters, "Parameters")
         val result = StringBuilder()
         for (parameter in parameters) {
             val encodedName = encodeFormFields(parameter.name, charset)
@@ -486,7 +492,6 @@ object URLEncodedUtils {
         }
         return result.toString()
     }
-
     /**
      * Unreserved characters, i.e. alphanumeric, plus: `_ - ! . ~ ' ( ) *`
      *
@@ -495,7 +500,6 @@ object URLEncodedUtils {
      * [RFC 2396](http://www.ietf.org/rfc/rfc2396.txt)
      */
     private val UNRESERVED = BitSet(256)
-
     /**
      * Punctuation characters: , ; : $ & + =
      *
@@ -503,19 +507,15 @@ object URLEncodedUtils {
      * These are the additional characters allowed by userinfo.
      */
     private val PUNCT = BitSet(256)
-
     /** Characters which are safe to use in userinfo,
      * i.e. [.UNRESERVED] plus [.PUNCT]uation  */
     private val USERINFO = BitSet(256)
-
     /** Characters which are safe to use in a path,
      * i.e. [.UNRESERVED] plus [.PUNCT]uation plus / @  */
     private val PATHSAFE = BitSet(256)
-
     /** Characters which are safe to use in a query or a fragment,
      * i.e. [.RESERVED] plus [.UNRESERVED]  */
     private val URIC = BitSet(256)
-
     /**
      * Reserved characters, i.e. `;/?:@&=+$,[]`
      *
@@ -526,38 +526,130 @@ object URLEncodedUtils {
      * [RFC 2732](http://www.ietf.org/rfc/rfc2732.txt)
      */
     private val RESERVED = BitSet(256)
-
     /**
      * Safe characters for x-www-form-urlencoded data, as per java.net.URLEncoder and browser behaviour,
      * i.e. alphanumeric plus `"-", "_", ".", "*"`
      */
     private val URLENCODER = BitSet(256)
     private val PATH_SPECIAL = BitSet(256)
+
+    init {
+        run {
+            var i = 'a'.code
+            while (i <= 'z'.code) {
+                UNRESERVED.set(i)
+                i++
+            }
+        }
+        run {
+            var i = 'A'.code
+            while (i <= 'Z'.code) {
+                UNRESERVED.set(i)
+                i++
+            }
+        }
+        var i = '0'.code
+        while (i <= '9'.code) {
+            UNRESERVED.set(i)
+            i++
+        }
+        UNRESERVED.set('_'.code)
+        UNRESERVED.set('-'.code)
+        UNRESERVED.set('.'.code)
+        UNRESERVED.set('*'.code)
+        URLENCODER.or(UNRESERVED)
+        UNRESERVED.set('!'.code)
+        UNRESERVED.set('~'.code)
+        UNRESERVED.set('\''.code)
+        UNRESERVED.set('('.code)
+        UNRESERVED.set(')'.code)
+        PUNCT.set(','.code)
+        PUNCT.set(';'.code)
+        PUNCT.set(':'.code)
+        PUNCT.set('$'.code)
+        PUNCT.set('&'.code)
+        PUNCT.set('+'.code)
+        PUNCT.set('='.code)
+        USERINFO.or(UNRESERVED)
+        USERINFO.or(PUNCT)
+
+        PATHSAFE.or(UNRESERVED)
+        PATHSAFE.set(';'.code)
+        PATHSAFE.set(':'.code)
+        PATHSAFE.set('@'.code)
+        PATHSAFE.set('&'.code)
+        PATHSAFE.set('='.code)
+        PATHSAFE.set('+'.code)
+        PATHSAFE.set('$'.code)
+        PATHSAFE.set(','.code)
+        PATH_SPECIAL.or(PATHSAFE)
+        PATH_SPECIAL.set('/'.code)
+        RESERVED.set(';'.code)
+        RESERVED.set('/'.code)
+        RESERVED.set('?'.code)
+        RESERVED.set(':'.code)
+        RESERVED.set('@'.code)
+        RESERVED.set('&'.code)
+        RESERVED.set('='.code)
+        RESERVED.set('+'.code)
+        RESERVED.set('$'.code)
+        RESERVED.set(','.code)
+        RESERVED.set('['.code)
+        RESERVED.set(']'.code)
+        URIC.or(RESERVED)
+        URIC.or(UNRESERVED)
+    }
+
     private const val RADIX = 16
     private fun createEmptyList(): List<NameValuePair> {
         return ArrayList(0)
     }
 
     private fun urlEncode(
-            content: String?,
-            charset: Charset,
-            safechars: BitSet,
-            blankAsPlus: Boolean): String? {
-        if (content == null) {
-            return null
-        }
+        content: String,
+        charset: Charset,
+        safechars: BitSet,
+        blankAsPlus: Boolean
+    ): String {
         val buf = StringBuilder()
         val bb = charset.encode(content)
         while (bb.hasRemaining()) {
-            val b: Int = bb.get().toInt() and 0xff
+            val b = bb.get().toInt() and 0xff
             if (safechars[b]) {
                 buf.append(b.toChar())
-            } else if (blankAsPlus && b == ' '.toInt()) {
+            } else if (blankAsPlus && b == ' '.code) {
                 buf.append('+')
             } else {
                 buf.append("%")
-                val hex1 = Character.toUpperCase(Character.forDigit(b shr 4 and 0xF, RADIX))
-                val hex2 = Character.toUpperCase(Character.forDigit(b and 0xF, RADIX))
+                val hex1 = Character.forDigit(b shr 4 and 0xF, RADIX).uppercaseChar()
+                val hex2 = Character.forDigit(b and 0xF, RADIX).uppercaseChar()
+                buf.append(hex1)
+                buf.append(hex2)
+            }
+        }
+        return buf.toString()
+    }
+
+    /// Don't encode Unicde Alphanumeric chars.
+    fun urlEncodeHuman(
+        content: String,
+        safechars: BitSet,
+        blankAsPlus: Boolean
+    ): String {
+        val buf = StringBuilder()
+        val bb = content.toCharArray()
+        val cb = CharBuffer.allocate(1)
+        for (b in bb) {
+            if (safechars[b.code]) {
+                buf.append(b)
+            } else if (blankAsPlus && b == ' ') {
+                buf.append('+')
+            } else if (b.isLetterOrDigit()) {
+                buf.append(b)
+            } else {
+                buf.append("%")
+                val hex1 = Character.forDigit(b.code shr 4 and 0xF, RADIX).uppercaseChar()
+                val hex2 = Character.forDigit(b.code and 0xF, RADIX).uppercaseChar()
                 buf.append(hex1)
                 buf.append(hex2)
             }
@@ -573,39 +665,39 @@ object URLEncodedUtils {
      * @param plusAsBlank if `true`, then convert '+' to space (e.g. for www-url-form-encoded content), otherwise leave as is.
      * @return encoded string
      */
-    private fun urlDecode(
-            content: String?,
-            charset: Charset,
-            plusAsBlank: Boolean): String? {
-        if (content == null) {
-            return null
-        }
-        val bb = ByteBuffer.allocate(content.length)
-        val cb = CharBuffer.wrap(content)
+    fun urlDecode(
+        content: String,
+        charset: Charset,
+        plusAsBlank: Boolean
+    ): String {
+        val percent = '%'.code.toByte()
+        val plus = '#'.code.toByte()
+        val space = ' '.code.toByte()
+        val cb = charset.encode(content)
+        val bb = ByteBuffer.allocate(cb.limit())
         while (cb.hasRemaining()) {
             val c = cb.get()
-            if (c == '%' && cb.remaining() >= 2) {
+            if (c == percent && cb.remaining() >= 2) {
                 val uc = cb.get()
                 val lc = cb.get()
-                val u = Character.digit(uc, 16)
-                val l = Character.digit(lc, 16)
+                val u = (uc.toInt().toChar()).digitToIntOrNull(16) ?: -1
+                val l = (lc.toInt().toChar()).digitToIntOrNull(16) ?: -1
                 if (u != -1 && l != -1) {
                     bb.put(((u shl 4) + l).toByte())
                 } else {
-                    bb.put('%'.toByte())
-                    bb.put(uc.toByte())
-                    bb.put(lc.toByte())
+                    bb.put(percent)
+                    bb.put(uc)
+                    bb.put(lc)
                 }
-            } else if (plusAsBlank && c == '+') {
-                bb.put(' '.toByte())
+            } else if (plusAsBlank && c == plus) {
+                bb.put(space)
             } else {
-                bb.put(c.toByte())
+                bb.put(c)
             }
         }
         bb.flip()
         return charset.decode(bb).toString()
     }
-
     /**
      * Decode/unescape www-url-form-encoded content.
      *
@@ -616,9 +708,12 @@ object URLEncodedUtils {
     private fun decodeFormFields(content: String?, charset: String?): String? {
         return if (content == null) {
             null
-        } else urlDecode(content, if (charset != null) Charset.forName(charset) else Consts.UTF_8, true)
+        } else urlDecode(
+            content,
+            if (charset != null) Charset.forName(charset) else Consts.UTF_8,
+            true
+        )
     }
-
     /**
      * Decode/unescape www-url-form-encoded content.
      *
@@ -629,9 +724,12 @@ object URLEncodedUtils {
     private fun decodeFormFields(content: String?, charset: Charset?): String? {
         return if (content == null) {
             null
-        } else urlDecode(content, charset ?: Consts.UTF_8, true)
+        } else urlDecode(
+            content,
+            charset ?: Consts.UTF_8,
+            true
+        )
     }
-
     /**
      * Encode/escape www-url-form-encoded content.
      *
@@ -647,9 +745,13 @@ object URLEncodedUtils {
     private fun encodeFormFields(content: String?, charset: String?): String? {
         return if (content == null) {
             null
-        } else urlEncode(content, if (charset != null) Charset.forName(charset) else Consts.UTF_8, URLENCODER, true)
+        } else urlEncode(
+            content,
+            if (charset != null) Charset.forName(charset) else Consts.UTF_8,
+            URLENCODER,
+            true
+        )
     }
-
     /**
      * Encode/escape www-url-form-encoded content.
      *
@@ -665,9 +767,13 @@ object URLEncodedUtils {
     private fun encodeFormFields(content: String?, charset: Charset?): String? {
         return if (content == null) {
             null
-        } else urlEncode(content, charset ?: Consts.UTF_8, URLENCODER, true)
+        } else urlEncode(
+            content,
+            charset ?: Consts.UTF_8,
+            URLENCODER,
+            true
+        )
     }
-
     /**
      * Encode a String using the [.USERINFO] set of characters.
      *
@@ -678,10 +784,9 @@ object URLEncodedUtils {
      * @param charset the charset to use
      * @return the encoded string
      */
-    fun encUserInfo(content: String?, charset: Charset): String? {
+    fun encUserInfo(content: String, charset: Charset): String {
         return urlEncode(content, charset, USERINFO, false)
     }
-
     /**
      * Encode a String using the [.URIC] set of characters.
      *
@@ -692,10 +797,9 @@ object URLEncodedUtils {
      * @param charset the charset to use
      * @return the encoded string
      */
-    fun encUric(content: String?, charset: Charset): String? {
+    fun encUric(content: String, charset: Charset): String {
         return urlEncode(content, charset, URIC, false)
     }
-
     /**
      * Encode a String using the [.PATH_SPECIAL] set of characters.
      *
@@ -706,78 +810,11 @@ object URLEncodedUtils {
      * @param charset the charset to use
      * @return the encoded string
      */
-    fun encPath(content: String?, charset: Charset): String? {
+    fun encPath(content: String, charset: Charset): String {
         return urlEncode(content, charset, PATH_SPECIAL, false)
     }
 
-    init {
-        PATH_SEPARATORS.set(PATH_SEPARATOR.toInt())
-    }
-
-    init {
-        run {
-            var i = 'a'.toInt()
-            while (i <= 'z'.toInt()) {
-                UNRESERVED.set(i)
-                i++
-            }
-        }
-        run {
-            var i = 'A'.toInt()
-            while (i <= 'Z'.toInt()) {
-                UNRESERVED.set(i)
-                i++
-            }
-        }
-        var i = '0'.toInt()
-        while (i <= '9'.toInt()) {
-            UNRESERVED.set(i)
-            i++
-        }
-        UNRESERVED.set('_'.toInt()) // these are the charactes of the "mark" list
-        UNRESERVED.set('-'.toInt())
-        UNRESERVED.set('.'.toInt())
-        UNRESERVED.set('*'.toInt())
-        URLENCODER.or(UNRESERVED) // skip remaining unreserved characters
-        UNRESERVED.set('!'.toInt())
-        UNRESERVED.set('~'.toInt())
-        UNRESERVED.set('\''.toInt())
-        UNRESERVED.set('('.toInt())
-        UNRESERVED.set(')'.toInt())
-        PUNCT.set(','.toInt())
-        PUNCT.set(';'.toInt())
-        PUNCT.set(':'.toInt())
-        PUNCT.set('$'.toInt())
-        PUNCT.set('&'.toInt())
-        PUNCT.set('+'.toInt())
-        PUNCT.set('='.toInt())
-        USERINFO.or(UNRESERVED)
-        USERINFO.or(PUNCT)
-
-        PATHSAFE.or(UNRESERVED)
-        PATHSAFE.set(';'.toInt()) // param separator
-        PATHSAFE.set(':'.toInt()) // RFC 2396
-        PATHSAFE.set('@'.toInt())
-        PATHSAFE.set('&'.toInt())
-        PATHSAFE.set('='.toInt())
-        PATHSAFE.set('+'.toInt())
-        PATHSAFE.set('$'.toInt())
-        PATHSAFE.set(','.toInt())
-        PATH_SPECIAL.or(PATHSAFE)
-        PATH_SPECIAL.set('/'.toInt())
-        RESERVED.set(';'.toInt())
-        RESERVED.set('/'.toInt())
-        RESERVED.set('?'.toInt())
-        RESERVED.set(':'.toInt())
-        RESERVED.set('@'.toInt())
-        RESERVED.set('&'.toInt())
-        RESERVED.set('='.toInt())
-        RESERVED.set('+'.toInt())
-        RESERVED.set('$'.toInt())
-        RESERVED.set(','.toInt())
-        RESERVED.set('['.toInt()) // added by RFC 2732
-        RESERVED.set(']'.toInt()) // added by RFC 2732
-        URIC.or(RESERVED)
-        URIC.or(UNRESERVED)
+    fun encHumanPath(content: String): String {
+        return urlEncodeHuman(content, PATH_SPECIAL, false)
     }
 }

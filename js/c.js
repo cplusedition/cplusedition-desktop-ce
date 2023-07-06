@@ -1,8 +1,19 @@
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
+/*!            
+    C+edition for Desktop, Community Edition.
+    Copyright (C) 2021 Cplusedition Limited.  All rights reserved.
+    
+    The author licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
@@ -9844,42 +9855,37 @@
 
 })));
 
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
 var
     //#BEGIN CSSEditorObject
-XxUu
+XxXXC
         //#END CSSEditorObject
         = new (function () {
             //#BEGIN COF
-            var _INIT = "XPz";
-            var _SAVE = "Xb4";
-            var _TEXT = "XGS";
-            var _REDO = "XVK";
-            var _UNDO = "XpE";
-            var _SIZE = "Xs1";
-            var _FIND = "XLh";
-            var _GOTO = "X2q";
-            var _FOCUS = "X93";
-            var _DOWN = "XS7";
-            var _EDIT = "X5g";
-            var _REVERT = "X3R";
-            var _BROWSE = "Xtx";
-            var _GETSEL = "XGZ";
-            var _SETSEL = "XJV";
-            var _PARSE = "XC1";
-            var _ONSCROLL = "XPd";
-            var _ONKEYPRESS = "X7z";
+            var _INIT = "XxXCy";
+            var _SAVE = "XxX1B";
+            var _TEXT = "XxXDb";
+            var _REDO = "XxXTz";
+            var _UNDO = "XxX10";
+            var _SIZE = "XxXgs";
+            var _FIND = "XxXpe";
+            var _GOTO = "XxXyC";
+            var _FOCUS = "XxXGk";
+            var _DOWN = "XxXz1";
+            var _EDIT = "XxXYf";
+            var _REVERT = "XxXbB";
+            var _BROWSE = "XxXMt";
+            var _GETSEL = "XxXvf";
+            var _SETSEL = "XxXEl";
+            var _PARSE = "XxXP4";
+            var _ONSCROLL = "XxXcN";
+            var _ONKEYPRESS = "XxX2R";
             //#END COF
             //#BEGIN POF
-            var _PARSER = "X5e";
-            var _EXPR = "XZi";
-            var _HASISSUE = "XhA";
-            var _ISSUES = "X4n";
-            var _NODETYPE = "Xxq";
+            var _PARSER = "XxX8x";
+            var _EXPR = "XxX9M";
+            var _HASISSUE = "XxXJB";
+            var _ISSUES = "XxXjr";
+            var _NODETYPE = "XxXo5";
             //#END POF
             //#BEGIN
             var SELECTION_CHANGED = "Xsc";
@@ -9930,10 +9936,7 @@ XxUu
                     doc.addEventListener("dragleave", sinkhole);
                     doc.addEventListener("drop", sinkhole);
                 }
-                //#IF DESKTOP
-                //#ELSE DESKTOP
 window.addEventListener("touchstart", function (e) {
-                //#ENDIF DESKTOP
                     if (_editor == null) return;
                     //#IF DEBUG
                     //#ENDIF DEBUG
@@ -10026,7 +10029,7 @@ window.addEventListener("touchstart", function (e) {
                 //#ENDIF DEBUG
                 var CSSParser =
                 //#BEGIN CSSParserObject
-XxA7
+XxXPo
                 //#END CSSParserObject
                 ;
                 var node = CSSParser[_PARSER](text);
@@ -10044,7 +10047,7 @@ XxA7
                 //#ENDIF DEBUG
                 var CSSParser =
                 //#BEGIN CSSParserObject
-XxA7
+XxXPo
                 //#END CSSParserObject
                 ;
                 var node = CSSParser[_EXPR](text);
@@ -10302,15 +10305,10 @@ XxA7
             }
             return CSSEditorObject;
         }())();
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
 "use strict";
 var
 //#BEGIN CSSParserObject
-XxA7
+XxXPo
 //#END CSSParserObject
 = (function () {
     //#BEGIN REGION cssErrors.js
@@ -14351,21 +14349,21 @@ XxA7
     //#END REGION cssParser.js
     function CSSParserObject() {
     }
-    //#BEGIN USE_CSS_EDITOR
+    //#BEGIN USE_CSS_PARSER
 
-            CSSParserObject["X2U"] = function (text, ignoretriva) {
+            CSSParserObject["XxXZU"] = function (text, ignoretriva) {
                 const scanner = new Scanner(ignoretriva);
                 scanner.setSource(text);
                 return scanner;
             }
-            CSSParserObject["Xlf"] = function (text) {
+            CSSParserObject["XxX4G"] = function (text) {
                 return new Parser(new Scanner(false)).parseStylesheet(text);
             }
-            CSSParserObject["X5e"] = function(text) {
+            CSSParserObject["XxX8x"] = function(text) {
                 return new Parser ().parseStylesheet(text);
             };
             // Parse selectors { declaration; ... }
-            CSSParserObject["X4W"] = function (text) {
+            CSSParserObject["XxXsZ"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
@@ -14373,7 +14371,7 @@ XxA7
                 return parser.internalParse(text, parser._parseRuleset, textProvider);
             };
             // Parse { declaration; ... }
-            CSSParserObject["XFY"] = function (text) {
+            CSSParserObject["XxXj7"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
@@ -14383,28 +14381,28 @@ XxA7
                 }, textProvider);
             };
             // Parse declaration
-            CSSParserObject["X2b"] = function (text) {
+            CSSParserObject["XxX8t"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
                 var parser = new Parser();
                 return parser.internalParse(text, parser._parseDeclaration, textProvider);
             };
-            CSSParserObject["XZi"] = function (text) {
+            CSSParserObject["XxX9M"] = function (text) {
                 var textProvider = function (offset, length) {
                     return text.substr(offset, length);
                 };
                 var parser = new Parser();
                 return parser.internalParse(text, parser._parseExpr, textProvider);
             };
-            CSSParserObject["XhA"] = function(node) {
+            CSSParserObject["XxXJB"] = function(node) {
                 return node.isErroneous(true);
             };
-            CSSParserObject["X4n"] = function(node) {
+            CSSParserObject["XxXjr"] = function(node) {
                 return ParseErrorCollector.entries(node);
             };
         
-    //#END USE_CSS_EDITOR
+    //#END USE_CSS_PARSER
     //    NodeType[0] = "Undefined";
     //    NodeType[1] = "Identifier";
     //    NodeType[2] = "Stylesheet";
@@ -14485,11 +14483,6 @@ XxA7
 }());
 //Object.defineProperty(exports, "__esModule", { value: true });
 //exports.CSSParserObject = CSSParserObject;
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
@@ -15141,7 +15134,7 @@ XxA7
         "ethiopic-numeric", "ew-resize", "exclusion", "expanded", "extends", "extra-condensed",
         "extra-expanded", "fantasy",
         "farthest-corner", "farthest-side",
-        "fast", "fill", "fixed", "flat", "flex", "flex-end", "flex-start", "footnotes",
+        "fast", "fill", "fit-content", "fixed", "flat", "flex", "flex-end", "flex-start", "footnotes",
         "forwards", "from", "geometricPrecision", "georgian", "graytext", "grid", "groove",
         "gujarati", "gurmukhi", "hand", "hangul", "hangul-consonant", "hard-light", "hebrew",
         "help", "hidden", "hide", "higher", "highlight", "highlighttext",
@@ -15157,14 +15150,14 @@ XxA7
         "local", "logical", "loud", "lower", "lower-alpha", "lower-armenian",
         "lower-greek", "lower-hexadecimal", "lower-latin", "lower-norwegian",
         "lower-roman", "lowercase", "ltr", "luminosity", "malayalam", "match", "matrix", "matrix3d",
-        "media-controls-background", "media-current-time-display",
+        "max-content", "media-controls-background", "media-current-time-display",
         "media-fullscreen-button", "media-mute-button", "media-play-button",
         "media-return-to-realtime-button", "media-rewind-button",
         "media-seek-back-button", "media-seek-forward-button", "media-slider",
         "media-sliderthumb", "media-time-remaining-display", "media-volume-slider",
         "media-volume-slider-container", "media-volume-sliderthumb", "medium",
         "menu", "menulist", "menulist-button", "menulist-text",
-        "menulist-textfield", "menutext", "message-box", "middle", "min-intrinsic",
+        "menulist-textfield", "menutext", "message-box", "middle", "min-content", "min-intrinsic",
         "mix", "mongolian", "monospace", "move", "multiple", "multiply", "myanmar", "n-resize",
         "narrower", "ne-resize", "nesw-resize", "no-close-quote", "no-drop",
         "no-open-quote", "no-repeat", "none", "normal", "not-allowed", "nowrap",
@@ -15204,7 +15197,7 @@ XxA7
         "upper-alpha", "upper-armenian", "upper-greek", "upper-hexadecimal",
         "upper-latin", "upper-norwegian", "upper-roman", "uppercase", "urdu", "url",
         "var", "vertical", "vertical-text", "visible", "visibleFill", "visiblePainted",
-        "visibleStroke", "visual", "w-resize", "wait", "wave", "wider",
+        "visibleStroke", "visual", "w-resize", "wait", "wave", "-webkit-fill-available", "wider",
         "window", "windowframe", "windowtext", "words", "wrap", "wrap-reverse", "x-large", "x-small", "xor",
         "xx-large", "xx-small"
     ], valueKeywords = keySet(valueKeywords_);
@@ -15353,11 +15346,6 @@ XxA7
 
 });
 
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
@@ -15512,6 +15500,7 @@ XxA7
         function fuzzymatch(search, text) {
             var start = 0;
             var length = text.length;
+            if (text == ";") return true;
             for (var i = 0; i < search.length; ++i) {
                 if (start >= length) {
                     return false;
@@ -15591,6 +15580,15 @@ XxA7
         }
 
         //#BEGIN HACK
+        const prefers = [];
+        result = result.filter((value) => {
+            if (value.startsWith(word)) {
+                prefers.unshift(value);
+                return false;
+            }
+            return true;
+        });
+        for (const s of prefers) result.unshift(s);
         if (result.length > 1) {
             result.unshift("\n");
         }
@@ -15603,11 +15601,6 @@ XxA7
     });
 });
 
-/*
- * Copyright (c) 2015, c+edition and contributors.  All rights reserved.
- * Proprietary and confidential.
- * Do not use or distribute without explicit permission.
- */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
@@ -15710,22 +15703,22 @@ XxA7
                 //#BEGIN HACK
                 var from = completion.from || data.from;
                 var ret = getText(completion);
-                if (typeof completion == "string" && ret == "} {") {
-                    ret = "\n}\nselector {\n  name value;";
-                } else if (typeof completion == "string" && ret == ";") {
-                    var line = this.cm.getLine(from.line);
-                    if (from.ch > 0 && line.charAt(from.ch - 1) == " ") {
-                        from.ch = from.ch - 1;
+                if (typeof completion == "string" && ret == ";") {
+                    var cur = this.cm.getCursor()
+                    this.cm.replaceRange(ret + "\n", cur, cur, "complete");
+                } else {
+                    if (typeof completion == "string" && ret == "} {") {
+                        ret = "\n}\nselector {\n  name value;";
+                    } else if (data.list.length == 1) {
+                        ret = ret + "\n";
                     }
-                } else if (data.list.length == 1) {
-                    ret = ret + "\n";
+                    this.cm.replaceRange(
+                        //      getText(completion)
+                        ret,
+                        from,
+                        completion.to || data.to,
+                        "complete");
                 }
-                this.cm.replaceRange(
-                    //      getText(completion)
-                    ret, 
-                    from, 
-                    completion.to || data.to,
-                    "complete");
                 //#END HACK
             }
             CodeMirror.signal(data, "pick", completion);
@@ -16110,4 +16103,3 @@ XxA7
 
     CodeMirror.defineOption("hintOptions", null);
 });
-

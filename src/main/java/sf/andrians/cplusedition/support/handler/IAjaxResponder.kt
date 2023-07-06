@@ -24,9 +24,10 @@ interface IAjaxResponder {
 }
 
 interface IAjax {
-    fun result(ret: String, callback: Fun10<String>? = null)
-    fun result(serial: Long, ret: JSONObject)
+    fun response(ret: String, callback: Fun10<String>? = null)
+    fun response(serial: Long, ret: JSONObject)
     fun error(serial: Long, id: Int, vararg arg: String)
     fun error(serial: Long, error: String)
+    fun error(serial: Long, error: Collection<String>)
 }
 

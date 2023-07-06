@@ -29,6 +29,6 @@ interface IRecentsRoot {
     fun peek(): IRecentsInfo?
     fun back(): IRecentsInfo?
     fun forward(): IRecentsInfo?
-    fun <T : MutableList<IFileInfo>> listFiles(ret: T): T
+    fun <T : MutableList<IRecentsInfo>> listFiles(ret: T): T
     fun listAll(ret: JSONArray)
 }

@@ -38,10 +38,10 @@ div.x-sticker.xx-note, div.x-sticker.xx-comment {
   max-width: 80vw;
 }
 div.x-sticker.xx-note {
-  background-color: #de8;
+  background-color: #ceb;
 }
 div.x-sticker.xx-comment {
-  background-color: #ceb;
+  background-color: #deb;
 }
 div.x-photo {
   justify-content: center;
@@ -78,6 +78,56 @@ div.x-photo img.x-landscape {
 .xx-size-xxlarge div.x-photo img.x-landscape {
   max-width: 640px;
   max-height: 360px;
+}
+div.xx-media.xx-scroll-v div.xx-photo, div.xx-media.xx-scroll-v div.xx-image {
+  max-height: 240px;
+  width: 180px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.xx-size-large div.xx-media.xx-scroll-v div.xx-photo, .xx-size-large div.xx-media.xx-scroll-v div.xx-image {
+  max-height: 320px;
+  width: 225px;
+}
+.xx-size-xlarge div.xx-media.xx-scroll-v div.xx-photo, .xx-size-xlarge div.xx-media.xx-scroll-v div.xx-image {
+  max-height: 400px;
+  width: 270px;
+}
+.xx-size-xxlarge div.xx-media.xx-scroll-v div.xx-photo, .xx-size-xxlarge div.xx-media.xx-scroll-v div.xx-image {
+  max-height: 480px;
+  width: 360px;
+}
+div.xx-media.xx-scroll-v div.xx-photo img, div.xx-media.xx-scroll-v div.xx-image img {
+  width: unset !important;
+  height: unset !important;
+  max-width: -webkit-fill-available !important;
+  max-height: unset !important;
+  display: flex;
+}
+div.xx-media.xx-scroll-h div.xx-photo, div.xx-media.xx-scroll-h div.xx-image {
+  height: 180px;
+  max-width: 240px;
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.xx-size-large div.xx-media.xx-scroll-h div.xx-photo, .xx-size-large div.xx-media.xx-scroll-h div.xx-image {
+  height: 225px;
+  max-width: 320px;
+}
+.xx-size-xlarge div.xx-media.xx-scroll-h div.xx-photo, .xx-size-xlarge div.xx-media.xx-scroll-h div.xx-image {
+  height: 270px;
+  max-width: 400px;
+}
+.xx-size-xxlarge div.xx-media.xx-scroll-h div.xx-photo, .xx-size-xxlarge div.xx-media.xx-scroll-h div.xx-image {
+  height: 360px;
+  max-width: 480px;
+}
+div.xx-media.xx-scroll-h div.xx-photo img, div.xx-media.xx-scroll-h div.xx-image img {
+  width: unset !important;
+  height: unset !important;
+  max-height: -webkit-fill-available !important;
+  max-width: unset !important;
+  display: flex;
 }
 div.x-sticker > div.x-subject, div.xx-note > div.x-subject {
   padding-bottom: 0;

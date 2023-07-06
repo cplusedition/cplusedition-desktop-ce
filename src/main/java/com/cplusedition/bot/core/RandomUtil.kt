@@ -18,6 +18,7 @@ package com.cplusedition.bot.core
 
 import java.io.IOException
 import java.io.InputStream
+import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.util.*
 

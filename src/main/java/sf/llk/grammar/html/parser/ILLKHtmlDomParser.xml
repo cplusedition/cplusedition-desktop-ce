@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<!-- LLK v0.13: HtmlDomParser.ll, generated on 2023-02-09. -->
+<llk>
+	<tokentypes>
+		<type name="SYSTEM" id="21" modifier="1">
+			<value text="SYSTEM" />
+		</type>
+		<type name="ENDEMPTY" id="6" modifier="1">
+			<value text="/&gt;" />
+		</type>
+		<type name="SPACES" id="42" modifier="1048577"/>
+		<type name="LT" id="7" modifier="1">
+			<value text="&lt;" />
+		</type>
+		<type name="TEXT" id="36" modifier="3"/>
+		<type name="ASTdtdId" id="69" modifier="1"/>
+		<type name="LJSTE" id="26" modifier="3"/>
+		<type name="ATTVALUE" id="45" modifier="1"/>
+		<type name="llkNextToken" id="38" modifier="1"/>
+		<type name="LCOND" id="22" modifier="3"/>
+		<type name="LCDATA" id="14" modifier="1">
+			<value text="&lt;![CDATA[" />
+		</type>
+		<type name="ASTcdata" id="60" modifier="1"/>
+		<type name="ATTVALUE_LITERAL" id="47" modifier="2"/>
+		<type name="ASTendTag" id="54" modifier="1"/>
+		<type name="NEWLINE" id="43" modifier="1048577"/>
+		<type name="STYLE" id="35" modifier="3"/>
+		<type name="LSTYLE" id="5" modifier="8388609">
+			<value text="style" />
+		</type>
+		<type name="ASTattributes" id="63" modifier="1"/>
+		<type name="NAME" id="44" modifier="1"/>
+		<type name="LASP" id="25" modifier="3"/>
+		<type name="DECLARATION" id="27" modifier="3"/>
+		<type name="endComment" id="41" modifier="1"/>
+		<type name="SCRIPT" id="34" modifier="3"/>
+		<type name="ASTjste" id="59" modifier="1"/>
+		<type name="_NULL_" id="3" modifier="0"/>
+		<type name="PUBID_LITERAL" id="49" modifier="1"/>
+		<type name="LDECL" id="23" modifier="3"/>
+		<type name="_EOF_" id="0" modifier="0"/>
+		<type name="LCOMMENT" id="12" modifier="1">
+			<value text="&lt;!--" />
+		</type>
+		<type name="PUBLIC" id="20" modifier="1">
+			<value text="PUBLIC" />
+		</type>
+		<type name="laSpaceNotName" id="51" modifier="3"/>
+		<type name="DTDCOMMENT" id="11" modifier="1">
+			<value text="--" />
+		</type>
+		<type name="RCOMMENT" id="13" modifier="1">
+			<value text="--&gt;" />
+		</type>
+		<type name="VOID" id="37" modifier="3"/>
+		<type name="ASTstyle" id="67" modifier="1"/>
+		<type name="CDATA" id="32" modifier="3"/>
+		<type name="COND" id="33" modifier="3"/>
+		<type name="_IGNORE_" id="1" modifier="3145728"/>
+		<type name="LPI" id="24" modifier="3"/>
+		<type name="LSCRIPT" id="4" modifier="8388609">
+			<value text="script" />
+		</type>
+		<type name="RPI" id="17" modifier="1">
+			<value text="?&gt;" />
+		</type>
+		<type name="skip" id="39" modifier="1"/>
+		<type name="SYSTEM_LITERAL" id="48" modifier="1"/>
+		<type name="ASSIGN" id="9" modifier="1">
+			<value text="=" />
+		</type>
+		<type name="COMMENT" id="28" modifier="3"/>
+		<type name="ASTdocument" id="52" modifier="1"/>
+		<type name="RCOND" id="16" modifier="1">
+			<value text="]&gt;" />
+		</type>
+		<type name="JSTE" id="31" modifier="3"/>
+		<type name="REFERENCE" id="50" modifier="2"/>
+		<type name="ASTattribute" id="64" modifier="1"/>
+		<type name="ASP" id="30" modifier="3"/>
+		<type name="ASTpi" id="57" modifier="1"/>
+		<type name="ASTcond" id="61" modifier="1"/>
+		<type name="ASTtext" id="65" modifier="1"/>
+		<type name="ASTcomment" id="56" modifier="1"/>
+		<type name="RCDATA" id="15" modifier="1">
+			<value text="]]&gt;" />
+		</type>
+		<type name="ASTstartTag" id="53" modifier="1"/>
+		<type name="RASP" id="18" modifier="1">
+			<value text="&#37;&gt;" />
+		</type>
+		<type name="RJSTE" id="19" modifier="1">
+			<value text="#&gt;" />
+		</type>
+		<type name="ASTdoctype" id="68" modifier="1"/>
+		<type name="GT" id="8" modifier="1">
+			<value text="&gt;" />
+		</type>
+		<type name="ASTextraEndTag" id="55" modifier="1"/>
+		<type name="ASTdeclaration" id="62" modifier="1"/>
+		<type name="ENDTAG" id="10" modifier="1">
+			<value text="&lt;/" />
+		</type>
+		<type name="ASTasp" id="58" modifier="1"/>
+		<type name="PI" id="29" modifier="3"/>
+		<type name="STRING" id="46" modifier="1"/>
+		<type name="endScript" id="40" modifier="1"/>
+		<type name="_INVALID_" id="2" modifier="0"/>
+		<type name="ASTscript" id="66" modifier="1"/>
+	</tokentypes>
+	<contexts>
+		<context name="CONTEXT">
+			<choice name="ASP" />
+			<choice name="ATTRVALUE" />
+			<choice name="CDATA" />
+			<choice name="COMMENT" />
+			<choice name="COND" />
+			<choice name="DECLARATION" />
+			<choice name="DTD" />
+			<choice name="JSTE" />
+			<choice name="PI" />
+			<choice name="PUBID" />
+			<choice name="SCRIPT" />
+			<choice name="STYLE" />
+			<choice name="SYSTEM" />
+			<choice name="TAG" />
+			<choice name="TEXT" />
+		</context>
+	</contexts>
+</llk>

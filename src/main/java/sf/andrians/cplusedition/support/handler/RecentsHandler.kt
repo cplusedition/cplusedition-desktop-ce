@@ -16,129 +16,185 @@
 */
 package sf.andrians.cplusedition.support.handler
 
+import com.cplusedition.anjson.JSONUtil.jsonArrayOrNull
+import com.cplusedition.anjson.JSONUtil.jsonObjectOrNull
 import com.cplusedition.anjson.JSONUtil.stringOrNull
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import sf.andrians.cplusedition.R
-import sf.andrians.cplusedition.support.An
-import sf.andrians.cplusedition.support.IFileInfo
-import sf.andrians.cplusedition.support.IRecentsRoot
-import sf.andrians.cplusedition.support.IStorage
-import sf.andrians.cplusedition.support.RecentsInfoWrapper
-import sf.andrians.cplusedition.support.Support
+import sf.andrians.cplusedition.support.*
+import sf.andrians.cplusedition.support.An.SessionParam
+import java.util.*
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
-class RecentsHandler(context: ICpluseditionContext, private val filepickerHandler: IFilepickerHandler) : IRecentsHandler {
+class RecentsHandler(context: ICpluseditionContext) : IRecentsHandler {
 
     private val storage: IStorage = context.getStorage()
     private val recentsRoot: IRecentsRoot = context.getRecentsRoot()
+    private val recentsByTime = TreeMap<String, IRecentsInfo>()
+    private val lock = ReentrantLock()
 
     @Throws(Exception::class)
-    override fun handleRecents(cmd: Int): String {
-        val rsrc = storage.rsrc
-        return when (cmd) {
-            An.RecentsCmd.CLEAR -> actionRecentsClear()
-            An.RecentsCmd.CLEAN -> actionRecentsClean()
-            An.RecentsCmd.INFO -> actionRecentsInfo()
-            An.RecentsCmd.BACK, An.RecentsCmd.PEEK, An.RecentsCmd.FORWARD -> {
-                var info: IFileInfo? = null
+    override fun handle(cmd: Int): JSONObject {
+        return lock.withLock {
+            try {
                 when (cmd) {
-                    An.RecentsCmd.BACK -> do {
-                        info = recentsRoot.back()
-                    } while (info != null && !info.exists)
-                    An.RecentsCmd.PEEK -> info = recentsRoot.peek()
-                    An.RecentsCmd.FORWARD -> do {
-                        info = recentsRoot.forward()
-                    } while (info != null && !info.exists)
+                    An.RecentsCmd.CLEAR -> actionRecentsClear()
+                    An.RecentsCmd.CLEAN -> actionRecentsClean()
+                    An.RecentsCmd.INFO -> actionRecentsInfo()
+                    An.RecentsCmd.SORTED -> actionRecentsSorted()
+                    An.RecentsCmd.BACK, An.RecentsCmd.PEEK, An.RecentsCmd.FORWARD -> {
+                        var info: IFileInfo? = null
+                        when (cmd) {
+                            An.RecentsCmd.BACK -> do {
+                                info = recentsRoot.back()
+                            } while (info != null && !info.exists)
+                            An.RecentsCmd.PEEK -> info = recentsRoot.peek()
+                            An.RecentsCmd.FORWARD -> do {
+                                info = recentsRoot.forward()
+                            } while (info != null && !info.exists)
+                        }
+                        if (info == null) {
+                            storage.rsrc.jsonObjectError(R.string.RecentsNoMoreHistoryAvailable)
+                        } else if (!info.exists) {
+                            storage.rsrc.jsonObjectError(R.string.RecentsHistoryEntryNoLongerExists)
+                        } else {
+                            info.toJSON()
+                        }
+                    }
+                    else -> storage.rsrc.jsonObjectError(R.string.RecentsInvalidCommand)
                 }
-                if (info == null) {
-                    rsrc.jsonError(R.string.RecentsNoMoreHistoryAvailable)
-                } else if (!info.exists) {
-                    rsrc.jsonError(R.string.RecentsHistoryEntryNoLongerExists)
-                } else {
-                    info.toJSON().toString()
-                }
+            } catch (e: Throwable) {
+                storage.rsrc.jsonObjectError(R.string.CommandFailed)
             }
-            else -> rsrc.jsonError(R.string.RecentsInvalidCommand)
         }
-    }
-
-    @Throws(JSONException::class)
-    fun actionRecentsClear(): String {
-        recentsRoot.clear()
-        return recentsinfo(recentsRoot)
-    }
-
-    @Throws(JSONException::class)
-    fun actionRecentsClean(): String {
-        recentsRoot.clean()
-        return recentsinfo(recentsRoot)
-    }
-
-    @Throws(JSONException::class)
-    fun actionRecentsInfo(): String {
-        return recentsinfo(recentsRoot)
     }
 
     /// @param cpath A context relative path with leading /.
-    override fun recentsPut(navigation: Int, cpath: String, state: JSONObject?) {
-        val fileinfo = storage.fileInfoAt(cpath).first ?: return
-        recentsRoot.put(navigation, cpath, RecentsInfoWrapper(fileinfo, cpath, state))
+    override fun recentsPut(navigation: Int, cpath: String, state: JSONObject?, timestamp: Long): JSONObject {
+        return lock.withLock {
+            try {
+                val fileinfo = storage.fileInfoAt(cpath).result()
+                    ?: return storage.rsrc.jsonObjectInvalidPath(cpath)
+                val info = RecentsInfoWrapper(fileinfo, cpath, timestamp, state)
+                recentsRoot.put(navigation, cpath, info)
+                recentsByTime.put(labelOf(info), info)
+                if (recentsByTime.size > Support.Def.recentsSize) {
+                    recentsByTime.entries.toList().minByOrNull { it.value.timestamp }?.let {
+                        recentsByTime.remove(it.key)
+                    }
+                }
+                JSONObject()
+            } catch (e: Throwable) {
+                
+                storage.rsrc.jsonObjectError(R.string.CommandFailed)
+            }
+        }
     }
 
     @Throws(Exception::class)
-    override fun recentsSave(state: JSONObject) {
-        val recents = JSONArray()
-        for (info in recentsRoot.listFiles(ArrayList())) {
-            recents.put(info.toJSON())
+    override fun recentsSave(session: JSONObject) {
+        lock.withLock {
+            val recents = JSONArray()
+            for (info in recentsRoot.listFiles(ArrayList())) {
+                recents.put(info.toJSON())
+            }
+            val bytime = JSONObject()
+            for ((label, info) in recentsByTime.entries) {
+                bytime.put(label, info.toJSON())
+            }
+            session.put(An.SessionKey.recents, recents)
+            session.put(An.SessionKey.recentsByTime, bytime)
         }
-        state.put(An.SessionKey.recents, recents)
-        state.put(An.SessionKey.loggedin, storage.isLoggedIn())
     }
 
-    override fun recentsRestore(recents: JSONArray?) {
-        recentsRoot.clear()
-        try {
-            if (recents != null) {
-                var i = recents.length()
-                while (--i >= 0) {
-                    val info = recents.getJSONObject(i)
-                    val name = info.stringOrNull(IFileInfo.Key.name) ?: continue
-                    val st = info.getJSONObject(IFileInfo.Key.state)
-                    recentsPut(An.RecentsCmd.INFO, name, st)
-                }
+    override fun recentsRestore(session: JSONObject) {
+        lock.withLock {
+            fun fromjson(json: JSONObject?): IRecentsInfo? {
+                if (json == null) return null
+                val cpath = json.stringOrNull(IFileInfo.Key.name) ?: return null
+                val state = json.optJSONObject(IFileInfo.Key.state)
+                val lastused = json.optLong(IFileInfo.Key.lastUsed)
+                val fileinfo = storage.fileInfoAt(cpath).result() ?: return null
+                return RecentsInfoWrapper(fileinfo, cpath, lastused, state)
             }
-        } catch (e: JSONException) {
-            recentsRoot.clear()
-            
+            try {
+                recentsRoot.clear()
+                session.jsonArrayOrNull(An.SessionKey.recents)?.let {
+                    var i = it.length()
+                    while (--i >= 0) {
+                        val info = fromjson(it.jsonObjectOrNull(i)) ?: continue
+                        recentsRoot.put(An.RecentsCmd.INFO, info.cpath, info)
+                    }
+                }
+            } catch (e: Throwable) {
+                recentsRoot.clear()
+                
+            }
+            try {
+                recentsByTime.clear()
+                session.jsonObjectOrNull(An.SessionKey.recentsByTime)?.let {
+                    for (key in it.keys()) {
+                        val info = fromjson(it.jsonObjectOrNull(key)) ?: continue
+                        recentsByTime.put(key, info)
+                    }
+                }
+            } catch (e: Throwable) {
+                recentsByTime.clear()
+                
+            }
         }
     }
 
     @Throws(JSONException::class)
-    private fun recentsinfo(dir: IRecentsRoot): String {
+    private fun actionRecentsClear(): JSONObject {
+        recentsRoot.clear()
+        recentsByTime.clear()
+        return recentsinfo(recentsRoot)
+    }
+
+    @Throws(JSONException::class)
+    private fun actionRecentsClean(): JSONObject {
+        recentsRoot.clean()
+        val it = recentsByTime.values.iterator()
+        while (it.hasNext()) {
+            val info = it.next()
+            if (!info.exists) it.remove()
+        }
+        return recentsinfo(recentsRoot)
+    }
+
+    @Throws(JSONException::class)
+    private fun actionRecentsInfo(): JSONObject {
+        return recentsinfo(recentsRoot)
+    }
+
+    @Throws(JSONException::class)
+    private fun actionRecentsSorted(): JSONObject {
+        val ret = JSONObject()
+        val dirtree = JSONArray()
+        ret.put(An.Key.dirtree, dirtree)
+        val visited = TreeSet<String>()
+        for ((label, info) in recentsByTime.entries) {
+            if (visited.add(label)) dirtree.put(info.toJSON())
+        }
+        return ret
+    }
+
+    private fun labelOf(info: IRecentsInfo): String {
+        val offset = info.state?.optInt(SessionParam.y, 0) ?: 0
+        return info.cpath + (if (offset > 0) "@$offset" else "")
+    }
+
+    @Throws(JSONException::class)
+    private fun recentsinfo(dir: IRecentsRoot): JSONObject {
         val ret = JSONObject()
         val dirtree = JSONArray()
         ret.put(An.Key.dirtree, dirtree)
         dir.listAll(dirtree)
-        return ret.toString()
+        return ret
     }
 
-    companion object {
-        @Throws(JSONException::class)
-        fun removeLocked(storage: IStorage, recents: JSONArray?): JSONArray {
-            val ret = JSONArray()
-            if (recents != null) {
-                var i = recents.length()
-                while (--i >= 0) {
-                    val info = recents.getJSONObject(i)
-                    val name = info.stringOrNull(IFileInfo.Key.name)
-                    if (name == null /* || storage.isLocked(name) */) {
-                        continue
-                    }
-                    ret.put(info)
-                }
-            }
-            return ret
-        }
-    }
 }

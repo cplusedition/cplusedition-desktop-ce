@@ -1,0 +1,160 @@
+body {
+  background-color: rgb(255, 255, 240);
+  font-family: Ruda-Regular;
+}
+div.x-root {
+  background-image: linear-gradient(rgba(221, 221, 0, 0.5), rgba(136, 221, 170, 0.5)), url("/assets/images/wallpapers/cloud01.png");
+}
+div.xx-top {
+  padding-bottom: 75vh;
+}
+div.xx-poster {
+  width: 100vw;
+  height: 10ex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(255, 217, 102);
+  margin: 0px;
+  padding: 0px 0px 12ex;
+  box-sizing: content-box;
+  font-family: frijole-regular;
+  text-shadow: rgb(0, 0, 0) 1px 1px 2px;
+  overflow: hidden;
+  background-image: linear-gradient(rgba(221, 221, 0, 0.5), rgba(136, 221, 170, 0.5)), url("/assets/images/wallpapers/cloth01.png");
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 2px 0px;
+  background-position: center center;
+}
+div.xx-poster > div {
+  font-size: 2.5rem;
+}
+.xx-left {
+  position: absolute;
+  top: 15ex;
+  left: 5vw;
+  width: 30vw;
+  border: 1px solid rgb(56, 118, 29);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-shadow: rgba(106, 168, 79, 0.75) 0.25rem 0.25rem 1rem;
+  padding: 2ex 1em 6ex;
+  background-image: url("/assets/images/wallpapers/cloud01.png");
+  background-color: rgba(137, 185, 25, 0.75);
+  font-family: PermanentMarker;
+  font-size: 110%;
+  box-sizing: border-box;
+}
+.xx-header {
+  font-size: 125%;
+  margin: 0.5ex 0px;
+}
+div.xx-sticker {
+  position: absolute;
+  top: 1ex;
+  left: -4em;
+  z-index: 50;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  font-family: FingerPaint-Regular;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: rgba(255, 221, 0, 0.75);
+  box-sizing: border-box;
+  box-shadow: rgba(136, 136, 0, 0.25) 0.25rem 0.25rem 0.5rem;
+  width: 6em;
+  height: 6em;
+  padding: 10px;
+  border: 1px solid rgb(246, 178, 107);
+  border-top-left-radius: 4em;
+  border-top-right-radius: 4em;
+  border-bottom-right-radius: 4em;
+  border-bottom-left-radius: 4em;
+  overflow: auto;
+  transform: rotate(-45deg);
+  transform-origin: 0px 0px;
+}
+div {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+}
+ul {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+div.xx-content {
+  line-height: 1.5;
+  padding: 20px 20px 20px 7.5vw;
+  margin-top: 0px;
+  width: 65vw;
+  border: 1px solid rgb(255, 229, 153);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0.25rem 0.25rem 1rem;
+  background-image: radial-gradient(rgb(255, 244, 0), rgb(255, 250, 0) 80%, rgb(255, 236, 0) 90%);
+  box-sizing: border-box;
+}
+div.xx-hr5-feature {
+  height: 5px;
+  background-color: rgb(106, 168, 79);
+}
+div.xx-bar-head-feature {
+  color: rgb(106, 168, 79);
+  border-left-style: solid;
+  padding: 1ex 0px 1ex 10px;
+  margin-top: 15px;
+  border-left-width: 10px;
+  border-left-color: rgb(106, 168, 79);
+  font-family: AlegreyaSansSC-Medium;
+  font-size: 1.5rem;
+}
+li {
+  list-style-position: outside;
+  margin: 5px 0px 5px 1.5em;
+}
+ul.xx-compact {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+ul.xx-compact > li {
+  list-style-position: outside;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+img.xx-figure {
+  width: 12rem;
+  max-width: 25vw;
+}
+img.xx-figure-s {
+  width: 8rem;
+  max-width: 20vw;
+}
+img.xx-figure-b {
+  width: 12rem;
+  max-width: 25vw;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  float: right;
+}
+img.xx-figure-lb {
+  width: 16rem;
+  max-width: 30vw;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  float: right;
+}
+div.xx-white-links a {
+  color: rgb(255, 255, 255);
+}
+.x-a-content {
+  line-height: 1.5;
+}
+@media print {
+  div.xx-top {
+    padding-bottom: 0px !important;
+  }
+}

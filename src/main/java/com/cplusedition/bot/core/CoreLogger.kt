@@ -26,14 +26,16 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.math.floor
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 
 //////////////////////////////////////////////////////////////////////
 
-interface ICoreLogger : ILog {
+interface ICoreLogger : ILoggerShortcuts
 
-    val debugging: Boolean
+interface ILoggerCore : ITraceLogger {
+
     val prefix: String
 
     /**
@@ -62,17 +64,12 @@ interface ICoreLogger : ILog {
     fun flush()
 
     /**
-     * Suppress logging while executing the given code.
-     */
-    fun quiet(code: Fun00)
-
-    /**
      * Save log to a file.
      */
     fun saveLog(file: File)
 
     /**
-     * Get a copy of the log.
+     * Wait for all previous log task to complete and get a copy of the log.
      * Note that this method is synchronous.
      */
     fun getLog(): List<String>
@@ -80,98 +77,199 @@ interface ICoreLogger : ILog {
     /** Log an error, ie. increment errorCount, without any log message. */
     fun e()
 
-    /** Shortcut for log.d(any.toString()). */
-    fun d(any: Any)
+    fun deltaMs(): Long
+
+    fun deltaSec(): Double
+
+    /** Debug message with timestamp. */
+    fun dd(msg: String = "")
+
+    /** Info message with timestamp. */
+    fun ii(msg: String = "")
 
     /**
-     * Debug message with timestamp.
+     * Like dd() but generate message with given code block.
+     * @param message(e, delta) where delta is time elapsed since start of the last enter() in sec.
      */
-    fun dd(msg: Any)
+    fun dd(e: Throwable? = null, message: Fun21<Throwable?, Double, String>)
 
     /**
-     * Info message with timestamp.
+     * Like dd() but generate message with given code block.
+     * @param message(e, delta) where delta is time elapsed since start of the last enter() in sec.
      */
-    fun ii(msg: Any)
-
-    fun d(vararg msgs: String)
-    fun i(vararg msgs: String)
-    fun w(vararg msgs: String)
-    fun e(vararg msgs: String)
-
-    fun d(msgs: Iterable<String>)
-    fun i(msgs: Iterable<String>)
-    fun w(msgs: Iterable<String>)
-    fun e(msgs: Iterable<String>)
-
-    fun d(msgs: Iterator<String>)
-    fun i(msgs: Iterator<String>)
-    fun w(msgs: Iterator<String>)
-    fun e(msgs: Iterator<String>)
-
-    fun dfmt(format: String, vararg args: Any)
-    fun ifmt(format: String, vararg args: Any)
-    fun wfmt(format: String, vararg args: Any)
-    fun efmt(format: String, vararg args: Any)
+    fun ii(e: Throwable? = null, message: Fun21<Throwable?, Double, String>)
 
     /**
-     * Enter a new scope.
-     * It debug mode, it log a message with timestamp.
+     * Like leave(String) but generate message with the given code block.
+     * @param message(start, delta) Return msg for leave() call.
      */
-    fun enter(name: String? = null, msg: String? = null)
-
-    /**
-     * Enter a new scope, execute the code, leave the scope and return the result.
-     * It debug mode, it log a message on enter and leave with timestamp.
-     * The delta time in the leave message is the time elapsed since start of the scope.
-     */
-    fun <T> enter(name: String? = null, msg: String? = null, code: Fun01<T>): T
-
-    /**
-     * Like enter(name, msg, code), but invoke leaveX() instead of leave() on leave.
-     */
-    @Throws(IllegalStateException::class)
-    fun <T> enterX(name: String? = null, msg: String? = null, code: Fun01<T>): T?
-
-    /**
-     * Leave a scope.
-     * In debug mode, it log a message with delta and timestamp.
-     * The delta time is time elapsed since start of the scope.
-     */
-    fun leave(msg: String? = null)
+    fun leave(message: Fun21<Double, Double, String>)
 
     /**
      * Like leave(msg), but throw an exception if there are errors logged.
      * Note that this method is synchronous.
      */
     @Throws(IllegalStateException::class)
-    fun leaveX(msg: String? = null)
+    fun leaveX(msg: String = "")
+}
 
-    fun enter(f: KCallable<*>, msg: String? = null) {
-        enter(f.name, msg)
+interface ILoggerShortcuts : ILoggerCore {
+
+    fun d(any: Any?) {
+        d("$any")
     }
 
-    fun enter(c: KClass<*>, msg: String? = null) {
-        enter(c.simpleName ?: c.toString(), msg)
+    fun dfmt(format: String, vararg args: Any) {
+        if (debugging)
+            d(String.format(Locale.ROOT, format, *args))
     }
 
-    fun <T> enter(f: KCallable<*>, msg: String? = null, code: Fun01<T>): T {
-        return enter(f.name, msg, code)
+    fun ifmt(format: String, vararg args: Any) {
+        i(String.format(Locale.ROOT, format, *args))
     }
 
-    fun <T> enterX(f: KCallable<*>, msg: String? = null, code: Fun01<T>): T? {
-        return enterX(f.name, msg, code)
+    fun wfmt(format: String, vararg args: Any) {
+        w(String.format(Locale.ROOT, format, *args))
     }
 
-    fun <T> enter(c: KClass<*>, msg: String? = null, code: Fun01<T>): T {
-        return enter(c.simpleName ?: c.toString(), msg, code)
+    fun efmt(format: String, vararg args: Any) {
+        e(String.format(Locale.ROOT, format, *args))
     }
 
-    fun <T> enterX(c: KClass<*>, msg: String? = null, code: Fun01<T>): T? {
-        return enterX(c.simpleName ?: c.toString(), msg, code)
+    fun d(msgs: Iterable<String>) {
+        if (debugging)
+            d(msgs.iterator())
     }
 
-    fun enterAwait(name: String, msg: String? = null, code: Fun10<Fun00>) {
-        enter(name, msg)
+    fun i(msgs: Iterable<String>) {
+        i(msgs.iterator())
+    }
+
+    fun w(msgs: Iterable<String>) {
+        w(msgs.iterator())
+    }
+
+    fun e(msgs: Iterable<String>) {
+        e(msgs.iterator())
+    }
+
+    /**
+     * Print multi-line debug messages without timestamp
+     */
+    fun d(vararg msgs: String) {
+        if (debugging)
+            d(msgs.iterator())
+    }
+
+    /**
+     * Print multi-line info messages without timestamp
+     */
+    fun i(vararg msgs: String) {
+        i(msgs.iterator())
+    }
+
+    /**
+     * Print multi-line warn messages without timestamp
+     */
+    fun w(vararg msgs: String) {
+        w(msgs.iterator())
+    }
+
+    /**
+     * Print multi-line error messages without timestamp
+     */
+    fun e(vararg msgs: String) {
+        e(msgs.iterator())
+    }
+
+    fun d(msgs: Iterator<String>) {
+        if (debugging && msgs.hasNext()) {
+            this.d(msgs.bot.joinln())
+        }
+    }
+
+    fun i(msgs: Iterator<String>) {
+        if (msgs.hasNext()) {
+            this.i(msgs.bot.joinln())
+        }
+    }
+
+    fun w(msgs: Iterator<String>) {
+        if (msgs.hasNext()) {
+            this.w(msgs.bot.joinln())
+        }
+    }
+
+    fun e(msgs: Iterator<String>) {
+        if (msgs.hasNext()) {
+            this.e(msgs.bot.joinln())
+        }
+    }
+
+    fun d(msgs: Sequence<String>) {
+        if (debugging)
+            this.d(msgs.bot.joinln())
+    }
+
+    fun i(msgs: Sequence<String>) {
+        this.i(msgs.bot.joinln())
+    }
+
+    fun w(msgs: Sequence<String>) {
+        this.w(msgs.bot.joinln())
+    }
+
+    fun e(msgs: Sequence<String>) {
+        this.e(msgs.bot.joinln())
+    }
+
+    fun dd(msg: Any?) {
+        dd("$msg")
+    }
+
+    fun ii(msg: Any?) {
+        dd("$msg")
+    }
+
+    fun enter(name: KCallable<*>, msg: String = "") {
+        enter(join(name.name, msg))
+    }
+
+    fun enter(name: KClass<*>, msg: String = "") {
+        enter(join(name.simpleName ?: name.toString(), msg))
+    }
+
+    fun <T> enter(name: KCallable<*>, msg: String = "", code: Fun01<T>): T {
+        return enter(join(name.name, msg), code)
+    }
+
+    fun <T> enter(name: KClass<*>, msg: String = "", code: Fun01<T>): T {
+        return enter(join(name.simpleName ?: name.toString(), msg), code)
+    }
+
+    fun <T> enterX(name: KCallable<*>, msg: String = "", code: Fun01<T>): T? {
+        return enterX(join(name.name, msg), code)
+    }
+
+    fun <T> enterX(name: KClass<*>, msg: String = "", code: Fun01<T>): T? {
+        return enterX(join(name.simpleName ?: name.toString(), msg), code)
+    }
+
+    @Throws(Exception::class)
+    fun <T> enterX(msg: String = "", code: Fun01<T>): T? {
+        this.enter(msg)
+        return try {
+            code()
+        } catch (e: Throwable) {
+            this.e(msg, e)
+            null
+        } finally {
+            this.leaveX(msg)
+        }
+    }
+
+    fun enterAwait(msg: String = "", code: Fun10<Fun00>) {
+        enter(msg)
         val done = CountDownLatch(1)
         code {
             leave(msg)
@@ -180,14 +278,54 @@ interface ICoreLogger : ILog {
         done.await()
     }
 
-    fun enterAwaitX(name: String, msg: String? = null, code: Fun10<Fun00>) {
-        enter(name, msg)
+    fun enterAwaitX(msg: String = "", code: Fun10<Fun00>) {
+        enter(msg)
         val done = CountDownLatch(1)
         code {
             leaveX(msg)
             done.countDown()
         }
         done.await()
+    }
+
+    /**
+     * Print message with rate.
+     */
+    fun drate(msg: String = "", unit: String, count: Number) {
+        if (debugging)
+            irate(msg, unit, count)
+    }
+
+    /**
+     * Print message with rate.
+     */
+    fun irate(msg: String = "", unit: String, count: Number) {
+        ii { _, delta ->
+            CoreLogger.fmtRate(msg, unit, count.toDouble(), delta)
+        }
+    }
+
+    /**
+     * Like enter() but show rate upon leave in debug mode.
+     * Note that rate would not be printed if an exception occurs in code() and no count is available.
+     * @param code() Result is the count for the rate calculation.
+     * @return count returned by code().
+     */
+    fun <T : Number> enterRate(msg: String = "", unit: String, code: Fun01<T>): T {
+        var count: T? = null
+        val ret: T
+        enter(msg)
+        try {
+            ret = code()
+            count = ret
+        } finally {
+            leave { _, delta ->
+                if (count != null)
+                    CoreLogger.fmtRate(msg, unit, count.toDouble(), delta)
+                else ""
+            }
+        }
+        return ret
     }
 
     /**
@@ -205,6 +343,168 @@ interface ICoreLogger : ILog {
             }
         }
     }
+
+    private fun join(name: String, msg: String): String {
+        return if (msg.isEmpty()) name else "$name: $msg"
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+
+abstract class AbstractCoreLogger(
+    final override val debugging: Boolean,
+    final override val startTime: Long = System.currentTimeMillis(),
+    final override val prefix: String = "####",
+) : ICoreLogger {
+    protected abstract fun log(
+        msg: String,
+        e: Throwable? = null,
+        timestamp: Boolean = false,
+        error: Boolean = false
+    )
+
+    protected abstract fun log(
+        e: Throwable? = null,
+        timestamp: Boolean = false,
+        error: Boolean = false,
+        message: Fun11<Throwable?, String>
+    )
+
+    protected abstract fun log2(
+        e: Throwable? = null,
+        message: Fun21<Throwable?, Double, String>
+    )
+
+    override fun d(msg: String, e: Throwable?) {
+        if (debugging) {
+            i(msg, e)
+        }
+    }
+
+    override fun i(msg: String, e: Throwable?) {
+        val ex = if (debugging) e else null
+        this.log(msg, ex, false)
+    }
+
+    override fun w(msg: String, e: Throwable?) {
+        this.log(msg, e, false)
+    }
+
+    override fun e(msg: String, e: Throwable?) {
+        this.log(msg, e, false, error = true)
+    }
+
+    override fun d(e: Throwable?, message: Fun11<Throwable?, String>) {
+        if (debugging) {
+            i(e, message)
+        }
+    }
+
+    override fun i(e: Throwable?, message: Fun11<Throwable?, String>) {
+        val ex = if (debugging) e else null
+        this.log(ex, timestamp = false, error = false, message = message)
+    }
+
+    override fun w(e: Throwable?, message: Fun11<Throwable?, String>) {
+        this.log(e, timestamp = false, error = false, message = message)
+    }
+
+    override fun e(e: Throwable?, message: Fun11<Throwable?, String>) {
+        this.log(e, timestamp = false, error = true, message = message)
+    }
+
+    override fun dd(e: Throwable?, message: Fun21<Throwable?, Double, String>) {
+        if (debugging) {
+            ii(e, message)
+        }
+    }
+
+    override fun ii(e: Throwable?, message: Fun21<Throwable?, Double, String>) {
+        this.log2(e, message)
+    }
+
+    override fun dd(msg: String) {
+        if (debugging) {
+            ii(msg)
+        }
+    }
+
+    override fun ii(msg: String) {
+        this.log(msg, null, timestamp = true, error = false)
+    }
+
+    override fun deltaSec(): Double {
+        return deltaMs() / 1e3
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+
+open class NullCoreLogger : AbstractCoreLogger(false, 0L, "") {
+    override fun log(msg: String, e: Throwable?, timestamp: Boolean, error: Boolean) {
+    }
+
+    override fun log(e: Throwable?, timestamp: Boolean, error: Boolean, message: Fun11<Throwable?, String>) {
+    }
+
+    override fun log2(e: Throwable?, message: Fun21<Throwable?, Double, String>) {
+    }
+
+    override fun e() {
+    }
+
+    override val errorCount: Int = 0
+
+    override fun awaitShutdown(timeout: Long) {
+    }
+
+    override fun resetErrorCount(): Int {
+        return 0
+    }
+
+    override fun flush() {
+    }
+
+    override fun <R> quiet(code: Fun01<R>): R {
+        return code()
+    }
+
+    override fun saveLog(file: File) {
+    }
+
+    override fun getLog(): List<String> {
+        return emptyList()
+    }
+
+    override fun deltaMs(): Long {
+        return 0L
+    }
+
+    override fun enter(msg: String) {
+    }
+
+    override fun leave(msg: String) {
+    }
+
+    override fun <T> enterX(msg: String, code: Fun01<T>): T? {
+        return code()
+    }
+
+    override fun leaveX(msg: String) {
+    }
+
+    override fun leave(message: Fun21<Double, Double, String>) {
+    }
+
+    override fun drate(msg: String, unit: String, count: Number) {
+    }
+
+    override fun irate(msg: String, unit: String, count: Number) {
+    }
+
+    override fun <T : Number> enterRate(msg: String, unit: String, code: Fun01<T>): T {
+        return code()
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -215,26 +515,40 @@ interface ICoreLogger : ILog {
  * In general, methods that retreive status, eg. errorCount, are synchronous.
  */
 open class CoreLogger(
-        final override val debugging: Boolean,
-        final override val startTime: Long = System.currentTimeMillis(),
-        final override val prefix: String = "####",
-        out: PrintStream = System.out,
-        err: PrintStream = System.err
-) : ICoreLogger {
+    debugging: Boolean,
+    startTime: Long = System.currentTimeMillis(),
+    prefix: String = "####",
+    out: PrintStream = System.out,
+    err: PrintStream = System.err
+) : AbstractCoreLogger(debugging, startTime, prefix) {
 
     ////////////////////////////////////////////////////////////////////////
 
     private val delegate = Delegate(debugging, startTime, prefix, out, err)
 
+    override fun log(msg: String, e: Throwable?, timestamp: Boolean, error: Boolean) {
+        delegate.log(msg, e, timestamp, error)
+    }
+
+    override fun log(e: Throwable?, timestamp: Boolean, error: Boolean, message: Fun11<Throwable?, String>) {
+        delegate.log(e, timestamp, error, message)
+    }
+
+    override fun log2(e: Throwable?, message: Fun21<Throwable?, Double, String>) {
+        delegate.log2(e, message)
+    }
+
     override fun awaitShutdown(timeout: Long) {
         delegate.awaitShutdown(timeout)
+    }
+
+    override fun e() {
+        delegate.e()
     }
 
     /** @return The errorCount. Note that this method is synchronous. */
     override val errorCount: Int
         get() = delegate.getErrorCount()
-
-    ////////////////////////////////////////////////////////////////////////
 
     override fun resetErrorCount(): Int {
         return delegate.resetErrorCount()
@@ -244,8 +558,8 @@ open class CoreLogger(
         delegate.flush()
     }
 
-    override fun quiet(code: Fun00) {
-        delegate.quiet(code)
+    override fun <R> quiet(code: Fun01<R>): R {
+        return delegate.quiet(code)
     }
 
     @Throws(IOException::class)
@@ -270,170 +584,27 @@ open class CoreLogger(
         delegate.removeLifecycleListener(listener)
     }
 
-////////////////////////////////////////////////////////////////////////
-
-    override fun d(msg: String, e: Throwable?) {
-        if (debugging) {
-            delegate.log(msg, e, false)
-        }
-    }
-
-    override fun i(msg: String, e: Throwable?) {
-        val ex = if (debugging) e else null
-        delegate.log(msg, ex, false)
-    }
-
-    override fun w(msg: String, e: Throwable?) {
-        delegate.log(msg, e, false)
-    }
-
-    override fun e(msg: String, e: Throwable?) {
-        delegate.log(msg, e, false, error = true)
-    }
-
-    override fun e() {
-        delegate.e()
-    }
-
-    override fun d(any: Any) {
-        d(any.toString())
-    }
-
-    override fun dd(msg: Any) {
-        if (debugging) {
-            delegate.log(msg.toString(), null, true, false)
-        }
-    }
-
-    override fun ii(msg: Any) {
-        delegate.log(msg.toString(), null, true, false)
-    }
-
     ////////////////////////////////////////////////////////////////////////
 
-    override fun d(msgs: Iterator<String>) {
-        if (debugging && msgs.hasNext()) {
-            delegate.log(msgs.join(TextUt.LB), null, false)
-        }
+    override fun deltaMs(): Long {
+        return delegate.elapsed()
     }
 
-    override fun i(msgs: Iterator<String>) {
-        if (msgs.hasNext()) {
-            delegate.log(msgs.join(TextUt.LB), null, false)
-        }
+    override fun enter(msg: String) {
+        delegate.enter(msg)
     }
 
-    override fun w(msgs: Iterator<String>) {
-        if (msgs.hasNext()) {
-            delegate.log(msgs.join(TextUt.LB), null, false)
-        }
-    }
-
-    override fun e(msgs: Iterator<String>) {
-        if (msgs.hasNext()) {
-            delegate.log(msgs.join(TextUt.LB), null, false, true)
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    override fun dfmt(format: String, vararg args: Any) {
-        if (debugging) {
-            d(String.format(format, *args))
-        }
-    }
-
-    override fun ifmt(format: String, vararg args: Any) {
-        i(String.format(format, *args))
-    }
-
-    override fun wfmt(format: String, vararg args: Any) {
-        w(String.format(format, *args))
-    }
-
-    override fun efmt(format: String, vararg args: Any) {
-        e(String.format(format, *args))
-    }
-
-    override fun d(msgs: Iterable<String>) {
-        d(msgs.iterator())
-    }
-
-    override fun i(msgs: Iterable<String>) {
-        i(msgs.iterator())
-    }
-
-    override fun w(msgs: Iterable<String>) {
-        w(msgs.iterator())
-    }
-
-    override fun e(msgs: Iterable<String>) {
-        e(msgs.iterator())
-    }
-
-    /**
-     * Print multi-line debug messages without timestamp
-     */
-    override fun d(vararg msgs: String) {
-        d(msgs.iterator())
-    }
-
-    /**
-     * Print multi-line info messages without timestamp
-     */
-    override fun i(vararg msgs: String) {
-        i(msgs.iterator())
-    }
-
-    /**
-     * Print multi-line warn messages without timestamp
-     */
-    override fun w(vararg msgs: String) {
-        w(msgs.iterator())
-    }
-
-    /**
-     * Print multi-line error messages without timestamp
-     */
-    override fun e(vararg msgs: String) {
-        e(msgs.iterator())
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    override fun enter(name: String?, msg: String?) {
-        delegate.enter(name, msg)
-    }
-
-    override fun <T> enter(name: String?, msg: String?, code: Fun01<T>): T {
-        delegate.enter(name, msg)
-        try {
-            return code()
-        } finally {
-            delegate.leave(msg)
-        }
-    }
-
-    @Throws(Exception::class)
-    override fun <T> enterX(name: String?, msg: String?, code: Fun01<T>): T? {
-        delegate.enter(name, msg)
-        return try {
-            code()
-        } catch (e: Throwable) {
-            this.e(name ?: "", e)
-            null
-        } finally {
-            leaveX(msg)
-        }
-    }
-
-    override fun leave(msg: String?) {
+    override fun leave(msg: String) {
         delegate.leave(msg)
     }
 
     @Throws(IllegalStateException::class)
-    override fun leaveX(msg: String?) {
+    override fun leaveX(msg: String) {
         delegate.leaveX(msg)
+    }
+
+    override fun leave(message: Fun21<Double, Double, String>) {
+        delegate.leave(message)
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -446,17 +617,17 @@ open class CoreLogger(
     ////////////////////////////////////////////////////////////////////////
 
     private class Delegate(
-            private val debugging: Boolean,
-            private var startTime: Long,
-            private val prefix: String,
-            private val out: PrintStream,
-            private val err: PrintStream
+        private val debugging: Boolean,
+        private var startTime: Long,
+        private val prefix: String,
+        private val out: PrintStream,
+        private val err: PrintStream
     ) {
 
         private class Info(
-                val name: String?,
-                val errorCount: Int,
-                val startTime: Long
+            val msg: String,
+            val errorCount: Int,
+            val startTime: Long
         )
 
         private val callStack = Stack<Info>()
@@ -471,13 +642,13 @@ open class CoreLogger(
         private var errorCount = 0
 
         fun getErrorCount(): Int {
-            return executor.submit(Callable<Int> {
+            return executor.submit(Callable {
                 errorCount
             }).get()
         }
 
         fun resetErrorCount(): Int {
-            return executor.submit(Callable<Int> {
+            return executor.submit(Callable {
                 val ret = errorCount
                 errorCount = 0
                 return@Callable ret
@@ -485,7 +656,7 @@ open class CoreLogger(
         }
 
         fun awaitShutdown(timeout: Long) {
-            executor.awaitTermination(timeout, MILLISECONDS);
+            executor.awaitTermination(timeout, MILLISECONDS)
         }
 
         fun flush() {
@@ -497,16 +668,37 @@ open class CoreLogger(
         fun log(msg: String, e: Throwable? = null, timestamp: Boolean, error: Boolean = false) {
             val time = if (timestamp) System.currentTimeMillis() else null
             executor.submit {
-                if (error) {
-                    ++errorCount
-                    flushall()
-                    log1(err, msg, e, time, null)
-                    err.flush()
-                } else {
-                    flushall()
-                    log1(out, msg, e, time, null)
-                    out.flush()
-                }
+                log(msg, e, time, error)
+            }
+        }
+
+        fun log(e: Throwable? = null, timestamp: Boolean, error: Boolean = false, message: Fun11<Throwable?, String>) {
+            val time = if (timestamp) System.currentTimeMillis() else null
+            executor.submit {
+                val msg = message(e)
+                log(msg, e, time, error)
+            }
+        }
+
+        fun log2(e: Throwable? = null, message: Fun21<Throwable?, Double, String>) {
+            val time = System.currentTimeMillis()
+            executor.submit {
+                val start = callStack.peek().startTime
+                val msg = message(e, (time - start) / 1000.0)
+                log(msg, e, time, false)
+            }
+        }
+
+        private fun log(msg: String, e: Throwable?, time: Long?, error: Boolean) {
+            if (error) {
+                ++errorCount
+                flushall()
+                log1(err, msg, e, time, null)
+                err.flush()
+            } else {
+                flushall()
+                log1(out, msg, e, time, null)
+                out.flush()
             }
         }
 
@@ -516,29 +708,44 @@ open class CoreLogger(
             }
         }
 
-        fun enter(name: String?, msg: String?) {
+        fun elapsed(): Long {
+            val time = System.currentTimeMillis()
+            return executor.submit<Long> {
+                elapsed1(time)
+            }.get()
+        }
+
+        fun enter(msg: String) {
             val time = System.currentTimeMillis()
             executor.submit {
-                enter1(name, msg, time)
+                enter1(msg, time)
             }
         }
 
-        fun leave(msg: String?) {
+        fun leave(msg: String) {
             val time = System.currentTimeMillis()
             executor.submit {
                 leave1(msg, time)
             }
         }
 
+        fun leave(message: Fun21<Double, Double, String>) {
+            val time = System.currentTimeMillis()
+            executor.submit {
+                leave1(message(time / 1000.0, (time - callStack.peek().startTime) / 1000.0), time)
+            }
+        }
+
         @Throws(IllegalStateException::class)
-        fun leaveX(msg: String?) {
+        fun leaveX(msg: String) {
             val time = System.currentTimeMillis()
             try {
                 executor.submit {
                     if (errorCount > 0) {
                         val info = callStack.peek()
                         leave1(msg, time)
-                        throw java.lang.IllegalStateException(info.name)
+                        flushall()
+                        throw IllegalStateException(info.msg)
                     } else {
                         leave1(msg, time)
                     }
@@ -548,13 +755,13 @@ open class CoreLogger(
             }
         }
 
-        fun quiet(code: Fun00) {
+        fun <R> quiet(code: Fun01<R>): R {
             executor.submit {
                 quietStack.push(quiet)
                 quiet = true
             }
             try {
-                code()
+                return code()
             } finally {
                 executor.submit {
                     quiet = quietStack.pop()
@@ -566,10 +773,10 @@ open class CoreLogger(
         fun saveLog(file: File): Future<*> {
             return executor.submit {
                 file.mkparentOrFail()
-                if (logs.isNotEmpty() && !logs.last().endsWith(TextUt.LB)) {
-                    logs.add(TextUt.LB)
+                if (logs.isNotEmpty() && !logs.last().endsWith(LS)) {
+                    logs.add(LS)
                 }
-                file.writeText(logs.join(""))
+                file.writeText(logs.joinToString(""))
             }
         }
 
@@ -600,6 +807,11 @@ open class CoreLogger(
             err.flush()
         }
 
+        private fun elapsed1(ms: Long): Long {
+            val info = callStack.peek()
+            return ms - info.startTime
+        }
+
         private fun log1(out: PrintStream, msg: String, e: Throwable? = null, start: Long?, end: Long?) {
             if (quiet) {
                 return
@@ -607,17 +819,20 @@ open class CoreLogger(
             val s = when {
                 start != null && end != null ->
                     "$prefix ${IStepWatch.fmt((end - start) / 1000f)}/${IStepWatch.fmt((end - startTime) / 1000f)} s: $msg"
+
                 start != null ->
                     "$prefixTimestamp${IStepWatch.fmt((start - startTime) / 1000f)} s: $msg"
+
                 end != null ->
                     "$prefixEnter${IStepWatch.fmt((end - startTime) / 1000f)} s: $msg"
+
                 else -> msg
             }
             if (e == null) {
                 smartlog(out, s)
             } else {
                 val w = StringPrintWriter()
-                if (s.endsWith(TextUt.LB)) {
+                if (s.endsWith(LS)) {
                     w.print(s)
                 } else if (s.isNotEmpty()) {
                     w.println(s)
@@ -630,53 +845,51 @@ open class CoreLogger(
         }
 
         private fun smartlog(out: PrintStream, msg: String) {
-            if (msg.endsWith(TextUt.LB)) {
+            if (msg.endsWith(LS)) {
                 out.print(msg)
                 logs.add(msg)
-            } else if (!msg.isEmpty()) {
+            } else if (msg.isNotEmpty()) {
                 out.println(msg)
-                logs.add(msg + TextUt.LB)
+                logs.add(msg + LS)
             }
         }
 
-        private fun enter1(name: String?, msg: String?, time: Long) {
-            callStack.push(Info(name, errorCount, time))
+        private fun enter1(msg: String, time: Long) {
+            callStack.push(Info(msg, errorCount, time))
             if (debugging && callStack.size == 1) {
                 listeners.forEach {
-                    it.onStart(name ?: "", startTime) { s ->
+                    it.onStart(msg, startTime) { s ->
                         log1(out, s, null, null, time)
                     }
                 }
             }
             errorCount = 0
-            if (debugging && name != null) {
+            if (debugging && msg.isNotEmpty()) {
                 val b = StringBuilder()
                 for (i in 0 until callStack.size) {
                     b.append('+')
                 }
-                if (!b.isEmpty()) b.append(' ')
-                b.append(name)
-                if (msg != null) b.append(": $msg")
+                if (b.isNotEmpty()) b.append(' ')
+                b.append(msg)
                 log1(out, b.toString(), null, null, time)
             }
         }
 
-        private fun leave1(msg: String?, time: Long) {
+        private fun leave1(msg: String, time: Long) {
             val info = callStack.pop()
             errorCount += info.errorCount
-            if (debugging && info.name != null) {
+            if (debugging && (info.msg.isNotEmpty() || msg.isNotEmpty())) {
                 val b = StringBuilder()
                 for (i in 0..callStack.size) {
                     b.append('-')
                 }
-                if (!b.isEmpty()) b.append(' ')
-                b.append(info.name)
-                if (msg != null) b.append(": $msg")
+                if (b.isNotEmpty()) b.append(' ')
+                b.append(msg.ifEmpty { info.msg })
                 log1(out, b.toString(), null, info.startTime, time)
             }
             if (callStack.isEmpty()) {
                 listeners.forEach {
-                    it.onDone(info.name ?: "", time, errorCount) { s ->
+                    it.onDone(info.msg, time, errorCount) { s ->
                         log1(out, s, null, null, time)
                     }
                 }
@@ -684,6 +897,25 @@ open class CoreLogger(
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////
+    companion object {
+        const val EPSILON = 1e-6
 
+        fun rate(count: Double, time: Double): Double {
+            val elapsed = if (time < EPSILON) EPSILON else time
+            return count / elapsed
+        }
+
+        fun fmtRate(
+            msg: String,
+            unit: String,
+            count: Double,
+            delta: Double,
+        ): String {
+            val b = StringBuilder(msg)
+            val rate = rate(count, delta)
+            val format = if (floor(count) == count) "%.0f" else "%.2f"
+            b.append(TextUt.format("$format/%.2f: %.2f %s/s", count, delta, rate, unit))
+            return b.toString()
+        }
+    }
 }

@@ -20,40 +20,29 @@ import com.cplusedition.anjson.JSONUtil.stringOrDef
 import com.cplusedition.bot.core.FileUt
 import com.cplusedition.bot.core.ILog
 import com.cplusedition.bot.core.deleteSubtreesOrNull
-import com.cplusedition.bot.core.join
+import com.cplusedition.bot.core.file
+import com.cplusedition.bot.core.mkdirsOrFail
 import org.json.JSONObject
-import sf.andrians.cplusedition.support.An
 import sf.andrians.cplusedition.support.An.SettingsKey
 import sf.andrians.cplusedition.support.ConsoleLoggerAdapter
 import sf.andrians.cplusedition.support.Support.SettingsDefs
 import sf.andrians.cplusedition.support.css.CSSGenerator
-import sf.andrians.cplusedition.support.handler.HandlerUtil
 import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
 
 object Conf {
-    const val VERBOSE = true
-    const val ENABLE_TESTING = true
-    const val DEBUG = true // When DEBUG is true, VERBOSE must be true.
     const val SCHEME = "http"
-
     const val HOST = "localhost"
-    const val PORT = 8080
     const val APP = "Cplusedition"
-    const val APP_DIR = "Cplusedition3"
-    const val APP_DIR_V2 = "Cplusedition"
     const val COPY_BUFSIZE = 16 * 1024
-
-    const val resourcesObject = "rsob"
+    const val QRCODE_SCALE = 2
 
     @JvmStatic
     val logger: ILog = ConsoleLoggerAdapter()
 
     fun df(format: String, vararg args: Any?) {
-        if (VERBOSE) {
-            
-        }
+        
     }
 
     fun d(msg: String) {
@@ -87,7 +76,7 @@ object Conf {
     }
 
     fun getEtcDir(datadir: File): File {
-        return File(datadir, "etc")
+        return File(datadir, "etc").mkdirsOrFail()
     }
 
     @JvmStatic
@@ -116,6 +105,10 @@ object Conf {
         return File(cachedir, rpathx)
     }
 
+    fun getTempDir(datadir: File): File {
+        return datadir.file(Paths.TEMP_DIR)
+    }
+
     @JvmStatic
     fun clearCacheDir(datadir: File) {
         val cachedir = getCacheDir(datadir, null)
@@ -126,10 +119,6 @@ object Conf {
         return File(datadir, ".db").also { it.mkdirs() }
     }
 
-    fun getAlarmJson(datadir: File): File {
-        return File(getEtcDir(datadir), Paths.alarmsJson)
-    }
-
     @JvmStatic
     fun getCSSConf(ret: JSONObject): CSSGenerator.IConf {
         return object : CSSGenerator.IConf {
@@ -137,8 +126,8 @@ object Conf {
             val fontName = ret.stringOrDef(SettingsKey.uiFontName, SettingsDefs.uiFontName)
             val fontStyle = ret.stringOrDef(SettingsKey.uiFontStyle, SettingsDefs.uiFontStyle)
             val fontSize = precision(
-                    ret.optDouble(SettingsKey.uiFontSize, SettingsDefs.fontSize * SettingsDefs.dpi / Defs.dpi),
-                    100.0)
+                ret.optDouble(SettingsKey.uiFontSize, SettingsDefs.fontSize * SettingsDefs.dpi / Defs.dpi),
+                100.0)
             val fixedFontName = ret.stringOrDef(SettingsKey.fixedFontName, SettingsDefs.fixedFontName)
             val fixedFontStyle = ret.stringOrDef(SettingsKey.fixedFontStyle, SettingsDefs.fixedFontStyle)
             val dialogBGColor = ret.stringOrDef(SettingsKey.dialogBGColor, SettingsDefs.dialogBGColor)
@@ -207,29 +196,10 @@ object Conf {
         }
     }
 
-    fun jsonresult(value: String?): String {
-        return HandlerUtil.jsonValue(An.Key.result, value)
-    }
-
-    fun jsonerror(msg: String): String {
-        d("ERROR: $msg")
-        return HandlerUtil.jsonValue(An.Key.errors, msg)
-    }
-
-    fun jsonerror(msg: Array<String?>): String {
-        d("ERROR: " + msg.join("\n"))
-        return HandlerUtil.jsonValues(An.Key.errors, msg)
-    }
-
-    fun jsonerror(msg: String, e: Throwable?): String {
-        d("ERROR: $msg", e)
-        return HandlerUtil.jsonValue(An.Key.errors, msg)
-    }
-
     private object Paths {
         const val loginCf = "login.cf"
         const val _cache = ".cache"
-        const val alarmsJson = "alarms.json"
+        const val TEMP_DIR = ".tmp"
         const val keystore = ".keystore"
     }
 
@@ -244,7 +214,6 @@ object Conf {
     }
 
     internal object RequestCode {
-        const val ALARM = 0x10000000
+        const val EVENT = 0x10000000
     }
 }
-

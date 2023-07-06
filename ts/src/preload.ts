@@ -20,20 +20,22 @@ type IpcRendererCallback = (event: IpcRendererEvent, ...args: any[]) => void;
 
 console.log("# Loading preload.js ...");
 contextBridge.exposeInMainWorld(
-    //#BEGIN IPC_HOST
-"XrM"
-    //#END IPC_HOST
+"XxXZl"
     , {
-        ipcOnReceive: (channel: string, callback: IpcRendererCallback) => {
-            ipcRenderer.on(channel, callback);
-        },
-        ipcSend: (channel: string, ...args: any[]) => {
-            ipcRenderer.send(channel, ...args);
-        },
-        ipcInvoke: (channel: string, ...args: any[]) => {
-            return ipcRenderer.invoke(channel, ...args);
-        },
-        ipcRemoveAllListeners: (channel: string) => {
-            ipcRenderer.removeAllListeners(channel);
-        }
+XxXior
+            : (channel: string, callback: IpcRendererCallback) => {
+                ipcRenderer.on(channel, callback);
+            },
+XxXisd
+            : (channel: string, ...args: any[]) => {
+                ipcRenderer.send(channel, ...args);
+            },
+XxXiiv
+            : (channel: string, ...args: any[]) => {
+                return ipcRenderer.invoke(channel, ...args);
+            },
+XxXira
+            : (channel: string) => {
+                ipcRenderer.removeAllListeners(channel);
+            }
     });
